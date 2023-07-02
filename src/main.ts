@@ -1,15 +1,11 @@
 import {
   App,
-  Editor,
-  FileStats,
-  MarkdownView,
   Modal,
   Notice,
   Plugin,
   PluginSettingTab,
   Setting,
   TFile,
-  TAbstractFile,
   TFolder,
   View,
 } from "obsidian";
@@ -41,24 +37,6 @@ export default class MyPlugin extends Plugin {
 
   async onload() {
     await this.loadSettings();
-    this.registerEvent(
-      this.app.workspace.on("file-open", (file: any) => {
-        const curLeaf = this.app.workspace.getMostRecentLeaf();
-        let curView: any = curLeaf?.view;
-        this.app.workspace.iterateRootLeaves((leaf) => {
-          let thisView: any = leaf.view;
-          if (curView.file.name === thisView.file.name) {
-            curLeaf?.detach();
-            this.app.workspace.setActiveLeaf(leaf);
-            return;
-          }
-        });
-        curLeaf?.setPinned(true);
-
-        //On first click, app behaves as intended.  But on 2nd click, a new leaf is opened.  Why?
-        //File-open is not fired at all, yet a new leaf opens up.
-      })
-    );
 
     // This adds a settings tab so the user can configure various aspects of the plugin
     this.addSettingTab(new SampleSettingTab(this.app, this));
@@ -95,6 +73,7 @@ export default class MyPlugin extends Plugin {
       }
       if (child instanceof TFile && child.extension === "md") {
         console.log("Name:", child.name)
+        this.app.vault.append(child, "\ntest-text")
       }
     }
   }
