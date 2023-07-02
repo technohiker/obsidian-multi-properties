@@ -3,7 +3,7 @@ When installed, right-clicking on folder will bring up an option to add a tag to
 
 
 ## Features Planned:
-- [ ] Add tag to all notes in folder.
+- [x] Add tag to all notes in folder.
 - [ ] Allow option to appear when multi-selecting files.(not everyone uses folders)
 
 ## Ideas for Features:
