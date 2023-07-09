@@ -1,150 +1,106 @@
-import {
-  App,
-  Modal,
-  Notice,
-  Plugin,
-  PluginSettingTab,
-  Setting,
-  TFile,
-  TFolder,
-  View,
-} from "obsidian";
+import { App, Modal, Plugin, TFile, TFolder } from "obsidian";
 
 // Remember to rename these classes and interfaces!
 
 interface MyPluginSettings {
-  mySetting: string;
+	mySetting: string;
 }
 
 const DEFAULT_SETTINGS: MyPluginSettings = {
-  mySetting: "default",
+	mySetting: "default",
 };
 
 export default class MyPlugin extends Plugin {
-  settings: MyPluginSettings;
+	settings: MyPluginSettings;
 
-  async onload() {
-    await this.loadSettings();
+	async onload() {
+		//Add menu item for multi-tag functionality.  Set as Event to automatically be unloaded when needed.
+		this.registerEvent(
+			this.app.workspace.on("file-menu", (menu, file, source) => {
+				if (file instanceof TFolder) {
+					menu.addItem((item) => {
+						item
+							.setIcon("dice")
+							.setTitle("Tag All Files")
+							.onClick(() =>
+								new TagModal(this.app, file, appendTextToFiles).open()
+							);
+					});
+				}
+			})
+		);
+	}
 
-    // This adds a settings tab so the user can configure various aspects of the plugin
-    this.addSettingTab(new SampleSettingTab(this.app, this));
+	onunload() {}
 
-    //Add menu item that prints all children of folder.
-    this.app.workspace.on('file-menu', (menu, file, source) => {
-      if (file instanceof TFolder) {
-        menu.addItem((item) => {
-          item.setIcon('dice').setTitle("Get File Names").onClick(() => new TagModal(this.app, file).open())
-        })
-      }
-    })
-  }
-
-  onunload() { }
-
-  async loadSettings() {
-    this.settings = Object.assign(
-      {},
-      DEFAULT_SETTINGS,
-      await this.loadData()
-    );
-  }
-
-  async saveSettings() {
-    await this.saveData(this.settings);
-  }
-
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
 }
 
 /** Get all files belonging to a folder and print their file names. */
 function appendTextToFiles(folder: TFolder, string: string) {
-  for (let child of folder.children) {
-    if (child instanceof TFolder) {
-      appendTextToFiles(child, string)
-    }
-    if (child instanceof TFile && child.extension === "md") {
-      this.app.vault.append(child, `\n#${string}`)
-    }
-  }
+	for (let child of folder.children) {
+		if (child instanceof TFolder) {
+			appendTextToFiles(child, string);
+		}
+		if (child instanceof TFile && child.extension === "md") {
+			this.app.vault.append(child, `\n#${string}`);
+		}
+	}
 }
 
 class TagModal extends Modal {
-  input: string;
-  folder: TFolder
+	default: string;
+	folder: TFolder;
+	submission: (folder: TFolder, string: string) => void;
 
-  constructor(app: App, folder: TFolder) {
-    super(app);
-    this.input = folder.name.replace(' ', '-');  //Remove potential spaces in file names.  Should I also remove capitalization?
-    this.folder = folder;
+	constructor(
+		app: App,
+		folder: TFolder,
+		submission: (folder: TFolder, string: string) => void
+	) {
+		super(app);
+		this.default = folder.name.replace(" ", "-"); //Removes potential spaces in file names.  Should I also remove capitalization?
+		this.folder = folder;
+		this.submission = submission;
+	}
 
-    this.modalEl.addClass('modal')
+	onSubmit(e: Event, input: string) {
+		e.preventDefault();
 
-    const { contentEl, titleEl } = this;
+		//Run code for adding text to all files.
+		this.submission(this.folder, input);
+		this.close();
+	}
 
-    titleEl.createEl('h2', { text: "Please add a tag." })
+	onOpen(): void {
+		this.modalEl.addClass("modal");
 
-    // contentEl.createDiv('form-div', (formEl) => {
-    //   //  let input = formEl.createEl('input', { value: this.input })
+		const { contentEl, titleEl } = this;
 
-    //   formEl.createDiv('modal-button-container', (buttonEl) => {
-    //     let btnSubmit = buttonEl.createEl('button', { text: 'Submit', type: 'submit', cls: 'mod-cra' })
-    //     btnSubmit.addEventListener('click', () => this.onSubmit())
+		titleEl.createEl("h2", { text: "Please add a tag." });
 
-    //     let btnCancel = buttonEl.createEl('button', { text: 'Cancel' })
-    //     btnCancel.addEventListener('click', () => this.close())
-    //   })
-    // })
+		//Create form object.
+		contentEl.createEl("form", { cls: "modal-form" }, (formEl) => {
+			let input = formEl.createEl("input", { value: this.default });
 
-    contentEl.createEl('form', { cls: 'modal-form' }, (formEl) => {
-      let input = formEl.createEl('input', { value: this.input })
-      formEl.createDiv('modal-button-container', (buttonEl) => {
-        let btnSubmit = buttonEl.createEl('button', { text: 'Submit', type: 'submit', cls: 'mod-cra' })
+			formEl.createDiv("modal-button-container", (buttonEl) => {
+				let btnSubmit = buttonEl.createEl("button", {
+					text: "Submit",
+					type: "submit",
+					cls: "mod-cra",
+				});
 
-        let btnCancel = buttonEl.createEl('button', { text: 'Cancel', type: 'cancel' })
-        btnCancel.addEventListener('click', () => this.close())
-      })
+				let btnCancel = buttonEl.createEl("button", {
+					text: "Cancel",
+					type: "cancel",
+				});
+				btnCancel.addEventListener("click", () => this.close());
+			});
 
-      formEl.addEventListener('submit', (e) => this.onSubmit(e, input.value))
-    })
-  }
-
-  onSubmit(e: Event, input: string) {
-    e.preventDefault();
-    //Run code for adding text to all files.
-    appendTextToFiles(this.folder, input);
-    this.close();
-  }
-
-  onOpen(): void {
-  }
-}
-
-class SampleSettingTab extends PluginSettingTab {
-  plugin: MyPlugin;
-
-  constructor(app: App, plugin: MyPlugin) {
-    super(app, plugin);
-    this.plugin = plugin;
-  }
-
-  display(): void {
-    const { containerEl } = this;
-
-    containerEl.empty();
-
-    containerEl.createEl("h2", { text: "Settings for my awesome plugin." });
-
-    new Setting(containerEl)
-      .setName("Setting #1")
-      .setDesc("It's a secret")
-      .addText((text) =>
-        text
-          .setPlaceholder("Enter your secret")
-          .setValue(this.plugin.settings.mySetting)
-          .onChange(async (value) => {
-            console.log("Secret: " + value);
-            this.plugin.settings.mySetting = value;
-            await this.plugin.saveSettings();
-          })
-      );
-  }
+			formEl.addEventListener("submit", (e) => this.onSubmit(e, input.value));
+			//TODO: Clean input value so only a single word will be added.
+		});
+	}
 }

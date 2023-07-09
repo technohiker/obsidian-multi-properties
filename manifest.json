@@ -1,7 +1,7 @@
 {
 	"id": "multi-tag",
 	"name": "Multi Tag",
-	"version": "0.5.0",
+	"version": "0.6.0",
 	"minAppVersion": "0.15.0",
 	"description": "Adds a tag to all notes in a folder.",
 	"author": "fez-github",

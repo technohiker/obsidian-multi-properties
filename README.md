@@ -8,3 +8,9 @@ When installed, right-clicking on folder will bring up an option to add a tag to
 
 ## Ideas for Features:
 - [ ] Settings option for whether tag appears in YAML or bottom of file.
+
+
+## Next Steps:
+- [ ] Separate modal from main.ts.
+- [ ] Clean form input so only a tag will be created.  No extra text.
+- [ ] Remove "Tag All Files" menu when unloading.
