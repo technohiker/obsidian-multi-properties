@@ -10,18 +10,6 @@ import {
   View,
 } from "obsidian";
 
-//Obsidian type definitions don't seem to be up to date, so I'm implementing my own.
-interface LeafView extends View {
-  file: {
-    basename: string;
-    deleted: boolean;
-    extension: string;
-    name: string;
-    path: string;
-    saving: boolean;
-  };
-}
-
 // Remember to rename these classes and interfaces!
 
 interface MyPluginSettings {
@@ -45,7 +33,7 @@ export default class MyPlugin extends Plugin {
     this.app.workspace.on('file-menu', (menu, file, source) => {
       if (file instanceof TFolder) {
         menu.addItem((item) => {
-          item.setIcon('dice').setTitle("Get File Names").onClick(() => this.printFilesInFolder(file))
+          item.setIcon('dice').setTitle("Get File Names").onClick(() => new TagModal(this.app, file).open())
         })
       }
     })
@@ -65,17 +53,68 @@ export default class MyPlugin extends Plugin {
     await this.saveData(this.settings);
   }
 
-  /** Get all files belonging to a folder and print their file names. */
-  printFilesInFolder(folder: TFolder) {
-    for (let child of folder.children) {
-      if (child instanceof TFolder) {
-        this.printFilesInFolder(child)
-      }
-      if (child instanceof TFile && child.extension === "md") {
-        console.log("Name:", child.name)
-        this.app.vault.append(child, "\ntest-text")
-      }
+}
+
+/** Get all files belonging to a folder and print their file names. */
+function appendTextToFiles(folder: TFolder, string: string) {
+  for (let child of folder.children) {
+    if (child instanceof TFolder) {
+      appendTextToFiles(child, string)
     }
+    if (child instanceof TFile && child.extension === "md") {
+      this.app.vault.append(child, `\n#${string}`)
+    }
+  }
+}
+
+class TagModal extends Modal {
+  input: string;
+  folder: TFolder
+
+  constructor(app: App, folder: TFolder) {
+    super(app);
+    this.input = folder.name.replace(' ', '-');  //Remove potential spaces in file names.  Should I also remove capitalization?
+    this.folder = folder;
+
+    this.modalEl.addClass('modal')
+
+    const { contentEl, titleEl } = this;
+
+    titleEl.createEl('h2', { text: "Please add a tag." })
+
+    // contentEl.createDiv('form-div', (formEl) => {
+    //   //  let input = formEl.createEl('input', { value: this.input })
+
+    //   formEl.createDiv('modal-button-container', (buttonEl) => {
+    //     let btnSubmit = buttonEl.createEl('button', { text: 'Submit', type: 'submit', cls: 'mod-cra' })
+    //     btnSubmit.addEventListener('click', () => this.onSubmit())
+
+    //     let btnCancel = buttonEl.createEl('button', { text: 'Cancel' })
+    //     btnCancel.addEventListener('click', () => this.close())
+    //   })
+    // })
+
+    contentEl.createEl('form', { cls: 'modal-form' }, (formEl) => {
+      let input = formEl.createEl('input', { value: this.input })
+      formEl.createDiv('modal-button-container', (buttonEl) => {
+        let btnSubmit = buttonEl.createEl('button', { text: 'Submit', type: 'submit', cls: 'mod-cra' })
+
+        let btnCancel = buttonEl.createEl('button', { text: 'Cancel', type: 'cancel' })
+        btnCancel.addEventListener('click', () => this.close())
+      })
+
+      formEl.addEventListener('submit', (e) => this.onSubmit(e, input.value))
+    })
+  }
+
+  onSubmit(e: Event, input: string) {
+    e.preventDefault();
+    //Run code for adding text to all files.
+    appendTextToFiles(this.folder, input);
+    this.close();
+  }
+
+  onOpen(): void {
   }
 }
 
