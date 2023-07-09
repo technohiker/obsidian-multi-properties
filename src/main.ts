@@ -20,7 +20,7 @@ export default class MyPlugin extends Plugin {
 				if (file instanceof TFolder) {
 					menu.addItem((item) => {
 						item
-							.setIcon("dice")
+							.setIcon("tag")
 							.setTitle("Tag All Files")
 							.onClick(() =>
 								new TagModal(this.app, file, appendTextToFiles).open()
@@ -45,7 +45,7 @@ function appendTextToFiles(folder: TFolder, string: string) {
 			appendTextToFiles(child, string);
 		}
 		if (child instanceof TFile && child.extension === "md") {
-			this.app.vault.append(child, `\n#${string}`);
+			this.app.vault.append(child, `\n${string}`);
 		}
 	}
 }
@@ -61,7 +61,7 @@ class TagModal extends Modal {
 		submission: (folder: TFolder, string: string) => void
 	) {
 		super(app);
-		this.default = folder.name.replace(" ", "-"); //Removes potential spaces in file names.  Should I also remove capitalization?
+		this.default = `#${folder.name.replace(" ", "-")}`; //Removes potential spaces in file names.  Should I also remove capitalization?
 		this.folder = folder;
 		this.submission = submission;
 	}
@@ -79,7 +79,10 @@ class TagModal extends Modal {
 
 		const { contentEl, titleEl } = this;
 
-		titleEl.createEl("h2", { text: "Please add a tag." });
+		titleEl.createEl("h2", { text: "Please type in a tag." });
+		titleEl.createEl("span", {
+			text: "Whatever text is inputted will be appended to all files in this folder as text.  Place '#' signs to identify tags.",
+		});
 
 		//Create form object.
 		contentEl.createEl("form", { cls: "modal-form" }, (formEl) => {
