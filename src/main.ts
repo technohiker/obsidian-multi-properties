@@ -1,4 +1,12 @@
-import { App, Menu, Modal, Plugin, TFile, TFolder } from "obsidian";
+import {
+	App,
+	Menu,
+	Modal,
+	Plugin,
+	TAbstractFile,
+	TFile,
+	TFolder,
+} from "obsidian";
 
 // Remember to rename these classes and interfaces!
 
@@ -20,9 +28,8 @@ export default class MyPlugin extends Plugin {
 			})
 		);
 		this.registerEvent(
-			this.app.workspace.on(
-				"file-menu",
-				(menu: Menu, file: any, source: any) => {
+			this.app.workspace.on("files-menu", (menu, file, source) => {
+				if (file instanceof TAbstractFile[])
 					menu.addItem((item) => {
 						item
 							.setIcon("tag")
@@ -31,39 +38,54 @@ export default class MyPlugin extends Plugin {
 								new TagModal(this.app, file, appendTextToFiles).open()
 							);
 					});
-				}
-			)
+			})
 		);
 	}
 
 	onunload() {}
 }
 
+// /** Get all files belonging to a folder and print their file names. */
+// function appendTextToFiles(folder: TFolder, string: string) {
+// 	for (let child of folder.children) {
+// 		if (child instanceof TFolder) {
+// 			appendTextToFiles(child, string);
+// 		}
+// 		if (child instanceof TFile && child.extension === "md") {
+// 			this.app.vault.append(child, `\n${string}`);
+// 		}
+// 	}
+// }
+
 /** Get all files belonging to a folder and print their file names. */
-function appendTextToFiles(folder: TFolder, string: string) {
-	for (let child of folder.children) {
-		if (child instanceof TFolder) {
+function appendTextToFiles(obj: TFolder | TAbstractFile, string: string) {
+	if (obj instanceof TFolder) {
+		for (let child of obj.children) {
 			appendTextToFiles(child, string);
 		}
-		if (child instanceof TFile && child.extension === "md") {
-			this.app.vault.append(child, `\n${string}`);
-		}
+	}
+	if (obj instanceof TFile && obj.extension === "md") {
+		this.app.vault.append(obj, `\n${string}`);
 	}
 }
 
 class TagModal extends Modal {
 	default: string;
-	folder: TFolder;
-	submission: (folder: TFolder, string: string) => void;
+	base: TFolder | TAbstractFile[];
+	submission: (folder: TFolder | TAbstractFile[], string: string) => void;
 
 	constructor(
 		app: App,
-		folder: TFolder,
-		submission: (folder: TFolder, string: string) => void
+		base: TFolder | TAbstractFile[],
+		submission: (folder: TFolder | TAbstractFile[], string: string) => void
 	) {
 		super(app);
-		this.default = `#${folder.name.replace(" ", "-")}`; //Removes potential spaces in file names.  Should I also remove capitalization?
-		this.folder = folder;
+
+    if(base instanceof TFolder){
+      this.default = `#${base.name.replace(" ", "-")}`; //Removes potential spaces in file names.  Should I also remove capitalization?
+      this.base = base;
+    }
+
 		this.submission = submission;
 	}
 
@@ -71,7 +93,7 @@ class TagModal extends Modal {
 		e.preventDefault();
 
 		//Run code for adding text to all files.
-		this.submission(this.folder, input);
+		this.submission(this.base, input);
 		this.close();
 	}
 
