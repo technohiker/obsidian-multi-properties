@@ -1,23 +1,28 @@
-import { App, Modal, Plugin, TFile, TFolder } from "obsidian";
+import { App, Menu, Modal, Plugin, TFile, TFolder } from "obsidian";
 
 // Remember to rename these classes and interfaces!
 
-interface MyPluginSettings {
-	mySetting: string;
-}
-
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: "default",
-};
-
 export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
-
 	async onload() {
 		//Add menu item for multi-tag functionality.  Set as Event to automatically be unloaded when needed.
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file, source) => {
 				if (file instanceof TFolder) {
+					menu.addItem((item) => {
+						item
+							.setIcon("tag")
+							.setTitle("Tag My Files")
+							.onClick(() =>
+								new TagModal(this.app, file, appendTextToFiles).open()
+							);
+					});
+				}
+			})
+		);
+		this.registerEvent(
+			this.app.workspace.on(
+				"file-menu",
+				(menu: Menu, file: any, source: any) => {
 					menu.addItem((item) => {
 						item
 							.setIcon("tag")
@@ -27,15 +32,11 @@ export default class MyPlugin extends Plugin {
 							);
 					});
 				}
-			})
+			)
 		);
 	}
 
 	onunload() {}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
 }
 
 /** Get all files belonging to a folder and print their file names. */
@@ -79,6 +80,7 @@ class TagModal extends Modal {
 
 		const { contentEl, titleEl } = this;
 
+		//Create text.
 		titleEl.createEl("h2", { text: "Please type in a tag." });
 		titleEl.createEl("span", {
 			text: "Whatever text is inputted will be appended to all files in this folder as text.  Place '#' signs to identify tags.",
@@ -103,7 +105,6 @@ class TagModal extends Modal {
 			});
 
 			formEl.addEventListener("submit", (e) => this.onSubmit(e, input.value));
-			//TODO: Clean input value so only a single word will be added.
 		});
 	}
 }
