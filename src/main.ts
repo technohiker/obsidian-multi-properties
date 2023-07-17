@@ -42,27 +42,13 @@ export default class MyPlugin extends Plugin {
 	onunload() {}
 }
 
-// /** Get all files belonging to a folder and print their file names. */
-// function appendTextToFiles(folder: TFolder, string: string) {
-// 	for (let child of folder.children) {
-// 		if (child instanceof TFolder) {
-// 			appendTextToFiles(child, string);
-// 		}
-// 		if (child instanceof TFile && child.extension === "md") {
-// 			this.app.vault.append(child, `\n${string}`);
-// 		}
-// 	}
-// }
-
 /** Get all files belonging to a folder and print their file names. */
 function searchThroughFolders(obj: TFolder, string: string) {
 	for (let child of obj.children) {
 		if (child instanceof TFolder) {
-			console.log({ child });
 			searchThroughFolders(child, string);
 		}
 		if (child instanceof TFile && child.extension === "md") {
-			console.log({});
 			appendToFile(child, string);
 		}
 	}
@@ -74,7 +60,7 @@ function appendToFile(file: TFile, string: string) {
 
 function FilesOrFolders(arr: (TFile | TFolder)[], string: string) {
 	for (let el of arr) {
-		if (el instanceof TFile) {
+		if (el instanceof TFile && el.extension === "md") {
 			appendToFile(el, string);
 		}
 	}
