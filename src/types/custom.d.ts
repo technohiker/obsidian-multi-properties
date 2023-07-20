@@ -1,5 +1,5 @@
 //Adding files-menu method to Obsidian's type file.
-import { Menu, TAbstractFile, EventRef, WorkspaceLeaf } from "obsidian";
+import {} from "obsidian";
 
 declare module "obsidian" {
 	interface Workspace {

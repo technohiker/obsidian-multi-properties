@@ -1,16 +1,6 @@
-import {
-	App,
-	Menu,
-	Modal,
-	Plugin,
-	TAbstractFile,
-	TFile,
-	TFolder,
-} from "obsidian";
+import { App, Modal, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 
-// Remember to rename these classes and interfaces!
-
-export default class MyPlugin extends Plugin {
+export default class MultiTagPlugin extends Plugin {
 	async onload() {
 		//Add menu item for multi-tag functionality.  Set as Event to automatically be unloaded when needed.
 		this.registerEvent(
@@ -38,8 +28,6 @@ export default class MyPlugin extends Plugin {
 			})
 		);
 	}
-
-	onunload() {}
 }
 
 /** Get all files belonging to a folder and print their file names. */
@@ -78,8 +66,9 @@ class TagModal extends Modal {
 	) {
 		super(app);
 
+		//Removes potential spaces in file names.  Should I also remove capitalization?
 		if (base instanceof TFolder) {
-			this.default = `#${base.name.replace(" ", "-")}`; //Removes potential spaces in file names.  Should I also remove capitalization?
+			this.default = `#${base.name.replace(" ", "-")}`;
 		}
 
 		this.base = base;
