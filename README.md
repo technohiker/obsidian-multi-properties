@@ -4,6 +4,14 @@ When installed, right-clicking on a folder will bring up an option to add a tag 
 
 You can also select multiple notes with Shift+Mouse, and right-click the selection to get the same efect.
 
+# Installation:
+
+This project is currently being submitted as a community plugin that can be installed directly in the app, under the name `Multi Tag`.
+
+If you wish to install it manually, 
+  1. Download the latest release.
+  2. Extract the folder within the release and add it to `[yourVault]/.obsidian/plugins/`.
+
 ## Ideas for Features:
 
 - [ ] Settings option for whether tag appears in YAML or bottom of file.
