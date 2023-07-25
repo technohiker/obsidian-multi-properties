@@ -9,7 +9,7 @@ export default class MultiTagPlugin extends Plugin {
 					menu.addItem((item) => {
 						item
 							.setIcon("tag")
-							.setTitle("Tag My Files")
+							.setTitle("Tag folder's files")
 							.onClick(() =>
 								new TagModal(this.app, file, searchThroughFolders).open()
 							);
@@ -22,7 +22,7 @@ export default class MultiTagPlugin extends Plugin {
 				menu.addItem((item) => {
 					item
 						.setIcon("tag")
-						.setTitle("Tag All Files")
+						.setTitle("Tag selected files")
 						.onClick(() => new TagModal(this.app, file, FilesOrFolders).open());
 				});
 			})
@@ -90,8 +90,8 @@ class TagModal extends Modal {
 
 		//Create text.
 		titleEl.createEl("h2", { text: "Please type in a tag." });
-		titleEl.createEl("span", {
-			text: "Whatever text is inputted will be appended to all files in this folder as text.  Place '#' signs to identify tags.",
+		contentEl.createEl("span", {
+			text: "Whatever text is inputted will be appended to all selected files as text.  Place '#' signs to identify tags.",
 		});
 
 		//Create form object.
@@ -102,7 +102,7 @@ class TagModal extends Modal {
 				let btnSubmit = buttonEl.createEl("button", {
 					text: "Submit",
 					type: "submit",
-					cls: "mod-cra",
+					cls: "mod-cta",
 				});
 
 				let btnCancel = buttonEl.createEl("button", {
