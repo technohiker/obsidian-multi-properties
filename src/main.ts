@@ -41,7 +41,7 @@ let customProps: Record<string, any> = {
 	number: 9001,
 	testProp3: new Date(),
 	rht: true,
-	alias: "alias",
+	aliases: ["alias", "alias"],
 	testProp: "1992-02-12T03:03", //If string is typed in this specific format, it will be read as datetime.
 	testProp2: "09-05-2023",
 };
@@ -55,6 +55,12 @@ function addProperties(
 		if (!frontmatter[key]) {
 			frontmatter[key] = props[key]; //Works!
 		} else {
+			//Check if object type and frontmatter type match.  If not, throw error.
+			if (typeof frontmatter[key] !== typeof props[key]) {
+				//throw new Error(`Types do not match for property ${key}.  Expected ${typeof frontmatter[key]} but got ${typeof props[key]}.`);
+				continue;
+			}
+			//Special case for tags.  ...actually, should this be done with any array?  It should!  TODO
 			if (key === "tags" && Array.isArray(props[key])) {
 				let arrValue: string[] = props[key];
 				let currTags = frontmatter.tags ?? [];

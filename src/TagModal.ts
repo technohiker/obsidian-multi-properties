@@ -4,6 +4,14 @@ export class TagModal extends Modal {
 	default: string = "";
 	base: TFolder | TAbstractFile[];
 	submission: (app: App, obj: any, string: string) => void;
+	options: Record<string, string> = {
+		Text: "string",
+		Number: "number",
+		Tag: "string",
+		Checkbox: "checkbox",
+		Date: "date",
+		"date & time": "datetime-local",
+	};
 
 	constructor(
 		app: App,
@@ -42,7 +50,28 @@ export class TagModal extends Modal {
 
 		//Create form object.
 		contentEl.createEl("form", { cls: "modal-form" }, (formEl) => {
-			let input = formEl.createEl("input", { value: this.default });
+			formEl.createEl("div", { cls: "modal-input-container" }, (divEl) => {
+				let selectEl = divEl.createEl("select", { value: "test" });
+
+				for (let key of Object.keys(this.options)) {
+					selectEl.createEl("option", { value: this.options[key], text: key });
+				}
+
+				let input = divEl.createEl("input", { type: selectEl.value });
+
+				let addButton = divEl.createEl("button", { value: "Add" });
+
+				//How to add for Enter as well?
+				addButton.addEventListener("click", (e: Event) => {
+					e.preventDefault();
+					formEl.appendChild(divEl); //Appearing in the wrong place.
+				});
+
+				selectEl.addEventListener("change", (e: Event) => {
+					e.preventDefault();
+					input.type = selectEl.value;
+				});
+			});
 
 			formEl.createDiv("modal-button-container", (buttonEl) => {
 				let btnSubmit = buttonEl.createEl("button", {
@@ -55,10 +84,14 @@ export class TagModal extends Modal {
 					text: "Cancel",
 					type: "cancel",
 				});
+				console.log(this);
 				btnCancel.addEventListener("click", () => this.close());
 			});
 
-			formEl.addEventListener("submit", (e) => this.onSubmit(e, input.value));
+			formEl.addEventListener("submit", (e) => {
+				e.preventDefault();
+				console.log({ e });
+			});
 		});
 	}
 }

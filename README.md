@@ -44,8 +44,6 @@ Goal: Instead of appending text to a note, interact with the frontmatter and add
     - [ ] Boolean
     - [ ] Tags
 
-- There is currently no way to check for type mismatches on note.
-
 ## Questions:
 
 How does 'tags' work? In my note, the list of tags do not have any hashtags in front of them. If I go into the md file and manually add a hashtag, it does nothing.
