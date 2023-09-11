@@ -1,9 +1,23 @@
-import { App, Modal, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
+import {
+	App,
+	Plugin,
+	TAbstractFile,
+	TFile,
+	TFolder,
+	getIcon,
+	getIconIds,
+} from "obsidian";
 import { TagModal } from "./TagModal";
 
 // interface CustomProperties {
 // 	[key: string]: string | string[] | number | Date | boolean;
 // }
+
+// let icons: any[] = [];
+// getIconIds().forEach((icon) => {
+// 	icons.push(icon);
+// });
+// console.log(icons);
 
 export default class MultiTagPlugin extends Plugin {
 	async onload() {
@@ -45,6 +59,8 @@ let customProps: Record<string, any> = {
 	testProp: "1992-02-12T03:03", //If string is typed in this specific format, it will be read as datetime.
 	testProp2: "09-05-2023",
 };
+
+function createProps(e: SubmitEvent) {}
 
 function addProperties(
 	props: Record<string, any>,

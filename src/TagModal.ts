@@ -1,4 +1,12 @@
-import { Modal, TFolder, TAbstractFile, App } from "obsidian";
+import {
+	Modal,
+	TFolder,
+	TAbstractFile,
+	App,
+	getIconIds,
+	getIcon,
+	setIcon,
+} from "obsidian";
 
 export class TagModal extends Modal {
 	default: string = "";
@@ -40,6 +48,10 @@ export class TagModal extends Modal {
 	onOpen(): void {
 		this.modalEl.addClass("modal");
 
+		let icon = getIcon("lucide-tags");
+
+		console.log({ icon });
+
 		const { contentEl, titleEl } = this;
 
 		//Create text.
@@ -49,49 +61,97 @@ export class TagModal extends Modal {
 		});
 
 		//Create form object.
-		contentEl.createEl("form", { cls: "modal-form" }, (formEl) => {
-			formEl.createEl("div", { cls: "modal-input-container" }, (divEl) => {
-				let selectEl = divEl.createEl("select", { value: "test" });
+		let formEl = contentEl.createEl("form", { cls: "modal-form" });
 
-				for (let key of Object.keys(this.options)) {
-					selectEl.createEl("option", { value: this.options[key], text: key });
-				}
-
-				let input = divEl.createEl("input", { type: selectEl.value });
-
-				let addButton = divEl.createEl("button", { value: "Add" });
-
-				//How to add for Enter as well?
-				addButton.addEventListener("click", (e: Event) => {
-					e.preventDefault();
-					formEl.appendChild(divEl); //Appearing in the wrong place.
-				});
-
-				selectEl.addEventListener("change", (e: Event) => {
-					e.preventDefault();
-					input.type = selectEl.value;
-				});
-			});
-
-			formEl.createDiv("modal-button-container", (buttonEl) => {
-				let btnSubmit = buttonEl.createEl("button", {
-					text: "Submit",
-					type: "submit",
-					cls: "mod-cta",
-				});
-
-				let btnCancel = buttonEl.createEl("button", {
-					text: "Cancel",
-					type: "cancel",
-				});
-				console.log(this);
-				btnCancel.addEventListener("click", () => this.close());
-			});
-
-			formEl.addEventListener("submit", (e) => {
-				e.preventDefault();
-				console.log({ e });
-			});
+		//Container to hold all possible inputs.
+		//TODO: Make it scrollable.
+		let inputDiv = formEl.createEl("div", {
+			cls: "modal-inputs-container",
 		});
+
+		//Container for holding inputs.
+		let propDiv = inputDiv.createEl("div", {
+			cls: "modal-input-container",
+		});
+
+		//Let user choose what type of input they want.
+		let selectEl = propDiv.createEl("select", { value: "test" });
+		for (let key of Object.keys(this.options)) {
+			selectEl.createEl("option", { value: this.options[key], text: key });
+		}
+
+		//Property name.
+		let labelEl = propDiv.createEl("input", {
+			type: "string",
+			attr: { name: "name[]" },
+		}); //Should have different style.
+		//Property value.
+		let inputEl = propDiv.createEl("input", {
+			type: selectEl.value,
+			attr: { name: "value[]" },
+		});
+
+		//setIcon(inputDiv, "tags");
+
+		selectEl.addEventListener("change", (e: Event) => {
+			e.preventDefault();
+			inputEl.type = selectEl.value;
+		});
+
+		let btnContainer = formEl.createDiv("modal-button-container");
+
+		let addButton = btnContainer.createEl("button", {
+			value: "Add",
+			text: "Add",
+		});
+
+		addButton.onClickEvent((e: Event) => {
+			e.preventDefault();
+			inputDiv.appendChild(propDiv.cloneNode(true));
+			//TODO: Set up event listener to run event on keyboard press as well.
+		});
+
+		let btnSubmit = btnContainer.createEl("button", {
+			text: "Submit",
+			type: "submit",
+			cls: "mod-cta",
+		});
+		let btnCancel = btnContainer.createEl("button", {
+			text: "Cancel",
+			type: "cancel",
+		});
+
+		btnCancel.addEventListener("click", () => this.close());
+
+		formEl.addEventListener("submit", (e) => {
+			e.preventDefault();
+			console.log({ e });
+			let formData = new FormData(formEl);
+
+			let obj = new Map();
+			formData.forEach((value, key) => {
+				console.log({ value, key });
+			});
+			let names = formData.getAll("name[]");
+			let values = formData.getAll("value[]");
+
+			for (let i = 0; i < names.length; i++) {
+				//Check if obj already has name.  If so, add value of matching index to array.
+				if (obj.has(names[i])) {
+					let arr = [obj.get(names[i])];
+					arr.push(values[i]);
+					obj.set(names[i], arr);
+					continue;
+				}
+				obj.set(names[i], values[i]);
+			}
+			console.log({ obj });
+			// formData.getAll("name[]").forEach((value, index) => {
+			// 	obj.set(value, formData.get(value.valueOf().toString()));
+			// 	console.log({ obj });
+			// });
+		});
+
+		console.log({ formEl, divContainer: propDiv, btnContainer });
 	}
 }
