@@ -20,3 +20,17 @@
 	height: 21px;
 	font-weight: bold;
 }
+
+.btn-del{
+	background-color: grey;
+	padding: 5px;
+	border-radius: 5px;
+	font-weight: bold;
+}
+
+.btn-add{
+	background-color: grey;
+	padding: 5px;
+	border-radius: 5px;
+	font-weight: bold;
+}

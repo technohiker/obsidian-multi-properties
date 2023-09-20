@@ -74,7 +74,7 @@ export class TagModal extends Modal {
 
 		let addDiv = formEl.createDiv("modal-add-container");
 
-		let addButton = addDiv.createEl("button", {
+		let addButton = addDiv.createEl("a", {
 			value: "Add",
 			text: "Add",
 			cls: "btn-add",

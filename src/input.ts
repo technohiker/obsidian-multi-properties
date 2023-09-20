@@ -30,9 +30,9 @@ export function createInput(
 			});
 			//If this is a new input, add a deletion button.
 			if (isNew) {
-				let deleteButton = el.createEl("button", {
+				let deleteButton = el.createEl("a", {
 					text: "X",
-					cls: "delete-button",
+					cls: "btn-del",
 				});
 				deleteButton.addEventListener("click", (e: Event) => {
 					e.preventDefault();
