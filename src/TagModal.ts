@@ -1,30 +1,24 @@
-import {
-	Modal,
-	TFolder,
-	TAbstractFile,
-	App,
-	getIconIds,
-	getIcon,
-	setIcon,
-} from "obsidian";
+import { Modal, TFolder, TAbstractFile, App, getIcon } from "obsidian";
+import { createInput } from "./input";
+import "../styles.css";
+import { parseValue } from "./helpers";
 
 export class TagModal extends Modal {
 	default: string = "";
 	base: TFolder | TAbstractFile[];
-	submission: (app: App, obj: any, string: string) => void;
+	submission: (app: App, obj: any, customProps: Map<string, any>) => void;
 	options: Record<string, string> = {
 		Text: "string",
 		Number: "number",
-		Tag: "string",
 		Checkbox: "checkbox",
 		Date: "date",
-		"date & time": "datetime-local",
+		Datetime: "datetime-local",
 	};
 
 	constructor(
 		app: App,
 		base: TFolder | TAbstractFile[],
-		submission: (app: App, obj: any, string: string) => void
+		submission: (app: App, obj: any, customProps: Map<string, any>) => void
 	) {
 		super(app);
 
@@ -37,11 +31,11 @@ export class TagModal extends Modal {
 		this.submission = submission;
 	}
 
-	onSubmit(e: Event, input: string) {
+	onSubmit(e: Event, props: Map<string, any>) {
 		e.preventDefault();
 
 		//Run code for adding text to all files.
-		this.submission(this.app, this.base, input);
+		this.submission(this.app, this.base, props);
 		this.close();
 	}
 
@@ -55,103 +49,162 @@ export class TagModal extends Modal {
 		const { contentEl, titleEl } = this;
 
 		//Create text.
-		titleEl.createEl("h2", { text: "Please type in a tag." });
+		titleEl.createEl("h2", { text: "Add Properties." });
+
 		contentEl.createEl("span", {
-			text: "Whatever text is inputted will be appended to all selected files as text.  Place '#' signs to identify tags.",
+			text: `Type in a property name, then value.  Use the dropbox to choose what type of data you wish to store.  If you want to make a list property, use the same name for each entry to the list.`,
+		});
+		contentEl.createEl("br");
+		contentEl.createEl("br");
+		contentEl.createEl("span", {
+			text: `If you want to add tags, use the name "tags."`,
 		});
 
 		//Create form object.
 		let formEl = contentEl.createEl("form", { cls: "modal-form" });
 
 		//Container to hold all possible inputs.
-		//TODO: Make it scrollable.
 		let inputDiv = formEl.createEl("div", {
 			cls: "modal-inputs-container",
 		});
 
-		//Container for holding inputs.
-		let propDiv = inputDiv.createEl("div", {
-			cls: "modal-input-container",
+		//Container for each group of inputs.
+		let propDiv = createInput(this.options);
+		inputDiv.appendChild(propDiv);
+
+		let addDiv = formEl.createDiv("modal-add-container");
+
+		let addButton = addDiv.createEl("button", {
+			value: "Add",
+			text: "Add",
+			cls: "btn-add",
 		});
 
-		//Let user choose what type of input they want.
-		let selectEl = propDiv.createEl("select", { value: "test" });
-		for (let key of Object.keys(this.options)) {
-			selectEl.createEl("option", { value: this.options[key], text: key });
-		}
-
-		//Property name.
-		let labelEl = propDiv.createEl("input", {
-			type: "string",
-			attr: { name: "name[]" },
-		}); //Should have different style.
-		//Property value.
-		let inputEl = propDiv.createEl("input", {
-			type: selectEl.value,
-			attr: { name: "value[]" },
-		});
-
-		//setIcon(inputDiv, "tags");
-
-		selectEl.addEventListener("change", (e: Event) => {
+		addButton.onClickEvent((e: Event) => {
+			console.log(e);
 			e.preventDefault();
-			inputEl.type = selectEl.value;
+
+			let newDiv = createInput(this.options, true);
+			inputDiv.appendChild(newDiv);
+
+			//Move tab index to the newDiv's first input.
+			newDiv.querySelector("input")?.focus();
+			//TODO: Set up event listener to run event on keyboard press as well.
 		});
 
 		let btnContainer = formEl.createDiv("modal-button-container");
 
-		let addButton = btnContainer.createEl("button", {
-			value: "Add",
-			text: "Add",
-		});
-
-		addButton.onClickEvent((e: Event) => {
-			e.preventDefault();
-			inputDiv.appendChild(propDiv.cloneNode(true));
-			//TODO: Set up event listener to run event on keyboard press as well.
-		});
-
 		let btnSubmit = btnContainer.createEl("button", {
 			text: "Submit",
 			type: "submit",
-			cls: "mod-cta",
+			cls: "btn-submit",
 		});
 		let btnCancel = btnContainer.createEl("button", {
 			text: "Cancel",
 			type: "cancel",
+			cls: "btn-cancel",
 		});
 
 		btnCancel.addEventListener("click", () => this.close());
+		btnCancel.addEventListener("enter", () => this.close());
 
 		formEl.addEventListener("submit", (e) => {
 			e.preventDefault();
-			console.log({ e });
-			let formData = new FormData(formEl);
+			let curEl = document.activeElement;
+			if (curEl instanceof HTMLInputElement) {
+				//Submit function.
+			} else if (curEl?.className === "delete-button") {
+				//Delete function.
+			} else if (curEl?.className === "btn-add") {
+				//Add function.
+			} else if (curEl?.className === "btn-submit") {
+				//Submit function.
+			}
+			console.log(document.activeElement);
+			console.log(e);
+			//	let formData = new FormData(formEl);
 
 			let obj = new Map();
-			formData.forEach((value, key) => {
-				console.log({ value, key });
-			});
-			let names = formData.getAll("name[]");
-			let values = formData.getAll("value[]");
+			let inputs: NodeListOf<HTMLInputElement> = formEl.querySelectorAll(
+				'input[name^="name[]"]'
+			);
+			let values: NodeListOf<HTMLInputElement> = formEl.querySelectorAll(
+				'input[name^="value[]"]'
+			);
 
-			for (let i = 0; i < names.length; i++) {
-				//Check if obj already has name.  If so, add value of matching index to array.
-				if (obj.has(names[i])) {
-					let arr = [obj.get(names[i])];
-					arr.push(values[i]);
-					obj.set(names[i], arr);
-					continue;
+			inputs.forEach((input) => {
+				let name = input.value;
+				if (input.nextElementSibling instanceof HTMLInputElement) {
+					let value = parseValue(
+						input.nextElementSibling.value,
+						input.nextElementSibling.type
+					);
+					console.log({ input, value });
+					if (obj.has(name)) {
+						let arr = [obj.get(name)];
+						arr.push(value);
+						obj.set(name, arr);
+					} else {
+						obj.set(name, value);
+					}
 				}
-				obj.set(names[i], values[i]);
-			}
-			console.log({ obj });
-			// formData.getAll("name[]").forEach((value, index) => {
-			// 	obj.set(value, formData.get(value.valueOf().toString()));
-			// 	console.log({ obj });
-			// });
+			});
+
+			this.onSubmit(e, obj);
 		});
 
 		console.log({ formEl, divContainer: propDiv, btnContainer });
+	}
+
+	/** Function that generates a specific input div for the modal. */
+	createInput(
+		options: Record<string, string>,
+		isNew: boolean = false,
+		label: string = ""
+	) {
+		let inputDiv = createEl(
+			"div",
+			{
+				cls: "modal-input-container",
+			},
+			(el) => {
+				//Create Select box and populate with options.
+				let selectEl = el.createEl("select", { value: "test" });
+				for (let key of Object.keys(options)) {
+					selectEl.createEl("option", { value: options[key], text: key });
+				}
+
+				//Property name.
+				let labelEl = el.createEl("input", {
+					type: "string",
+					attr: { name: "name[]", required: true },
+					text: label,
+				}); //Should have different style.
+				//Property value.
+				let inputEl = el.createEl("input", {
+					type: selectEl.value,
+					attr: { name: "value[]", required: true },
+				});
+				//If this is a new input, add a deletion button.
+				if (isNew) {
+					let deleteButton = el.createEl("button", {
+						text: "X",
+						cls: "delete-button",
+					});
+					deleteButton.addEventListener("click", (e: Event) => {
+						e.preventDefault();
+						el.remove();
+					});
+				}
+
+				//Add event listener that changes input type based on select value.
+				selectEl.addEventListener("change", (e: Event) => {
+					e.preventDefault();
+					console.log("Fired!");
+					inputEl.type = selectEl.value;
+				});
+			}
+		);
+		return inputDiv;
 	}
 }

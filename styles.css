@@ -1,0 +1,22 @@
+.modal-inputs-container {
+	height: 200px;
+	overflow-y: scroll;
+	border-radius: 5px;
+	border-style: solid;
+}
+
+.modal-inputs-container input {
+	margin: 5px;
+	max-height: 21px;
+}
+
+.modal-inputs-container select {
+	margin: 5px;
+	height: 21px;
+}
+
+.modal-inputs-container button {
+	padding: 5px;
+	height: 21px;
+	font-weight: bold;
+}

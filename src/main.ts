@@ -9,16 +9,6 @@ import {
 } from "obsidian";
 import { TagModal } from "./TagModal";
 
-// interface CustomProperties {
-// 	[key: string]: string | string[] | number | Date | boolean;
-// }
-
-// let icons: any[] = [];
-// getIconIds().forEach((icon) => {
-// 	icons.push(icon);
-// });
-// console.log(icons);
-
 export default class MultiTagPlugin extends Plugin {
 	async onload() {
 		//Add menu item for multi-tag functionality.  Set as Event to automatically be unloaded when needed.
@@ -63,22 +53,27 @@ let customProps: Record<string, any> = {
 function createProps(e: SubmitEvent) {}
 
 function addProperties(
-	props: Record<string, any>,
+	props: Map<string, any>,
 	overwrite: boolean,
 	frontmatter: any
 ) {
-	for (let key in props) {
+	for (const [key, value] of props) {
+		console.log({ key });
 		if (!frontmatter[key]) {
-			frontmatter[key] = props[key]; //Works!
+			console.log("Adding key!");
+			frontmatter[key] = props.get(key); //Works!
 		} else {
 			//Check if object type and frontmatter type match.  If not, throw error.
-			if (typeof frontmatter[key] !== typeof props[key]) {
-				//throw new Error(`Types do not match for property ${key}.  Expected ${typeof frontmatter[key]} but got ${typeof props[key]}.`);
+			if (typeof frontmatter[key] !== typeof props.get(key)) {
+				console.log("Type didn't match.");
+				//throw new Error(`Types do not match for property ${key}.  Expected ${typeof frontmatter[key]} but got ${typeof props.get(key)}.`);
 				continue;
 			}
 			//Special case for tags.  ...actually, should this be done with any array?  It should!  TODO
-			if (key === "tags" && Array.isArray(props[key])) {
-				let arrValue: string[] = props[key];
+			if (key === "tags" && Array.isArray(props.get(key))) {
+				console.log("Adding tags!");
+
+				let arrValue: string[] = props.get(key);
 				let currTags = frontmatter.tags ?? [];
 
 				let set = new Set([...currTags, ...arrValue]);
@@ -87,12 +82,13 @@ function addProperties(
 				continue;
 			}
 			if (Array.isArray(frontmatter[key])) {
-				frontmatter[key].push(props[key]);
+				frontmatter[key].push(props.get(key));
 			} else if (overwrite) {
-				frontmatter[key] = props[key];
+				frontmatter[key] = props.get(key);
 			}
 		}
 	}
+	console.log({ props });
 	console.log({ frontmatter });
 }
 
@@ -100,19 +96,29 @@ function appendToFile(file: TFile, string: string) {
 	this.app.vault.append(file, `\n${string}`);
 }
 
-function FilesOrFolders(app: App, arr: (TFile | TFolder)[], string: string) {
+function FilesOrFolders(
+	app: App,
+	arr: (TFile | TFolder)[],
+	customProps: Map<string, any>
+) {
 	for (let el of arr) {
 		if (el instanceof TFile && el.extension === "md") {
-			appendToFile(el, string);
+			//appendToFile(el, string);
+			app.fileManager.processFrontMatter(el, (frontmatter) => {
+				addProperties(customProps, true, frontmatter);
+			});
 		}
 	}
 }
-
 /** Get all files belonging to a folder and print their file names. */
-function searchThroughFolders(app: App, obj: TFolder, string: string) {
+function searchThroughFolders(
+	app: App,
+	obj: TFolder,
+	customProps: Map<string, any>
+) {
 	for (let child of obj.children) {
 		if (child instanceof TFolder) {
-			searchThroughFolders(app, child, string);
+			searchThroughFolders(app, child, customProps);
 		}
 		if (child instanceof TFile && child.extension === "md") {
 			//appendToFile(child, string);

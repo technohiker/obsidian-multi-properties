@@ -34,15 +34,13 @@ Goal: Instead of appending text to a note, interact with the frontmatter and add
 
 - [ ] Create form that makes inputting properties easy.
 
-  - [ ] Create key/value fields. User enters a key, then a value. If the user has multiple values, such as an array of tags, then let them create multiple key/value fields. This process should be smooth.
-  - [ ] User needs to have access to the data type as well. Let them pick from the following types.
-    - [ ] Date
-    - [ ] Datetime
-    - [ ] String
-    - [ ] Array of strings
-    - [ ] Number
-    - [ ] Boolean
-    - [ ] Tags
+### Form Tasks:
+
+- [ ] Realign focus when input div is deleted.
+- [ ] Create padding between each input div.
+- [ ] Make padding between label/input.
+- [ ] Clearly define border for input divs.
+- [ ]
 
 ## Questions:
 
@@ -52,3 +50,14 @@ How does 'tags' work? In my note, the list of tags do not have any hashtags in f
 - If I attempt to add a hashtag in Obsidian, it will be ignored. The hashtag is still recognized in the note, but the tag itself is now in quotes, including the hashtag.
 - Tag field accepts both a Set, and an array of strings.
 - If I merge a note in Obsidian, properties that are meant to only hold one value will be overwritten.
+
+## Tests:
+
+- A single prop of any type can be added.
+- Multiple props of any type can be added.
+- Overwrite should work properly.
+- If adding a prop with the same name, then it should not overwrite.
+- Works on all targeted notes.
+- Lists are properly updated.
+- Right-click action comes up on folder select.
+- Right-click action comes up on multi-file select.
