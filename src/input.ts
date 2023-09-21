@@ -33,6 +33,7 @@ export function createInput(
 				let deleteButton = el.createEl("a", {
 					text: "X",
 					cls: "btn-del",
+					href: "href",
 				});
 				deleteButton.addEventListener("click", (e: Event) => {
 					e.preventDefault();

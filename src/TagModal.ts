@@ -77,7 +77,8 @@ export class TagModal extends Modal {
 		let addButton = addDiv.createEl("a", {
 			value: "Add",
 			text: "Add",
-			cls: "btn-add",
+			cls: "a-btn",
+			href: "href",
 		});
 
 		addButton.onClickEvent((e: Event) => {
