@@ -36,10 +36,10 @@ Goal: Instead of appending text to a note, interact with the frontmatter and add
 
 ### Form Tasks:
 
-- [ ] Realign focus when input div is deleted.
-- [ ] Create padding between each input div.
-- [ ] Make padding between label/input.
-- [ ] Clearly define border for input divs.
+- [x] Realign focus when input div is deleted.
+- [x] Create padding between each input div.
+- [x] Make padding between label/input.
+- [x] Clearly define border for input divs.
 - [ ]
 
 ## Questions:

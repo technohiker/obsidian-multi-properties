@@ -49,15 +49,20 @@ export class TagModal extends Modal {
 		const { contentEl, titleEl } = this;
 
 		//Create text.
-		titleEl.createEl("h2", { text: "Add Properties." });
+		titleEl.createEl("h2", { text: "Add Properties" });
 
 		contentEl.createEl("span", {
-			text: `Type in a property name, then value.  Use the dropbox to choose what type of data you wish to store.  If you want to make a list property, use the same name for each entry to the list.`,
+			text: `Type in a property name, then value.  Use the dropbox to choose what type of data you wish to store.`,
 		});
 		contentEl.createEl("br");
 		contentEl.createEl("br");
 		contentEl.createEl("span", {
-			text: `If you want to add tags, use the name "tags."`,
+			text: `If you want to make a List property, use the same name for each entry to the list.`,
+		});
+		contentEl.createEl("br");
+		contentEl.createEl("br");
+		contentEl.createEl("span", {
+			text: `If you want to add Tags, use the name "tags."`,
 		});
 
 		//Create form object.
@@ -88,8 +93,9 @@ export class TagModal extends Modal {
 			let newDiv = createInput(this.options, true);
 			inputDiv.appendChild(newDiv);
 
-			//Move tab index to the newDiv's first input.
+			//Move tab index to the newDiv's first input, and select text in it.
 			newDiv.querySelector("input")?.focus();
+
 			//TODO: Set up event listener to run event on keyboard press as well.
 		});
 
@@ -111,26 +117,10 @@ export class TagModal extends Modal {
 
 		formEl.addEventListener("submit", (e) => {
 			e.preventDefault();
-			let curEl = document.activeElement;
-			if (curEl instanceof HTMLInputElement) {
-				//Submit function.
-			} else if (curEl?.className === "delete-button") {
-				//Delete function.
-			} else if (curEl?.className === "btn-add") {
-				//Add function.
-			} else if (curEl?.className === "btn-submit") {
-				//Submit function.
-			}
-			console.log(document.activeElement);
-			console.log(e);
-			//	let formData = new FormData(formEl);
 
 			let obj = new Map();
 			let inputs: NodeListOf<HTMLInputElement> = formEl.querySelectorAll(
 				'input[name^="name[]"]'
-			);
-			let values: NodeListOf<HTMLInputElement> = formEl.querySelectorAll(
-				'input[name^="value[]"]'
 			);
 
 			inputs.forEach((input) => {
@@ -140,6 +130,7 @@ export class TagModal extends Modal {
 						input.nextElementSibling.value,
 						input.nextElementSibling.type
 					);
+					if (value === "") return; //Do not add properties with no value.
 					console.log({ input, value });
 					if (obj.has(name)) {
 						let arr = [obj.get(name)];
@@ -153,59 +144,5 @@ export class TagModal extends Modal {
 
 			this.onSubmit(e, obj);
 		});
-
-		console.log({ formEl, divContainer: propDiv, btnContainer });
-	}
-
-	/** Function that generates a specific input div for the modal. */
-	createInput(
-		options: Record<string, string>,
-		isNew: boolean = false,
-		label: string = ""
-	) {
-		let inputDiv = createEl(
-			"div",
-			{
-				cls: "modal-input-container",
-			},
-			(el) => {
-				//Create Select box and populate with options.
-				let selectEl = el.createEl("select", { value: "test" });
-				for (let key of Object.keys(options)) {
-					selectEl.createEl("option", { value: options[key], text: key });
-				}
-
-				//Property name.
-				let labelEl = el.createEl("input", {
-					type: "string",
-					attr: { name: "name[]", required: true },
-					text: label,
-				}); //Should have different style.
-				//Property value.
-				let inputEl = el.createEl("input", {
-					type: selectEl.value,
-					attr: { name: "value[]", required: true },
-				});
-				//If this is a new input, add a deletion button.
-				if (isNew) {
-					let deleteButton = el.createEl("button", {
-						text: "X",
-						cls: "delete-button",
-					});
-					deleteButton.addEventListener("click", (e: Event) => {
-						e.preventDefault();
-						el.remove();
-					});
-				}
-
-				//Add event listener that changes input type based on select value.
-				selectEl.addEventListener("change", (e: Event) => {
-					e.preventDefault();
-					console.log("Fired!");
-					inputEl.type = selectEl.value;
-				});
-			}
-		);
-		return inputDiv;
 	}
 }

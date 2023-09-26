@@ -1,6 +1,7 @@
 export function createInput(
 	options: Record<string, string>,
 	isNew: boolean = false,
+	option: string = "checkbox",
 	label: string = ""
 ) {
 	let inputDiv = createEl(
@@ -9,8 +10,9 @@ export function createInput(
 			cls: "modal-input-container",
 		},
 		(el) => {
-			//Create Select box and populate with options.
-			let selectEl = el.createEl("select", { value: "test" });
+			//Create Select box and populate with options.  Set default if available.
+			//let selectEl = el.createEl("select", { value: "test" });
+			let selectEl = el.createEl("select", { value: option });
 			for (let key of Object.keys(options)) {
 				selectEl.createEl("option", { value: options[key], text: key });
 			}
@@ -25,7 +27,10 @@ export function createInput(
 			//Property value.
 			let inputEl = el.createEl("input", {
 				type: selectEl.value,
-				attr: { name: "value[]", placeholder: "value" },
+				attr: {
+					name: "value[]",
+					placeholder: "value",
+				},
 				cls: "value-input",
 			});
 			//If this is a new input, add a deletion button.
@@ -37,8 +42,12 @@ export function createInput(
 				});
 				deleteButton.addEventListener("click", (e: Event) => {
 					e.preventDefault();
-					console.log(document.activeElement);
-					console.log(e.target);
+
+					//Set focus on previous input before deleting.
+					let inputs = el.parentElement?.querySelectorAll("input");
+					if (!inputs) return; //Should have better error handling here.  TODO
+					inputs[inputs.length - 4].focus();
+
 					el.remove();
 				});
 			}
