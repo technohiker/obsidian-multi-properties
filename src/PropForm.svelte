@@ -1,12 +1,13 @@
 <script lang="ts">
+	import { tick } from "svelte";
 	import PropInput from "./PropInput.svelte";
 	import { parseValue } from "./helpers";
 
-	export let closeModal: () => void;
-	export let submission: () => void;
+	export let submission: (props: Map<string, any>) => void;
 	export const override: boolean = true;
 
-	let countInputs = 1;
+	let countInputs = 1; //Could replace with UUID.
+	let formEl: HTMLFormElement;
 
 	//Array of objects that will be passed as props to PropInput.
 	let inputEls = [
@@ -16,36 +17,41 @@
 		},
 	];
 
+	/** Add new input to inputEls */
 	function addInput() {
 		countInputs++;
 
-		//Add new input to inputEls
 		const newInput = {
 			id: countInputs,
 			isNew: true,
 		};
 
 		inputEls = [...inputEls, newInput];
-
-		console.log({ inputEls });
-
-		//Set tab index to newDiv's first input.
 	}
 
-	function removeInput(id: number) {
+	/** Remove input from inputEls */
+	async function removeInput(id: number) {
 		//Set focus to previous input before deleting.
-		console.log({ id });
-
+		console.log(inputEls.length);
+		//TODO: Does not work if middle input is removed.
 		//Remove this input.
 		inputEls = inputEls.filter((input) => input.id !== id);
+
+		await tick();
+
+		let inputs: NodeListOf<HTMLInputElement> = formEl.querySelectorAll("input");
+		if (!inputs) return;
+
+		console.log({ inputs });
+
+		inputs[inputs.length - 2].focus();
 	}
 
 	function onSubmit() {
-		
 		//Search for all labels and values, add them to a map, then pass them back to modal.
 		let obj = new Map();
 
-		let inputs: NodeListOf<HTMLInputElement> = this.querySelectorAll(
+		let inputs: NodeListOf<HTMLInputElement> = formEl.querySelectorAll(
 			'input[name^="name[]"]'
 		);
 
@@ -53,7 +59,7 @@
 			let name = input.value;
 			if (input.nextElementSibling instanceof HTMLInputElement) {
 				let value = parseValue(
-					input.nextElementSibling.value,
+					input.nextElementSibling,
 					input.nextElementSibling.type
 				);
 
@@ -70,7 +76,7 @@
 				}
 			}
 		});
-		submission();
+		submission(obj);
 	}
 </script>
 
@@ -84,7 +90,7 @@
 		list.
 	</p>
 	<p>If you want to add Tags, use the name "tags".</p>
-	<form>
+	<form on:submit|preventDefault bind:this={formEl}>
 		<div class="modal-inputs-container">
 			{#each inputEls as input (input.id)}
 				<PropInput {...input} {removeInput} />
@@ -95,7 +101,6 @@
 		</div>
 		<div class="modal-button-container">
 			<button on:click={onSubmit} class="btn-submit">Submit</button>
-			<button on:click={closeModal} class="btn-cancel">Cancel</button>
 		</div>
 	</form>
 </div>

@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onDestroy, onMount } from "svelte";
 
 	export let isNew: boolean;
 	export let removeInput: (id: number) => void;
 	export let id: number;
 
 	let inputType: string;
+	let inputEl: HTMLInputElement;
 
 	const options: Record<string, string> = {
 		Text: "string",
@@ -18,16 +19,21 @@
 	onMount(() => {
 		console.log({ isNew });
 		console.log({ id });
+
+		inputEl.focus();
 	});
+
+	onDestroy(() => {});
 </script>
 
 <div class="modal-input-container">
 	<select bind:value={inputType}>
-		{#each Object.keys(options) as option}
-			<option value={option}>{option}</option>
+		{#each Object.keys(options) as key}
+			<option value={options[key]}>{key}</option>
 		{/each}
 	</select>
 	<input
+		bind:this={inputEl}
 		class="name-input"
 		type="text"
 		name="name[]"
