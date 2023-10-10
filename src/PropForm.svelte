@@ -1,8 +1,10 @@
 <script lang="ts">
 	import PropInput from "./PropInput.svelte";
+	import { parseValue } from "./helpers";
 
 	export let closeModal: () => void;
 	export let submission: () => void;
+	export const override: boolean = true;
 
 	let countInputs = 1;
 
@@ -39,6 +41,35 @@
 	}
 
 	function onSubmit() {
+		
+		//Search for all labels and values, add them to a map, then pass them back to modal.
+		let obj = new Map();
+
+		let inputs: NodeListOf<HTMLInputElement> = this.querySelectorAll(
+			'input[name^="name[]"]'
+		);
+
+		inputs.forEach((input) => {
+			let name = input.value;
+			if (input.nextElementSibling instanceof HTMLInputElement) {
+				let value = parseValue(
+					input.nextElementSibling.value,
+					input.nextElementSibling.type
+				);
+
+				if (value === "") return; //Do not add properties with no value.
+
+				//Create list if a property name already exists.  Assuming user wants to add it to list.
+				//TODO: Toggle this if user wants to override property or add to it.
+				if (obj.has(name)) {
+					let arr = [obj.get(name)];
+					arr.push(value);
+					obj.set(name, arr);
+				} else {
+					obj.set(name, value);
+				}
+			}
+		});
 		submission();
 	}
 </script>
@@ -55,8 +86,8 @@
 	<p>If you want to add Tags, use the name "tags".</p>
 	<form>
 		<div class="modal-inputs-container">
-			{#each inputEls as input}
-				<PropInput id={input.id} isNew={input.isNew} {removeInput} />
+			{#each inputEls as input (input.id)}
+				<PropInput {...input} {removeInput} />
 			{/each}
 		</div>
 		<div class="modal-add-container">

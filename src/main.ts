@@ -8,8 +8,14 @@ import {
 	getIconIds,
 } from "obsidian";
 import { TagModal } from "./TagModal";
+import { MultiPropSettings } from "./SettingTab";
+
+const defaultSettings = {
+	override: true
+}
 
 export default class MultiTagPlugin extends Plugin {
+	settings: MultiPropSettings
 	async onload() {
 		//Add menu item for multi-tag functionality.  Set as Event to automatically be unloaded when needed.
 		this.registerEvent(
@@ -38,6 +44,13 @@ export default class MultiTagPlugin extends Plugin {
 			})
 		);
 	}
+	async loadSettings() {
+		this.settings = Object.assign({}, defaultSettings, await this.loadData());
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
 }
 
 let customProps: Record<string, any> = {
@@ -50,7 +63,6 @@ let customProps: Record<string, any> = {
 	testProp2: "09-05-2023",
 };
 
-function createProps(e: SubmitEvent) {}
 
 function addProperties(
 	props: Map<string, any>,
@@ -90,10 +102,6 @@ function addProperties(
 	}
 	console.log({ props });
 	console.log({ frontmatter });
-}
-
-function appendToFile(file: TFile, string: string) {
-	this.app.vault.append(file, `\n${string}`);
 }
 
 function FilesOrFolders(
