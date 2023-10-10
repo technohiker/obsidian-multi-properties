@@ -1,5 +1,9 @@
 <script lang="ts">
-	export const isNew = false;
+	import { onMount } from "svelte";
+
+	export let isNew: boolean;
+	export let removeInput: (id: number) => void;
+	export let id: number;
 
 	let inputType: string;
 
@@ -11,10 +15,10 @@
 		Datetime: "datetime-local",
 	};
 
-	function removeInput() {
-		//Set focus to previous input before deleting.
-		//Remove this input.
-	}
+	onMount(() => {
+		console.log({ isNew });
+		console.log({ id });
+	});
 </script>
 
 <div class="modal-input-container">
@@ -37,6 +41,6 @@
 		class="value-input"
 	/>
 	{#if isNew}
-		<a on:click={removeInput} class="btn-del" href="href">X</a>
+		<a on:click={() => removeInput(id)} class="btn-del" href="href">X</a>
 	{/if}
 </div>

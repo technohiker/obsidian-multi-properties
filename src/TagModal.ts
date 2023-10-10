@@ -3,6 +3,8 @@ import { createInput } from "./input";
 import "../styles.css";
 import { parseValue } from "./helpers";
 
+// import PropForm from "./PropForm.svelte";
+
 import PropForm from "./PropForm.svelte";
 
 export class TagModal extends Modal {
@@ -41,8 +43,10 @@ export class TagModal extends Modal {
 	}
 
 	onOpen(): void {
+		this.titleEl.createEl("h2", { text: "Add Properties" });
+
 		this.component = new PropForm({
-			target: this.modalEl,
+			target: this.contentEl,
 		});
 
 		// this.modalEl.addClass("modal");
