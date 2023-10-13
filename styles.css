@@ -1,5 +1,6 @@
 .modal-inputs-container {
 	height: 200px;
+	width: 100%;
 	overflow-y: scroll;
 	border-radius: 5px;
 	border-style: solid;
@@ -8,18 +9,15 @@
 .modal-inputs-container input {
 	margin: 5px;
 	max-height: 25px;
+	overflow-x: auto;
 }
 
 .modal-input-container{
 	width: 100%;
-}
-
-.name-input{
-	width: 30%;
-}
-
-.value-input{
-	width: 35%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 1px;
 }
 
 .modal-inputs-container select {
