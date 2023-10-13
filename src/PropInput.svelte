@@ -27,14 +27,14 @@
 </script>
 
 <div class="modal-input-container">
-	<select bind:value={inputType}>
+	<select class="flex-obj" bind:value={inputType}>
 		{#each Object.keys(options) as key}
 			<option value={options[key]}>{key}</option>
 		{/each}
 	</select>
 	<input
 		bind:this={inputEl}
-		class="name-input"
+		class="name-input flex-obj"
 		type="text"
 		name="name[]"
 		placeholder="name"
@@ -44,7 +44,7 @@
 		type={inputType}
 		name="value[]"
 		placeholder="value"
-		class="value-input"
+		class="value-input flex-obj"
 	/>
 	{#if isNew}
 		<a on:click={() => removeInput(id)} class="btn-del" href="href">X</a>

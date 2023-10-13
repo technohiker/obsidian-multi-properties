@@ -7,7 +7,19 @@
 
 .modal-inputs-container input {
 	margin: 5px;
-	max-height: 21px;
+	max-height: 25px;
+}
+
+.modal-input-container{
+	width: 100%;
+}
+
+.name-input{
+	width: 30%;
+}
+
+.value-input{
+	width: 35%;
 }
 
 .modal-inputs-container select {
