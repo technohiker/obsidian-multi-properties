@@ -4,6 +4,7 @@
 	export let isNew: boolean;
 	export let removeInput: (id: number) => void;
 	export let id: number;
+	export let nameVal: string = "";
 
 	let inputType: string;
 	let inputEl: HTMLInputElement;
@@ -17,16 +18,16 @@
 	};
 
 	onMount(() => {
-		console.log({ isNew });
-		console.log({ id });
-
-		inputEl.focus();
+		inputEl.focus(); //Not working.  Look into why.  Set timeout?
 	});
 
 	onDestroy(() => {});
 </script>
 
 <div class="modal-input-container">
+	{#if isNew}
+		<a on:click={() => removeInput(id)} class="btn-del" href="href">X</a>
+	{/if}
 	<select class="flex-obj" bind:value={inputType}>
 		{#each Object.keys(options) as key}
 			<option value={options[key]}>{key}</option>
@@ -38,6 +39,7 @@
 		type="text"
 		name="name[]"
 		placeholder="name"
+		bind:value={nameVal}
 		required
 	/>
 	<input
@@ -46,7 +48,4 @@
 		placeholder="value"
 		class="value-input flex-obj"
 	/>
-	{#if isNew}
-		<a on:click={() => removeInput(id)} class="btn-del" href="href">X</a>
-	{/if}
 </div>

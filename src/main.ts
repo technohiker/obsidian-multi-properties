@@ -74,12 +74,6 @@ function addProperties(
 			console.log("Adding key!");
 			frontmatter[key] = props.get(key); //Works!
 		} else {
-			//Check if object type and frontmatter type match.  If not, throw error.
-			// if (typeof frontmatter[key] !== typeof props.get(key)) {
-			// 	console.log("Type didn't match.");
-			// 	//throw new Error(`Types do not match for property ${key}.  Expected ${typeof frontmatter[key]} but got ${typeof props.get(key)}.`);
-			// 	continue;
-			// }
 			//Special case for tags.  ...actually, should this be done with any array?  It should!  TODO
 			if (Array.isArray(props.get(key))) {
 				console.log("Adding to list!");
@@ -94,6 +88,12 @@ function addProperties(
 				let set = new Set([...currTags, ...arrValue]);
 				frontmatter.tags = [...set];
 
+				continue;
+			}
+			//Check if object type and frontmatter type match.  If not, throw error.
+			if (typeof frontmatter[key] !== typeof props.get(key)) {
+				console.log("Type didn't match.");
+				//throw new Error(`Types do not match for property ${key}.  Expected ${typeof frontmatter[key]} but got ${typeof props.get(key)}.`);
 				continue;
 			}
 			if (Array.isArray(frontmatter[key])) {

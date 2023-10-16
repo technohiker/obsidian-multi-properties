@@ -9,6 +9,8 @@
 	let countInputs = 1; //Could replace with UUID.
 	let formEl: HTMLFormElement;
 
+	const nameVals: string[] = [""];
+
 	//Array of objects that will be passed as props to PropInput.
 	let inputEls = [
 		{
@@ -25,6 +27,8 @@
 			id: countInputs,
 			isNew: true,
 		};
+
+		nameVals.push(nameVals[nameVals.length - 1]);
 
 		inputEls = [...inputEls, newInput];
 	}
@@ -68,7 +72,6 @@
 				//Create list if a property name already exists.  Assuming user wants to add it to list.
 				//TODO: Toggle this if user wants to override property or add to it.
 				if (obj.has(name)) {
-					console.log(value, obj.get(name));
 					let arr = [];
 					let curVal = obj.get(name);
 
@@ -77,8 +80,8 @@
 					} else {
 						arr = [curVal];
 					}
+
 					arr.push(value);
-					console.log({ arr });
 					obj.set(name, arr);
 				} else {
 					obj.set(name, value);
@@ -103,7 +106,11 @@
 	<form on:submit|preventDefault bind:this={formEl}>
 		<div class="modal-inputs-container">
 			{#each inputEls as input (input.id)}
-				<PropInput {...input} {removeInput} />
+				<PropInput
+					{...input}
+					{removeInput}
+					bind:nameVal={nameVals[input.id - 1]}
+				/>
 			{/each}
 		</div>
 		<div class="modal-add-container">
