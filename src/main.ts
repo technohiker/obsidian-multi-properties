@@ -11,11 +11,11 @@ import { TagModal } from "./TagModal";
 import { MultiPropSettings } from "./SettingTab";
 
 const defaultSettings = {
-	override: true
-}
+	override: true,
+};
 
 export default class MultiTagPlugin extends Plugin {
-	settings: MultiPropSettings
+	settings: MultiPropSettings;
 	async onload() {
 		//Add menu item for multi-tag functionality.  Set as Event to automatically be unloaded when needed.
 		this.registerEvent(
@@ -63,7 +63,6 @@ let customProps: Record<string, any> = {
 	testProp2: "09-05-2023",
 };
 
-
 function addProperties(
 	props: Map<string, any>,
 	overwrite: boolean,
@@ -76,16 +75,20 @@ function addProperties(
 			frontmatter[key] = props.get(key); //Works!
 		} else {
 			//Check if object type and frontmatter type match.  If not, throw error.
-			if (typeof frontmatter[key] !== typeof props.get(key)) {
-				console.log("Type didn't match.");
-				//throw new Error(`Types do not match for property ${key}.  Expected ${typeof frontmatter[key]} but got ${typeof props.get(key)}.`);
-				continue;
-			}
+			// if (typeof frontmatter[key] !== typeof props.get(key)) {
+			// 	console.log("Type didn't match.");
+			// 	//throw new Error(`Types do not match for property ${key}.  Expected ${typeof frontmatter[key]} but got ${typeof props.get(key)}.`);
+			// 	continue;
+			// }
 			//Special case for tags.  ...actually, should this be done with any array?  It should!  TODO
-			if (key === "tags" && Array.isArray(props.get(key))) {
-				console.log("Adding tags!");
+			if (Array.isArray(props.get(key))) {
+				console.log("Adding to list!");
 
-				let arrValue: string[] = props.get(key);
+				let arrValue = props.get(key);
+				if (!Array.isArray(arrValue)) {
+					arrValue = [arrValue];
+				}
+
 				let currTags = frontmatter.tags ?? [];
 
 				let set = new Set([...currTags, ...arrValue]);

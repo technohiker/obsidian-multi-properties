@@ -68,14 +68,24 @@
 				//Create list if a property name already exists.  Assuming user wants to add it to list.
 				//TODO: Toggle this if user wants to override property or add to it.
 				if (obj.has(name)) {
-					let arr = [obj.get(name)];
+					console.log(value, obj.get(name));
+					let arr = [];
+					let curVal = obj.get(name);
+
+					if (Array.isArray(curVal)) {
+						arr = curVal;
+					} else {
+						arr = [curVal];
+					}
 					arr.push(value);
+					console.log({ arr });
 					obj.set(name, arr);
 				} else {
 					obj.set(name, value);
 				}
 			}
 		});
+		console.log({ obj });
 		submission(obj);
 	}
 </script>
