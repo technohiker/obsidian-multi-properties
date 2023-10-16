@@ -35,18 +35,13 @@
 
 	/** Remove input from inputEls */
 	async function removeInput(id: number) {
-		//Set focus to previous input before deleting.
-		console.log(inputEls.length);
-		//TODO: Does not work if middle input is removed.
 		//Remove this input.
 		inputEls = inputEls.filter((input) => input.id !== id);
-
 		await tick();
 
+		//Set focus to previous input.
 		let inputs: NodeListOf<HTMLInputElement> = formEl.querySelectorAll("input");
 		if (!inputs) return;
-
-		console.log({ inputs });
 
 		inputs[inputs.length - 2].focus();
 	}

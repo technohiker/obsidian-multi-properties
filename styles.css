@@ -32,44 +32,6 @@
 	font-weight: bold;
 }
 
-/* Add Obsidian button styling to anchors.*/
-/* .a-btn {
-	-webkit-app-region: no-drag;
-	color: var(--text-normal);
-	font-size: var(--font-ui-small);
-	border-radius: var(--button-radius);
-	border: 0;
-	padding: var(--size-4-1) var(--size-4-3);
-	height: var(--input-height);
-	font-weight: var(--input-font-weight);
-	cursor: var(--cursor);
-	font-family: inherit;
-	outline: none;
-	user-select: none;
-	white-space: nowrap;
-} */
-
-/* .a-btn:focus {
-	border-radius: 5px;
-	border-style: solid;
-	border-color: white;
-	size: 30px;
-} */
-
-/* .btn-del{
-	background-color: grey;
-	padding: 5px;
-	border-radius: 5px;
-	font-weight: bold;
-} */
-/* 
-.btn-add{
-	background-color: grey;
-	padding: 5px;
-	border-radius: 5px;
-	font-weight: bold;
-} */
-
 /* Basic button styling */
 a {
 	display: inline-block;
@@ -88,12 +50,6 @@ a {
 /* Hover and focus styles */
 a:hover,
 a:focus {
-	/* border: 2px;
-	border-style: solid;
-	border-radius: 5px;
-	border-color: rgb(121, 118, 118);
-	background-color: #3f3e3e; 
-	border-color: #0056b3; */
 	outline: grey solid 2px;
 }
 

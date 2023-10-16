@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy, onMount } from "svelte";
+	import { onDestroy, onMount, tick } from "svelte";
 
 	export let isNew: boolean;
 	export let removeInput: (id: number) => void;
@@ -17,11 +17,10 @@
 		Datetime: "datetime-local",
 	};
 
-	onMount(() => {
-		inputEl.focus(); //Not working.  Look into why.  Set timeout?
+	onMount(async () => {
+		await tick();
+		inputEl.focus();
 	});
-
-	onDestroy(() => {});
 </script>
 
 <div class="modal-input-container">
