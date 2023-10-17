@@ -89,17 +89,16 @@ function addProperties(
 				frontmatter.tags = [...set];
 
 				continue;
-			}
-			//Check if object type and frontmatter type match.  If not, throw error.
-			if (typeof frontmatter[key] !== typeof props.get(key)) {
-				console.log("Type didn't match.");
-				//throw new Error(`Types do not match for property ${key}.  Expected ${typeof frontmatter[key]} but got ${typeof props.get(key)}.`);
-				continue;
-			}
-			if (Array.isArray(frontmatter[key])) {
+			} else if (Array.isArray(frontmatter[key])) {
 				frontmatter[key].push(props.get(key));
 			} else if (overwrite) {
 				frontmatter[key] = props.get(key);
+			}
+			//Check if object type and frontmatter type match.  If not, throw error.
+			else if (typeof frontmatter[key] !== typeof props.get(key)) {
+				console.log("Type didn't match.");
+				//throw new Error(`Types do not match for property ${key}.  Expected ${typeof frontmatter[key]} but got ${typeof props.get(key)}.`);
+				continue;
 			}
 		}
 	}
@@ -114,7 +113,6 @@ function FilesOrFolders(
 ) {
 	for (let el of arr) {
 		if (el instanceof TFile && el.extension === "md") {
-			//appendToFile(el, string);
 			app.fileManager.processFrontMatter(el, (frontmatter) => {
 				addProperties(customProps, true, frontmatter);
 			});
@@ -132,7 +130,6 @@ function searchThroughFolders(
 			searchThroughFolders(app, child, customProps);
 		}
 		if (child instanceof TFile && child.extension === "md") {
-			//appendToFile(child, string);
 			app.fileManager.processFrontMatter(child, (frontmatter) => {
 				addProperties(customProps, true, frontmatter);
 			});

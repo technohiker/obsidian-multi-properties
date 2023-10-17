@@ -20,6 +20,7 @@
 	onMount(async () => {
 		await tick();
 		inputEl.focus();
+		inputEl.select();
 	});
 </script>
 

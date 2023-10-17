@@ -9,13 +9,12 @@
 	let countInputs = 1; //Could replace with UUID.
 	let formEl: HTMLFormElement;
 
-	const nameVals: string[] = [""];
-
 	//Array of objects that will be passed as props to PropInput.
 	let inputEls = [
 		{
 			id: 1,
 			isNew: false,
+			nameDef: "",
 		},
 	];
 
@@ -26,9 +25,8 @@
 		const newInput = {
 			id: countInputs,
 			isNew: true,
+			nameDef: inputEls[inputEls.length - 1].nameDef,
 		};
-
-		nameVals.push(nameVals[nameVals.length - 1]);
 
 		inputEls = [...inputEls, newInput];
 	}
@@ -102,9 +100,10 @@
 		<div class="modal-inputs-container">
 			{#each inputEls as input (input.id)}
 				<PropInput
-					{...input}
+					isNew={input.isNew}
+					id={input.id}
+					bind:nameVal={input.nameDef}
 					{removeInput}
-					bind:nameVal={nameVals[input.id - 1]}
 				/>
 			{/each}
 		</div>
