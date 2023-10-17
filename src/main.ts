@@ -1,20 +1,12 @@
-import {
-	App,
-	Plugin,
-	TAbstractFile,
-	TFile,
-	TFolder,
-	getIcon,
-	getIconIds,
-} from "obsidian";
-import { TagModal } from "./TagModal";
+import { App, Plugin, TFile, TFolder, getIcon, getIconIds } from "obsidian";
+import { PropModal } from "./PropModal";
 import { MultiPropSettings } from "./SettingTab";
 
 const defaultSettings = {
 	override: true,
 };
 
-export default class MultiTagPlugin extends Plugin {
+export default class MultiPropPlugin extends Plugin {
 	settings: MultiPropSettings;
 	async onload() {
 		//Add menu item for multi-tag functionality.  Set as Event to automatically be unloaded when needed.
@@ -25,9 +17,9 @@ export default class MultiTagPlugin extends Plugin {
 					menu.addItem((item) => {
 						item
 							.setIcon("tag")
-							.setTitle("Tag folder's files")
+							.setTitle("Add Props to Folder's Notes")
 							.onClick(() =>
-								new TagModal(this.app, file, searchThroughFolders).open()
+								new PropModal(this.app, file, searchThroughFolders).open()
 							);
 					});
 				}
@@ -38,8 +30,10 @@ export default class MultiTagPlugin extends Plugin {
 				menu.addItem((item) => {
 					item
 						.setIcon("tag")
-						.setTitle("Tag selected files")
-						.onClick(() => new TagModal(this.app, file, FilesOrFolders).open());
+						.setTitle("Add Props to Selected Files")
+						.onClick(() =>
+							new PropModal(this.app, file, FilesOrFolders).open()
+						);
 				});
 			})
 		);
@@ -74,7 +68,7 @@ function addProperties(
 			console.log("Adding key!");
 			frontmatter[key] = props.get(key); //Works!
 		} else {
-			//Special case for tags.  ...actually, should this be done with any array?  It should!  TODO
+			//Special case for tags.
 			if (Array.isArray(props.get(key))) {
 				console.log("Adding to list!");
 

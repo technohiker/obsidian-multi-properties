@@ -1,7 +1,7 @@
 import { Modal, TFolder, TAbstractFile, App } from "obsidian";
 import PropForm from "./PropForm.svelte";
 
-export class TagModal extends Modal {
+export class PropModal extends Modal {
 	base: TFolder | TAbstractFile[];
 	submission: (app: App, obj: any, customProps: Map<string, any>) => void;
 	options: Record<string, string> = {

@@ -63,7 +63,6 @@
 				if (value === "") return; //Do not add properties with no value.
 
 				//Create list if a property name already exists.  Assuming user wants to add it to list.
-				//TODO: Toggle this if user wants to override property or add to it.
 				if (obj.has(name)) {
 					let arr = [];
 					let curVal = obj.get(name);

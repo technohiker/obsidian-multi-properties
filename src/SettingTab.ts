@@ -1,11 +1,11 @@
 import { PluginSettingTab, App, Setting } from "obsidian";
 
-import MultiTagPlugin from "./main";
+import MultiPropPlugin from "./main";
 
 export class SettingTab extends PluginSettingTab {
-	plugin: MultiTagPlugin;
+	plugin: MultiPropPlugin;
 
-	constructor(app: App, plugin: MultiTagPlugin) {
+	constructor(app: App, plugin: MultiPropPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -16,16 +16,18 @@ export class SettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Overwrite existing properties.")
-			.setDesc("When adding a property with a name that already exists, overwrite it with the new value.  If turned off, ")
+			.setDesc(
+				"When adding a property with a name that already exists, overwrite it with the new value.  If turned off, "
+			)
 			.addToggle((toggle) => {
 				toggle.onChange(async (value) => {
 					this.plugin.settings.override = value;
 					await this.plugin.saveSettings();
-				})
+				});
 			});
 	}
 }
 
 export interface MultiPropSettings {
-	override: boolean
+	override: boolean;
 }
