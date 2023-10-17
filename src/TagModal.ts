@@ -1,10 +1,4 @@
-import { Modal, TFolder, TAbstractFile, App, getIcon } from "obsidian";
-import { createInput } from "./input";
-import "../styles.css";
-import { parseValue } from "./helpers";
-
-// import PropForm from "./PropForm.svelte";
-
+import { Modal, TFolder, TAbstractFile, App } from "obsidian";
 import PropForm from "./PropForm.svelte";
 
 export class TagModal extends Modal {

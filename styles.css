@@ -7,7 +7,6 @@
 }
 
 .modal-inputs-container input {
-	margin: 5px;
 	max-height: 25px;
 	overflow-x: auto;
 }
@@ -18,11 +17,11 @@
 	flex-direction: row;
 	justify-content: flex-end;
 	align-items: center;
-	gap: 1px;
+	gap: 10px;
+	margin-top: 10px;
 }
 
 .modal-inputs-container select {
-	margin: 5px;
 	height: 21px;
 }
 
