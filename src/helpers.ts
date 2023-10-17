@@ -1,11 +1,11 @@
-export function parseValue(value: string, type: string) {
-	console.log({ value, type });
+export function parseValue(input: HTMLInputElement, type: string) {
+	console.log({ input, type });
 	switch (type) {
 		case "number":
-			return Number(value);
+			return Number(input.value);
 		case "checkbox":
-			return Boolean(value);
+			return Boolean(input.checked);
 		default:
-			return value;
+			return input.value;
 	}
 }
