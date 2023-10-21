@@ -12,12 +12,11 @@ export default class MultiPropPlugin extends Plugin {
 		//Add menu item for multi-tag functionality.  Set as Event to automatically be unloaded when needed.
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file, source) => {
-				const curLeaf = this.app.workspace.getMostRecentLeaf();
 				if (file instanceof TFolder) {
 					menu.addItem((item) => {
 						item
 							.setIcon("tag")
-							.setTitle("Add Props to Folder's Notes")
+							.setTitle("Add props to folder's notes")
 							.onClick(() =>
 								new PropModal(this.app, file, searchThroughFolders).open()
 							);
@@ -30,7 +29,7 @@ export default class MultiPropPlugin extends Plugin {
 				menu.addItem((item) => {
 					item
 						.setIcon("tag")
-						.setTitle("Add Props to Selected Files")
+						.setTitle("Add props to selected files")
 						.onClick(() =>
 							new PropModal(this.app, file, FilesOrFolders).open()
 						);
@@ -63,15 +62,11 @@ function addProperties(
 	frontmatter: any
 ) {
 	for (const [key, value] of props) {
-		console.log({ key });
 		if (!frontmatter[key]) {
-			console.log("Adding key!");
 			frontmatter[key] = props.get(key); //Works!
 		} else {
 			//Special case for tags.
 			if (Array.isArray(props.get(key))) {
-				console.log("Adding to list!");
-
 				let arrValue = props.get(key);
 				if (!Array.isArray(arrValue)) {
 					arrValue = [arrValue];
@@ -90,14 +85,12 @@ function addProperties(
 			}
 			//Check if object type and frontmatter type match.  If not, throw error.
 			else if (typeof frontmatter[key] !== typeof props.get(key)) {
-				console.log("Type didn't match.");
+				//console.log("Type didn't match.");
 				//throw new Error(`Types do not match for property ${key}.  Expected ${typeof frontmatter[key]} but got ${typeof props.get(key)}.`);
 				continue;
 			}
 		}
 	}
-	console.log({ props });
-	console.log({ frontmatter });
 }
 
 function FilesOrFolders(

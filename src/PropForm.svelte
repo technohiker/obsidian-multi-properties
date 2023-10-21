@@ -80,7 +80,6 @@
 				}
 			}
 		});
-		console.log({ obj });
 		submission(obj);
 	}
 </script>

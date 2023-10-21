@@ -1,5 +1,4 @@
 export function parseValue(input: HTMLInputElement, type: string) {
-	console.log({ input, type });
 	switch (type) {
 		case "number":
 			return Number(input.value);
