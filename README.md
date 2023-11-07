@@ -1,10 +1,14 @@
 # Multi-Properties
 
-When installed, right-clicking on a folder will bring up an optin to add Properties to all notes within a folder. Upon clicking this, a form will pop up asking you to add your Props. You may add your Props, and they will be added to all notes in the folder.
+## Demo:
+![Multi Properties Demo](https://github.com/fez-github/obsidian-multi-properties/assets/75589254/52e7e1e2-7d40-4a44-9ebe-704da0651f40)
+
+
+When installed, right-clicking on a folder will bring up an option to add Properties to all notes within a folder. Upon clicking this, a form will pop up asking you to add your Props. You may add your Props, and they will be added to all notes in the folder.
 
 You can also select multiple notes with Shift+Mouse, and right-click the selection to get the same effect.
 
-# Installation:
+## Installation:
 
 This project is currently being submitted as an Obsidian community plugin that can be installed directly in the app. Once available, go to Settings->Community Plugins->Browser, and search the name `Multi Props`.
 
