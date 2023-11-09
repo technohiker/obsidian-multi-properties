@@ -1,8 +1,13 @@
 import { Modal, App } from "obsidian";
 import PropForm from "./PropForm.svelte";
 
+/** Loads a modal and handles form submissions. */
 export class PropModal extends Modal {
 	submission: (customProps: Map<string, any>) => void;
+	component: PropForm;
+
+	//All input types that are accepted as props by Obsidian.
+	//Used for <select> in PropForm.
 	options: Record<string, string> = {
 		Text: "string",
 		Number: "number",
@@ -10,16 +15,13 @@ export class PropModal extends Modal {
 		Date: "date",
 		Datetime: "datetime-local",
 	};
-	component: PropForm;
 
 	constructor(app: App, submission: (customProps: Map<string, any>) => void) {
 		super(app);
-
 		this.submission = submission;
 	}
 
 	onSubmit(props: Map<string, any>) {
-		//Run code for adding text to all files.
 		this.submission(props);
 		this.close();
 	}

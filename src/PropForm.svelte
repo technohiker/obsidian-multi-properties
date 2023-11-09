@@ -84,7 +84,7 @@
 	}
 </script>
 
-<div class="modal-content">
+<div id="multi-properties-modal" class="modal-content">
 	<p>
 		Type in a property name, then value. Use the dropbox to choose what type of
 		data you wish to store.
@@ -113,3 +113,13 @@
 		</div>
 	</form>
 </div>
+
+<style>
+	.modal-inputs-container {
+		height: 200px;
+		width: 100%;
+		overflow-y: scroll;
+		border-radius: 5px;
+		border-style: solid;
+	}
+</style>

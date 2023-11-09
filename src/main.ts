@@ -55,6 +55,8 @@ export default class MultiPropPlugin extends Plugin {
 		);
 	}
 
+	/** Add properties from a Map to a note.
+	 */
 	addProperties(file: TFile, props: Map<string, any>, overwrite: boolean) {
 		this.app.fileManager.processFrontMatter(file, (frontmatter) => {
 			for (const [key, value] of props) {

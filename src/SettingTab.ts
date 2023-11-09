@@ -35,7 +35,6 @@ export class SettingTab extends PluginSettingTab {
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.recursive);
 				toggle.onChange(async (value) => {
-					console.log({ value });
 					this.plugin.settings.recursive = value;
 					await this.plugin.saveSettings();
 				});
