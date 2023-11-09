@@ -20,8 +20,23 @@ export class SettingTab extends PluginSettingTab {
 				"When adding a property with a name that already exists, overwrite it with the new value.  If turned off, "
 			)
 			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.override);
 				toggle.onChange(async (value) => {
 					this.plugin.settings.override = value;
+					await this.plugin.saveSettings();
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Recursive Iteration.")
+			.setDesc(
+				"When toggled on, while looping through all files in a folder, you will also loop through any sub-folders."
+			)
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.recursive);
+				toggle.onChange(async (value) => {
+					console.log({ value });
+					this.plugin.settings.recursive = value;
 					await this.plugin.saveSettings();
 				});
 			});

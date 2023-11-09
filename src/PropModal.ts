@@ -1,8 +1,7 @@
-import { Modal, TFolder, TAbstractFile, App } from "obsidian";
+import { Modal, App } from "obsidian";
 import PropForm from "./PropForm.svelte";
 
 export class PropModal extends Modal {
-	base: TFolder | TAbstractFile[];
 	submission: (customProps: Map<string, any>) => void;
 	options: Record<string, string> = {
 		Text: "string",
@@ -13,14 +12,9 @@ export class PropModal extends Modal {
 	};
 	component: PropForm;
 
-	constructor(
-		app: App,
-		base: TFolder | TAbstractFile[],
-		submission: (customProps: Map<string, any>) => void
-	) {
+	constructor(app: App, submission: (customProps: Map<string, any>) => void) {
 		super(app);
 
-		this.base = base;
 		this.submission = submission;
 	}
 

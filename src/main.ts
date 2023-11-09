@@ -1,22 +1,18 @@
-import {
-	App,
-	Plugin,
-	TAbstractFile,
-	TFile,
-	TFolder,
-	getIcon,
-	getIconIds,
-} from "obsidian";
+import { Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 import { PropModal } from "./PropModal";
-import { MultiPropSettings } from "./SettingTab";
+import { MultiPropSettings, SettingTab } from "./SettingTab";
 
 const defaultSettings = {
 	override: true,
+	recursive: true,
 };
 
 export default class MultiPropPlugin extends Plugin {
 	settings: MultiPropSettings;
 	async onload() {
+		await this.loadSettings();
+		this.addSettingTab(new SettingTab(this.app, this));
+
 		/** Add menu item on folder right-click to add properties to all notes in folder.
 		 * PropModal returns Props on submit, which is then passed to searchThroughFolders via callback.
 		 */
@@ -28,7 +24,7 @@ export default class MultiPropPlugin extends Plugin {
 							.setIcon("tag")
 							.setTitle("Add props to folder's notes")
 							.onClick(() =>
-								new PropModal(this.app, file, (props) => {
+								new PropModal(this.app, (props) => {
 									this.searchThroughFolders(
 										file,
 										this.propertiesCallback(props)
@@ -39,17 +35,18 @@ export default class MultiPropPlugin extends Plugin {
 				}
 			})
 		);
+
 		/** Add menu item on multi-file right-click to add properties to all notes in selection.
 		 * PropModal returns Props on submit, which is then passed to searchThroughFiles via callback.
 		 */
 		this.registerEvent(
-			this.app.workspace.on("files-menu", (menu, file, source) => {
+			this.app.workspace.on("files-menu", (menu, file) => {
 				menu.addItem((item) => {
 					item
 						.setIcon("tag")
 						.setTitle("Add props to selected files")
 						.onClick(() =>
-							new PropModal(this.app, file, (props) => {
+							new PropModal(this.app, (props) => {
 								this.searchThroughFiles(file, this.propertiesCallback(props));
 							}).open()
 						);
@@ -107,9 +104,10 @@ export default class MultiPropPlugin extends Plugin {
 		for (let obj of folder.children) {
 			if (obj instanceof TFolder) {
 				//TODO: Check for whether recursion setting is on.
-				//	if (this.settings.recursive) {
-				this.searchThroughFolders(obj, callback);
-				//	}
+				console.log(this.settings);
+				if (this.settings.recursive) {
+					this.searchThroughFolders(obj, callback);
+				}
 			}
 			if (obj instanceof TFile && obj.extension === "md") {
 				callback(obj);
