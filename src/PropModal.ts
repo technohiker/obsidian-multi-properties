@@ -3,7 +3,7 @@ import PropForm from "./PropForm.svelte";
 
 export class PropModal extends Modal {
 	base: TFolder | TAbstractFile[];
-	submission: (app: App, obj: any, customProps: Map<string, any>) => void;
+	submission: (customProps: Map<string, any>) => void;
 	options: Record<string, string> = {
 		Text: "string",
 		Number: "number",
@@ -16,7 +16,7 @@ export class PropModal extends Modal {
 	constructor(
 		app: App,
 		base: TFolder | TAbstractFile[],
-		submission: (app: App, obj: any, customProps: Map<string, any>) => void
+		submission: (customProps: Map<string, any>) => void
 	) {
 		super(app);
 
@@ -26,7 +26,7 @@ export class PropModal extends Modal {
 
 	onSubmit(props: Map<string, any>) {
 		//Run code for adding text to all files.
-		this.submission(this.app, this.base, props);
+		this.submission(props);
 		this.close();
 	}
 

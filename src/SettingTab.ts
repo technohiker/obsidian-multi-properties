@@ -30,4 +30,5 @@ export class SettingTab extends PluginSettingTab {
 
 export interface MultiPropSettings {
 	override: boolean;
+	recursive: boolean;
 }
