@@ -3,7 +3,7 @@ import { PropModal } from "./PropModal";
 import { MultiPropSettings, SettingTab } from "./SettingTab";
 
 const defaultSettings = {
-	override: true,
+	override: false,
 	recursive: true,
 };
 
