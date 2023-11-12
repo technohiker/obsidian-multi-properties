@@ -39,6 +39,9 @@ const context = await esbuild.context({
 	logLevel: "info",
 	plugins: [
 		esbuildsvelte({
+			compilerOptions: {
+				css: "injected",
+			},
 			preprocess: sveltepreprocess({
 				postcss: true,
 			}),

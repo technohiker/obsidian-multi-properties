@@ -49,3 +49,24 @@
 		class="value-input flex-obj"
 	/>
 </div>
+
+<style>
+	input {
+		max-height: 25px;
+		overflow-x: auto;
+	}
+
+	.modal-input-container {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		align-items: center;
+		gap: 10px;
+		margin-top: 10px;
+	}
+
+	select {
+		height: 21px;
+	}
+</style>
