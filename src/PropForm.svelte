@@ -13,7 +13,7 @@
 	let inputEls = [
 		{
 			id: 1,
-			isNew: false,
+			isFirst: true,
 			nameDef: "",
 		},
 	];
@@ -24,7 +24,7 @@
 
 		const newInput = {
 			id: countInputs,
-			isNew: true,
+			isFirst: false,
 			nameDef: inputEls[inputEls.length - 1].nameDef,
 		};
 
@@ -98,7 +98,7 @@
 		<div class="modal-inputs-container">
 			{#each inputEls as input (input.id)}
 				<PropInput
-					isNew={input.isNew}
+					isFirst={input.isFirst}
 					id={input.id}
 					bind:nameVal={input.nameDef}
 					{removeInput}
@@ -121,5 +121,8 @@
 		overflow-y: scroll;
 		border-radius: 5px;
 		border-style: solid;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 </style>
