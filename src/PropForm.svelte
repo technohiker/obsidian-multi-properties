@@ -125,4 +125,8 @@
 		flex-direction: column;
 		align-items: center;
 	}
+
+	.modal-add-container {
+		margin-top: 10px;
+	}
 </style>
