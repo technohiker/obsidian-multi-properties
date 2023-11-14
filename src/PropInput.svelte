@@ -69,7 +69,6 @@
 
 	#name-input {
 		flex-grow: 0;
-		flex-shrink: 0;
 	}
 
 	.modal-input-container {
