@@ -14,4 +14,19 @@ declare module "obsidian" {
 			ctx?: any
 		): EventRef;
 	}
+	interface MetadataCache {
+		getAllPropertyInfos(): PropertyInfos
+	}
 }
+
+interface PropertyInfos {
+	[name: string] : Property
+}
+
+interface Property{
+	name: string,
+	type: PropertyTypes,
+	count: number
+}
+
+type PropertyTypes =  "aliases" | "checkbox" | "date" | "datetime" | "multitext" | "number" | "tags" | "text"

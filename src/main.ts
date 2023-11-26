@@ -1,15 +1,23 @@
 import { Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 import { PropModal } from "./PropModal";
 import { MultiPropSettings, SettingTab } from "./SettingTab";
+import { Property, PropertyInfos, PropertyTypes } from "./types/custom";
 
 const defaultSettings = {
 	override: false,
 	recursive: true,
 };
 
+interface NewPropData{
+	type: PropertyTypes,
+	data: string | string[],
+	override: boolean
+}
+
 export default class MultiPropPlugin extends Plugin {
 	settings: MultiPropSettings;
 	async onload() {
+
 		await this.loadSettings();
 		this.addSettingTab(new SettingTab(this.app, this));
 
@@ -57,36 +65,23 @@ export default class MultiPropPlugin extends Plugin {
 
 	/** Add properties from a Map to a note.
 	 */
-	addProperties(file: TFile, props: Map<string, any>, overwrite: boolean) {
+	addProperties(file: TFile, props: Map<string, NewPropData>) {
+		let propCache = this.app.metadataCache.getAllPropertyInfos();
 		this.app.fileManager.processFrontMatter(file, (frontmatter) => {
-			for (const [key, value] of props) {
-				if (!frontmatter[key]) {
-					frontmatter[key] = props.get(key); //Works!
-				} else {
-					//Special case for tags.
-					if (Array.isArray(props.get(key))) {
-						let arrValue = props.get(key);
-						if (!Array.isArray(arrValue)) {
-							arrValue = [arrValue];
-						}
+			for(const [key,value] of props){
+				if(!frontmatter[key] || value.override){
+					 frontmatter[key] = value;
+					 continue;
+				}
 
-						let currTags = frontmatter.tags ?? [];
+				// if(value.override) {
+				// 	frontmatter[key] = value;
+				// 	continue;
+				// }
 
-						let set = new Set([...currTags, ...arrValue]);
-						frontmatter.tags = [...set];
-
-						continue;
-					} else if (Array.isArray(frontmatter[key])) {
-						frontmatter[key].push(props.get(key));
-					} else if (overwrite) {
-						frontmatter[key] = props.get(key);
-					}
-					//Check if object type and frontmatter type match.  If not, throw error.
-					else if (typeof frontmatter[key] !== typeof props.get(key)) {
-						//console.log("Type didn't match.");
-						//throw new Error(`Types do not match for property ${key}.  Expected ${typeof frontmatter[key]} but got ${typeof props.get(key)}.`);
-						continue;
-					}
+				if(canBeAppended(value.type,propCache[key].type)){
+					frontmatter[key] = mergeIntoArrays(frontmatter[key],value.data)
+					continue;
 				}
 			}
 		});
@@ -97,7 +92,7 @@ export default class MultiPropPlugin extends Plugin {
 	 */
 	propertiesCallback(props: any) {
 		return (file: TFile) => {
-			this.addProperties(file, props, true);
+			this.addProperties(file, props);
 		};
 	}
 
@@ -145,3 +140,22 @@ export default class MultiPropPlugin extends Plugin {
 // 		}
 // 	}
 // }
+
+function canBeAppended(str1: string, str2: string){
+	let arr = ["number","date","datetime","checkbox"]  //These values should not be appended.
+	if(arr.includes(str1) || arr.includes(str2))  return false
+  return true
+}
+
+function mergeIntoArrays(...args: (string | string[])[]): string[] {
+	// Convert all arguments into arrays
+	const arrays = args.map(arg => Array.isArray(arg) ? arg : [arg]);
+	
+	// Flatten the array
+	const flattened = arrays.flat();
+	
+	// Remove duplicates using Set and spread it into an array
+	const unique = [...new Set(flattened)];
+	
+	return unique;
+}

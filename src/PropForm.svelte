@@ -53,32 +53,27 @@
 		);
 
 		inputs.forEach((input) => {
+			//Check for 2 inputs being next to each other.
+			if(!(input.nextElementSibling instanceof HTMLInputElement)) return;
+
 			let name = input.value;
-			if (input.nextElementSibling instanceof HTMLInputElement) {
-				let value = parseValue(
-					input.nextElementSibling,
-					input.nextElementSibling.type
-				);
+			let value = parseValue(
+				input.nextElementSibling,
+				input.nextElementSibling.type
+			);
 
-				if (value === "") return; //Do not add properties with no value.
+			//Push to obj if name wasn't already added.
+			//If same name was used multiple times, we will instead add a list of values.
+			if(!obj.has(name)) obj.set(name,value);
 
-				//Create list if a property name already exists.  Assuming user wants to add it to list.
-				if (obj.has(name)) {
-					let arr = [];
-					let curVal = obj.get(name);
+			//Return if user tries to add a non-value to a list.
+			if (value === "") return;
 
-					if (Array.isArray(curVal)) {
-						arr = curVal;
-					} else {
-						arr = [curVal];
-					}
-
-					arr.push(value);
-					obj.set(name, arr);
-				} else {
-					obj.set(name, value);
-				}
-			}
+			let curVal = obj.get(name);
+			let arr = Array.isArray(curVal) ? curVal : [curVal];
+			
+			arr.push(value);
+			obj.set(name, arr);
 		});
 		submission(obj);
 	}
