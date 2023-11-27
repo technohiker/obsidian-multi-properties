@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { tick } from "svelte";
 	import PropInput from "./PropInput.svelte";
-	import { parseValue } from "./helpers";
+  import { NewPropData } from "./main";
 
 	export let submission: (props: Map<string, any>) => void;
-	export const override: boolean = true;
+	export const overwrite: boolean = true;
 
 	let countInputs = 1; //Could replace with UUID.
 	let formEl: HTMLFormElement;
@@ -44,37 +44,59 @@
 		inputs[inputs.length - 2].focus();
 	}
 
+	function checkDuplicateNames(){
+		let set = new Set();
+		for(let input of inputEls) set.add(input.nameDef);
+
+		if(set.size < inputEls.length) return true;
+		else return false;
+		
+	}
+
 	function onSubmit() {
 		//Search for all labels and values, add them to a map, then pass them back to modal.
-		let obj = new Map();
+		if(checkDuplicateNames()){
+			alert("Names must be unique!");  //TODO: Better way of alerting user.
+			return;
+		}
+		let obj: Map<string, NewPropData> = new Map();
 
 		let inputs: NodeListOf<HTMLInputElement> = formEl.querySelectorAll(
 			'input[name^="name[]"]'
 		);
 
 		inputs.forEach((input) => {
-			//Check for 2 inputs being next to each other.
+			//Check for proper inputs being next to each other.
 			if(!(input.nextElementSibling instanceof HTMLInputElement)) return;
+			if(!(input.previousElementSibling instanceof HTMLSelectElement)) return;
+			if(!(input.previousElementSibling.children[0] instanceof HTMLOptionElement)) return;
 
 			let name = input.value;
-			let value = parseValue(
-				input.nextElementSibling,
-				input.nextElementSibling.type
-			);
+
+			let value: string | string[] = input.nextElementSibling.value;
+				if(value.contains(',')) value = value.split(',');
+
+			let inputType: string = input.previousElementSibling.children[0].innerText.toLowerCase();
+
+			//Store value into data object.
+			let propObj: NewPropData = {
+				type: inputType,
+				data: value,
+				overwrite: false
+			}
 
 			//Push to obj if name wasn't already added.
 			//If same name was used multiple times, we will instead add a list of values.
-			if(!obj.has(name)) obj.set(name,value);
+			if(!obj.has(name)){ 
+				obj.set(name,propObj);
+				return;
+			}
 
-			//Return if user tries to add a non-value to a list.
+			//Run this after first check so user can still add blank property if desired.
 			if (value === "") return;
 
-			let curVal = obj.get(name);
-			let arr = Array.isArray(curVal) ? curVal : [curVal];
-			
-			arr.push(value);
-			obj.set(name, arr);
 		});
+		console.log({obj})
 		submission(obj);
 	}
 </script>
@@ -85,8 +107,7 @@
 		data you wish to store.
 	</p>
 	<p>
-		If you want to make a List property, use the same name for each entry to the
-		list.
+		If you want to make a List property, use the Text data type and separate each value with commas.
 	</p>
 	<p>If you want to add Tags, use the name "tags".</p>
 	<form on:submit|preventDefault bind:this={formEl}>

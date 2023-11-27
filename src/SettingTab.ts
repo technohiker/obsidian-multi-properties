@@ -15,14 +15,14 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Overwrite existing properties.")
+			.setName("Overwrite existing text.")
 			.setDesc(
-				"When adding a property with a name that already exists, overwrite it with the new value.  If turned off, "
+				"When adding a property with a name that already exists, the text will overwrite the prop's existing value.  If left disabled, the new value will be appended to the old as a List."
 			)
 			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.override);
+				toggle.setValue(this.plugin.settings.overwrite);
 				toggle.onChange(async (value) => {
-					this.plugin.settings.override = value;
+					this.plugin.settings.overwrite = value;
 					await this.plugin.saveSettings();
 				});
 			});
@@ -43,6 +43,6 @@ export class SettingTab extends PluginSettingTab {
 }
 
 export interface MultiPropSettings {
-	override: boolean;
+	overwrite: boolean;
 	recursive: boolean;
 }

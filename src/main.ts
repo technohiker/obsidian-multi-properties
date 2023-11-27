@@ -1,17 +1,16 @@
 import { Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 import { PropModal } from "./PropModal";
 import { MultiPropSettings, SettingTab } from "./SettingTab";
-import { Property, PropertyInfos, PropertyTypes } from "./types/custom";
 
 const defaultSettings = {
-	override: false,
+	overwrite: false,
 	recursive: true,
 };
 
-interface NewPropData{
-	type: PropertyTypes,
+export interface NewPropData{
+	type: string,
 	data: string | string[],
-	override: boolean
+	overwrite: boolean
 }
 
 export default class MultiPropPlugin extends Plugin {
@@ -65,24 +64,46 @@ export default class MultiPropPlugin extends Plugin {
 
 	/** Add properties from a Map to a note.
 	 */
-	addProperties(file: TFile, props: Map<string, NewPropData>) {
+	addProperties(file: TFile, props: Map<string, NewPropData>, overwrite: boolean) {
 		let propCache = this.app.metadataCache.getAllPropertyInfos();
+		console.log({propCache})
 		this.app.fileManager.processFrontMatter(file, (frontmatter) => {
 			for(const [key,value] of props){
-				if(!frontmatter[key] || value.override){
-					 frontmatter[key] = value;
+				console.log(key,value)
+				console.log(frontmatter[key])
+				if(!frontmatter[key] || overwrite){
+					console.log("First check running.")
+					 frontmatter[key] = value.data;
+					 console.log({frontmatter})
 					 continue;
 				}
 
-				// if(value.override) {
-				// 	frontmatter[key] = value;
-				// 	continue;
-				// }
+				let type1 = value.type;
+				let type2 = propCache[key.toLowerCase()].type;
 
-				if(canBeAppended(value.type,propCache[key].type)){
-					frontmatter[key] = mergeIntoArrays(frontmatter[key],value.data)
+				if(!canBeAppended(type1,type2)){
+					console.log("Second check running.")
+					frontmatter[key] = value.data;
 					continue;
 				}
+				else{
+					console.log("Third check running.")
+					let arr = mergeIntoArrays(frontmatter[key],value.data)
+					console.log({arr})
+					frontmatter[key] = arr
+					console.log({frontmatter})
+					continue;
+				}
+
+				if(canBeAppended(value.type,propCache[key.toLowerCase()].type)){
+					console.log("Last check running.")
+					let arr = mergeIntoArrays(frontmatter[key],value.data)
+					console.log({arr})
+					frontmatter[key] = arr
+					console.log({frontmatter})
+					continue;
+				}
+				console.log({frontmatter})
 			}
 		});
 	}
@@ -92,7 +113,7 @@ export default class MultiPropPlugin extends Plugin {
 	 */
 	propertiesCallback(props: any) {
 		return (file: TFile) => {
-			this.addProperties(file, props);
+			this.addProperties(file, props,this.settings.overwrite);
 		};
 	}
 
@@ -130,18 +151,8 @@ export default class MultiPropPlugin extends Plugin {
 	}
 }
 
-// function FilesOrFolders(
-// 	arr: (TFile | TFolder)[],
-// 	callback: (file: TFile, ...args: any[]) => void
-// ) {
-// 	for (let el of arr) {
-// 		if (el instanceof TFile && el.extension === "md") {
-// 			callback(el);
-// 		}
-// 	}
-// }
-
 function canBeAppended(str1: string, str2: string){
+	console.log({str1,str2})
 	let arr = ["number","date","datetime","checkbox"]  //These values should not be appended.
 	if(arr.includes(str1) || arr.includes(str2))  return false
   return true
