@@ -1,4 +1,4 @@
-import { Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
+import { Menu, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 import { PropModal } from "./PropModal";
 import { MultiPropSettings, SettingTab } from "./SettingTab";
 
@@ -7,16 +7,15 @@ const defaultSettings = {
 	recursive: true,
 };
 
-export interface NewPropData{
-	type: string,
-	data: string | string[],
-	overwrite: boolean
+export interface NewPropData {
+	type: string;
+	data: string | string[];
+	overwrite: boolean;
 }
 
 export default class MultiPropPlugin extends Plugin {
 	settings: MultiPropSettings;
 	async onload() {
-
 		await this.loadSettings();
 		this.addSettingTab(new SettingTab(this.app, this));
 
@@ -47,16 +46,37 @@ export default class MultiPropPlugin extends Plugin {
 		 * PropModal returns Props on submit, which is then passed to searchThroughFiles via callback.
 		 */
 		this.registerEvent(
-			this.app.workspace.on("files-menu", (menu, file) => {
+			this.app.workspace.on("files-menu", (menu, files) => {
 				menu.addItem((item) => {
 					item
 						.setIcon("tag")
 						.setTitle("Add props to selected files")
 						.onClick(() =>
 							new PropModal(this.app, (props) => {
-								this.searchThroughFiles(file, this.propertiesCallback(props));
+								this.searchThroughFiles(files, this.propertiesCallback(props));
 							}).open()
 						);
+				});
+			})
+		);
+		this.registerEvent(
+			this.app.workspace.on("search:results-menu", (menu: Menu, leaf: any) => {
+				menu.addItem((item) => {
+					item
+						.setIcon("tag")
+						.setTitle("Add props to search results")
+						.onClick(() => {
+							console.log({ menu, leaf });
+							let files: any[] = [];
+							leaf.dom.vChildren.children.forEach((e: any) => {
+								console.log(e);
+								files.push(e.file);
+							});
+							new PropModal(this.app, (props) => {
+								this.searchThroughFiles(files, this.propertiesCallback(props));
+							}).open();
+							console.log({ files });
+						});
 				});
 			})
 		);
@@ -64,46 +84,40 @@ export default class MultiPropPlugin extends Plugin {
 
 	/** Add properties from a Map to a note.
 	 */
-	addProperties(file: TFile, props: Map<string, NewPropData>, overwrite: boolean) {
+	addProperties(
+		file: TFile,
+		props: Map<string, NewPropData>,
+		overwrite: boolean
+	) {
 		let propCache = this.app.metadataCache.getAllPropertyInfos();
-		console.log({propCache})
+		console.log({ propCache });
 		this.app.fileManager.processFrontMatter(file, (frontmatter) => {
-			for(const [key,value] of props){
-				console.log(key,value)
-				console.log(frontmatter[key])
-				if(!frontmatter[key] || overwrite){
-					console.log("First check running.")
-					 frontmatter[key] = value.data;
-					 console.log({frontmatter})
-					 continue;
+			for (const [key, value] of props) {
+				console.log(key, value);
+				console.log(frontmatter[key]);
+				if (!frontmatter[key] || overwrite) {
+					console.log("First check running.");
+					frontmatter[key] = value.data;
+					console.log({ frontmatter });
+					continue;
 				}
 
 				let type1 = value.type;
 				let type2 = propCache[key.toLowerCase()].type;
 
-				if(!canBeAppended(type1,type2)){
-					console.log("Second check running.")
+				if (!canBeAppended(type1, type2)) {
+					console.log("Second check running.");
 					frontmatter[key] = value.data;
 					continue;
-				}
-				else{
-					console.log("Third check running.")
-					let arr = mergeIntoArrays(frontmatter[key],value.data)
-					console.log({arr})
-					frontmatter[key] = arr
-					console.log({frontmatter})
+				} else {
+					console.log("Third check running.");
+					let arr = mergeIntoArrays(frontmatter[key], value.data);
+					console.log({ arr });
+					frontmatter[key] = arr;
+					console.log({ frontmatter });
 					continue;
 				}
-
-				if(canBeAppended(value.type,propCache[key.toLowerCase()].type)){
-					console.log("Last check running.")
-					let arr = mergeIntoArrays(frontmatter[key],value.data)
-					console.log({arr})
-					frontmatter[key] = arr
-					console.log({frontmatter})
-					continue;
-				}
-				console.log({frontmatter})
+				console.log({ frontmatter });
 			}
 		});
 	}
@@ -113,7 +127,7 @@ export default class MultiPropPlugin extends Plugin {
 	 */
 	propertiesCallback(props: any) {
 		return (file: TFile) => {
-			this.addProperties(file, props,this.settings.overwrite);
+			this.addProperties(file, props, this.settings.overwrite);
 		};
 	}
 
@@ -151,22 +165,22 @@ export default class MultiPropPlugin extends Plugin {
 	}
 }
 
-function canBeAppended(str1: string, str2: string){
-	console.log({str1,str2})
-	let arr = ["number","date","datetime","checkbox"]  //These values should not be appended.
-	if(arr.includes(str1) || arr.includes(str2))  return false
-  return true
+function canBeAppended(str1: string, str2: string) {
+	console.log({ str1, str2 });
+	let arr = ["number", "date", "datetime", "checkbox"]; //These values should not be appended.
+	if (arr.includes(str1) || arr.includes(str2)) return false;
+	return true;
 }
 
 function mergeIntoArrays(...args: (string | string[])[]): string[] {
 	// Convert all arguments into arrays
-	const arrays = args.map(arg => Array.isArray(arg) ? arg : [arg]);
-	
+	const arrays = args.map((arg) => (Array.isArray(arg) ? arg : [arg]));
+
 	// Flatten the array
 	const flattened = arrays.flat();
-	
+
 	// Remove duplicates using Set and spread it into an array
 	const unique = [...new Set(flattened)];
-	
+
 	return unique;
 }

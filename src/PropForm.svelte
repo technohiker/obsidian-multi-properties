@@ -9,6 +9,8 @@
 
 	let countInputs = 1; //Could replace with UUID.
 	let formEl: HTMLFormElement;
+	let errorEl: HTMLDivElement;
+	let alertText = ".";
 
 	//Array of objects that will be passed as props to PropInput.
 	let inputEls = [
@@ -45,6 +47,7 @@
 		inputs[inputs.length - 2].focus();
 	}
 
+	/** See if there are duplicate property names.*/
 	function checkDuplicateNames() {
 		let set = new Set();
 		for (let input of inputEls) set.add(input.nameDef);
@@ -53,12 +56,20 @@
 		else return false;
 	}
 
+	/** Display an error message. */
+	function runError(errorText: string) {
+		alertText = errorText;
+		errorEl.classList.remove("hidden"); //Should I have this error message fade away?
+	}
+
+	/** Search for all labels and values, add them to a map, then pass them back to modal.*/
 	function onSubmit() {
-		//Search for all labels and values, add them to a map, then pass them back to modal.
+		//Make sure there are no duplicate names.
 		if (checkDuplicateNames()) {
-			alert("Names must be unique!"); //TODO: Better way of alerting user.
+			runError("Duplicate property names are not allowed.");
 			return;
 		}
+
 		let obj: Map<string, NewPropData> = new Map();
 
 		let inputs: NodeListOf<HTMLInputElement> = formEl.querySelectorAll(
@@ -72,12 +83,12 @@
 			if (
 				!(input.previousElementSibling.children[0] instanceof HTMLOptionElement)
 			)
-				return;
+				return; //TODO: Implement error handling if inputs are inaccurate?  The entire form is dependent on this structure, though.
 
+			//Get name, value and type from inputs.
 			let name = input.value;
 
 			let value: string | string[] = input.nextElementSibling.value;
-
 			if (value.contains(",")) {
 				let str = removeExtraCommas(value);
 				value = str.split(",");
@@ -86,29 +97,24 @@
 			let inputType: string =
 				input.previousElementSibling.children[0].innerText.toLowerCase();
 
-			//Store value into data object.
+			//Store data into object.
 			let propObj: NewPropData = {
 				type: inputType,
 				data: value,
 				overwrite: false,
 			};
 
-			//Push to obj if name wasn't already added.
-			//If same name was used multiple times, we will instead add a list of values.
-			if (!obj.has(name)) {
-				obj.set(name, propObj);
-				return;
-			}
-
-			//Run this after first check so user can still add blank property if desired.
-			if (value === "") return;
+			obj.set(name, propObj);
 		});
-		console.log({ obj });
 		submission(obj);
 	}
 </script>
 
 <div id="multi-properties-modal" class="modal-content">
+	<div id="alert-container" class="alert-container hidden" bind:this={errorEl}>
+		<div>ERROR</div>
+		<div id="alert-text">{alertText}</div>
+	</div>
 	<p>
 		Type in a property name, then value. Use the dropbox to choose what type of
 		data you wish to store.
@@ -152,5 +158,17 @@
 
 	.modal-add-container {
 		margin-top: 10px;
+	}
+	.alert-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 10px;
+		background-color: red;
+		font-weight: bold;
+	}
+	.hidden {
+		display: none;
 	}
 </style>
