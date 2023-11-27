@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { tick } from "svelte";
 	import PropInput from "./PropInput.svelte";
-  import { NewPropData } from "./main";
+	import { NewPropData } from "./main";
+	import { removeExtraCommas } from "./helpers";
 
 	export let submission: (props: Map<string, any>) => void;
 	export const overwrite: boolean = true;
@@ -25,7 +26,7 @@
 		const newInput = {
 			id: countInputs,
 			isFirst: false,
-			nameDef: inputEls[inputEls.length - 1].nameDef,
+			nameDef: "",
 		};
 
 		inputEls = [...inputEls, newInput];
@@ -44,19 +45,18 @@
 		inputs[inputs.length - 2].focus();
 	}
 
-	function checkDuplicateNames(){
+	function checkDuplicateNames() {
 		let set = new Set();
-		for(let input of inputEls) set.add(input.nameDef);
+		for (let input of inputEls) set.add(input.nameDef);
 
-		if(set.size < inputEls.length) return true;
+		if (set.size < inputEls.length) return true;
 		else return false;
-		
 	}
 
 	function onSubmit() {
 		//Search for all labels and values, add them to a map, then pass them back to modal.
-		if(checkDuplicateNames()){
-			alert("Names must be unique!");  //TODO: Better way of alerting user.
+		if (checkDuplicateNames()) {
+			alert("Names must be unique!"); //TODO: Better way of alerting user.
 			return;
 		}
 		let obj: Map<string, NewPropData> = new Map();
@@ -67,36 +67,43 @@
 
 		inputs.forEach((input) => {
 			//Check for proper inputs being next to each other.
-			if(!(input.nextElementSibling instanceof HTMLInputElement)) return;
-			if(!(input.previousElementSibling instanceof HTMLSelectElement)) return;
-			if(!(input.previousElementSibling.children[0] instanceof HTMLOptionElement)) return;
+			if (!(input.nextElementSibling instanceof HTMLInputElement)) return;
+			if (!(input.previousElementSibling instanceof HTMLSelectElement)) return;
+			if (
+				!(input.previousElementSibling.children[0] instanceof HTMLOptionElement)
+			)
+				return;
 
 			let name = input.value;
 
 			let value: string | string[] = input.nextElementSibling.value;
-				if(value.contains(',')) value = value.split(',');
 
-			let inputType: string = input.previousElementSibling.children[0].innerText.toLowerCase();
+			if (value.contains(",")) {
+				let str = removeExtraCommas(value);
+				value = str.split(",");
+			}
+
+			let inputType: string =
+				input.previousElementSibling.children[0].innerText.toLowerCase();
 
 			//Store value into data object.
 			let propObj: NewPropData = {
 				type: inputType,
 				data: value,
-				overwrite: false
-			}
+				overwrite: false,
+			};
 
 			//Push to obj if name wasn't already added.
 			//If same name was used multiple times, we will instead add a list of values.
-			if(!obj.has(name)){ 
-				obj.set(name,propObj);
+			if (!obj.has(name)) {
+				obj.set(name, propObj);
 				return;
 			}
 
 			//Run this after first check so user can still add blank property if desired.
 			if (value === "") return;
-
 		});
-		console.log({obj})
+		console.log({ obj });
 		submission(obj);
 	}
 </script>
@@ -107,7 +114,8 @@
 		data you wish to store.
 	</p>
 	<p>
-		If you want to make a List property, use the Text data type and separate each value with commas.
+		If you want to make a List property, use the Text data type and separate
+		each value with commas.
 	</p>
 	<p>If you want to add Tags, use the name "tags".</p>
 	<form on:submit|preventDefault bind:this={formEl}>

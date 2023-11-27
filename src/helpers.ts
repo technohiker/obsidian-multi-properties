@@ -8,3 +8,8 @@ export function parseValue(input: HTMLInputElement, type: string) {
 			return input.value;
 	}
 }
+
+export function removeExtraCommas(str: string): string {
+	// Remove leading and trailing commas, then replace multiple consecutive commas with a single comma
+	return str.replace(/^,*(.*?),*$/g, "$1").replace(/,{2,}/g, ",");
+}
