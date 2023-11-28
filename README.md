@@ -15,7 +15,7 @@ If you wish to install it manually,
 
 ## Ideas for Features:
 
-- [ ] Toggle that lets user choose whether adding another value to a prop name that already exists will either overwrite the property, or append to it.
+- [x] Toggle that lets user choose whether adding another value to a prop name that already exists will either overwrite the property, or append to it.
 - [ ] Would like to add tests for this plugin, but I'm not sure how to handle it for a plugin that writes directly to notes.
 
 ## Known Issues:

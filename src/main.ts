@@ -33,7 +33,7 @@ export default class MultiPropPlugin extends Plugin {
 								new PropModal(this.app, (props) => {
 									this.searchThroughFolders(
 										file,
-										this.propertiesCallback(props)
+										this.addPropertiesCallback(props)
 									);
 								}).open()
 							);
@@ -53,7 +53,10 @@ export default class MultiPropPlugin extends Plugin {
 						.setTitle("Add props to selected files")
 						.onClick(() =>
 							new PropModal(this.app, (props) => {
-								this.searchThroughFiles(files, this.propertiesCallback(props));
+								this.searchThroughFiles(
+									files,
+									this.addPropertiesCallback(props)
+								);
 							}).open()
 						);
 				});
@@ -66,16 +69,16 @@ export default class MultiPropPlugin extends Plugin {
 						.setIcon("tag")
 						.setTitle("Add props to search results")
 						.onClick(() => {
-							console.log({ menu, leaf });
 							let files: any[] = [];
 							leaf.dom.vChildren.children.forEach((e: any) => {
-								console.log(e);
 								files.push(e.file);
 							});
 							new PropModal(this.app, (props) => {
-								this.searchThroughFiles(files, this.propertiesCallback(props));
+								this.searchThroughFiles(
+									files,
+									this.addPropertiesCallback(props)
+								);
 							}).open();
-							console.log({ files });
 						});
 				});
 			})
@@ -90,15 +93,10 @@ export default class MultiPropPlugin extends Plugin {
 		overwrite: boolean
 	) {
 		let propCache = this.app.metadataCache.getAllPropertyInfos();
-		console.log({ propCache });
 		this.app.fileManager.processFrontMatter(file, (frontmatter) => {
 			for (const [key, value] of props) {
-				console.log(key, value);
-				console.log(frontmatter[key]);
 				if (!frontmatter[key] || overwrite) {
-					console.log("First check running.");
 					frontmatter[key] = value.data;
-					console.log({ frontmatter });
 					continue;
 				}
 
@@ -106,18 +104,13 @@ export default class MultiPropPlugin extends Plugin {
 				let type2 = propCache[key.toLowerCase()].type;
 
 				if (!canBeAppended(type1, type2)) {
-					console.log("Second check running.");
 					frontmatter[key] = value.data;
 					continue;
 				} else {
-					console.log("Third check running.");
 					let arr = mergeIntoArrays(frontmatter[key], value.data);
-					console.log({ arr });
 					frontmatter[key] = arr;
-					console.log({ frontmatter });
 					continue;
 				}
-				console.log({ frontmatter });
 			}
 		});
 	}
@@ -125,7 +118,7 @@ export default class MultiPropPlugin extends Plugin {
 	/**
 	 * Callback function to run addProperties inside iterative functions.
 	 */
-	propertiesCallback(props: any) {
+	addPropertiesCallback(props: any) {
 		return (file: TFile) => {
 			this.addProperties(file, props, this.settings.overwrite);
 		};
@@ -135,8 +128,6 @@ export default class MultiPropPlugin extends Plugin {
 	searchThroughFolders(folder: TFolder, callback: (file: TFile) => void) {
 		for (let obj of folder.children) {
 			if (obj instanceof TFolder) {
-				//TODO: Check for whether recursion setting is on.
-				console.log(this.settings);
 				if (this.settings.recursive) {
 					this.searchThroughFolders(obj, callback);
 				}
@@ -155,7 +146,6 @@ export default class MultiPropPlugin extends Plugin {
 			}
 		}
 	}
-
 	async loadSettings() {
 		this.settings = Object.assign({}, defaultSettings, await this.loadData());
 	}
@@ -165,15 +155,15 @@ export default class MultiPropPlugin extends Plugin {
 	}
 }
 
+/** Check if two types can be appended to each other. */
 function canBeAppended(str1: string, str2: string) {
-	console.log({ str1, str2 });
 	let arr = ["number", "date", "datetime", "checkbox"]; //These values should not be appended.
 	if (arr.includes(str1) || arr.includes(str2)) return false;
 	return true;
 }
 
+/** Convert strings and arrays into single array. */
 function mergeIntoArrays(...args: (string | string[])[]): string[] {
-	// Convert all arguments into arrays
 	const arrays = args.map((arg) => (Array.isArray(arg) ? arg : [arg]));
 
 	// Flatten the array
