@@ -2,7 +2,7 @@
 	import { tick } from "svelte";
 	import PropInput from "./PropInput.svelte";
 	import { NewPropData } from "./main";
-	import { KNOWN_BAD_CHARACTERS, removeExtraCommas } from "./helpers";
+	import { KNOWN_BAD_CHARACTERS, parseValue, removeExtraCommas } from "./helpers";
 
 	export let submission: (props: Map<string, any>) => void;
 	export const overwrite: boolean = true;
@@ -98,13 +98,15 @@
 			//Get name, value and type from inputs.
 			let name = input.value;
 
-			let value: string | string[] = input.nextElementSibling.value;
-			if (name === "tags") {
+			let value: any = parseValue(input.nextElementSibling,input.nextElementSibling.type);
+			if(typeof value === "string") {
+				if (name === "tags") {
 				value = cleanTags(value);
-			}
-			if (value.contains(",")) {
-				let str = removeExtraCommas(value);
-				value = str.split(",");
+				}
+				if (value.contains(",")) {
+					let str = removeExtraCommas(value);
+					value = str.split(",");
+				}
 			}
 
 			let inputType: string =
