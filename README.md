@@ -20,5 +20,5 @@ If you wish to install it manually,
 
 ## Known Issues:
 
-- [ ] There are no safeguards for inputting invalid tags. If a tag contains an invalid character(comma, question mark, etc.), it will be added to the note, but Obsidian will not be able to recognize it.
+- [x] There are no safeguards for inputting invalid tags. If a tag contains an invalid character(comma, question mark, etc.), it will be added to the note, but Obsidian will not be able to recognize it.
 - [ ] Error Handling is currently non-existent. If a prop is not added correctly for whatever reason, you will not be notified of this.
