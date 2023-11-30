@@ -1,4 +1,4 @@
-import { Menu, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
+import { Menu, Notice, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 import { PropModal } from "./PropModal";
 import { MultiPropSettings, SettingTab } from "./SettingTab";
 
@@ -73,6 +73,10 @@ export default class MultiPropPlugin extends Plugin {
 							leaf.dom.vChildren.children.forEach((e: any) => {
 								files.push(e.file);
 							});
+							if (!files.length) {
+								new Notice("No files to add properties to.", 4000);
+								return;
+							}
 							new PropModal(this.app, (props) => {
 								this.searchThroughFiles(
 									files,

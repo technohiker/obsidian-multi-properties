@@ -67,7 +67,6 @@ export const KNOWN_BAD_CHARACTERS = [
 	"‾",
 	"‗",
 	"⁓",
-	",",
 	";",
 	":",
 	"!",
