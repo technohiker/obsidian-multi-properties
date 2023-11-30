@@ -5,8 +5,7 @@ When installed, right-clicking on a folder will bring up an option to add Proper
 You can also select multiple notes with Shift+Mouse, and right-click the selection to get the same effect.
 
 ## Demo:
-![Multi_Properties_Demo_0-10.1](https://github.com/fez-github/obsidian-multi-properties/assets/75589254/1606e070-96f0-4eb4-9801-37a3d9f2b359)
-
+![Multi Properties Demo 0-10-1](https://github.com/fez-github/obsidian-multi-properties/assets/75589254/1356b2d4-16f3-42e9-a398-bc940c83b399)
 
 ## Installation:
 
