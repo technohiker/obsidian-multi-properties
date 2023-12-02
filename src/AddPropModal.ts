@@ -1,5 +1,5 @@
 import { Modal, App } from "obsidian";
-import PropForm from "./PropForm.svelte";
+import PropForm from "./AddPropForm.svelte";
 import { NewPropData } from "./main";
 
 /** Loads a modal and handles form submissions. */
