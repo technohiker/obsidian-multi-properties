@@ -52,10 +52,8 @@ export default class MultiPropPlugin extends Plugin {
 							.setIcon("tag")
 							.setTitle("Remove props from folder's notes")
 							.onClick(async () => {
-								let names = await this.getPropsFromFolder(
-									folder,new Set()
-								)
-								console.log({names})
+								let names = await this.getPropsFromFolder(folder, new Set());
+								console.log({ names });
 								new RemoveModal(this.app, names, (props) => {
 									this.searchThroughFolders(
 										folder,
@@ -133,31 +131,31 @@ export default class MultiPropPlugin extends Plugin {
 			})
 		);
 
-	// 	this.registerEvent(
-	// 		this.app.workspace.on("search:results-menu", (menu: Menu, leaf: any) => {
-	// 			menu.addItem((item) => {
-	// 				item
-	// 					.setIcon("tag")
-	// 					.setTitle("Remove props from search results")
-	// 					.onClick(() => {
-	// 						let files: any[] = [];
-	// 						leaf.dom.vChildren.children.forEach((e: any) => {
-	// 							files.push(e.file);
-	// 						});
-	// 						if (!files.length) {
-	// 							new Notice("No files to remove properties from.", 4000);
-	// 							return;
-	// 						}
-	// 						new RemoveModal(this.app, (props) => {
-	// 							this.searchThroughFiles(
-	// 								files,
-	// 								this.addPropertiesCallback(props)
-	// 							);
-	// 						}).open();
-	// 					});
-	// 			});
-	// 		})
-	// 	);
+		// 	this.registerEvent(
+		// 		this.app.workspace.on("search:results-menu", (menu: Menu, leaf: any) => {
+		// 			menu.addItem((item) => {
+		// 				item
+		// 					.setIcon("tag")
+		// 					.setTitle("Remove props from search results")
+		// 					.onClick(() => {
+		// 						let files: any[] = [];
+		// 						leaf.dom.vChildren.children.forEach((e: any) => {
+		// 							files.push(e.file);
+		// 						});
+		// 						if (!files.length) {
+		// 							new Notice("No files to remove properties from.", 4000);
+		// 							return;
+		// 						}
+		// 						new RemoveModal(this.app, (props) => {
+		// 							this.searchThroughFiles(
+		// 								files,
+		// 								this.addPropertiesCallback(props)
+		// 							);
+		// 						}).open();
+		// 					});
+		// 			});
+		// 		})
+		// 	);
 	}
 
 	/** Add properties from a Map to a note.
@@ -200,7 +198,14 @@ export default class MultiPropPlugin extends Plugin {
 	}
 
 	removeProperties(file: TFile, props: string[]) {
-		
+		this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+			for (const prop of props) {
+				if (!frontmatter[prop]) continue;
+				console.log({ frontmatter });
+				delete frontmatter[prop];
+				console.log({ frontmatter });
+			}
+		});
 	}
 
 	removePropertiesCallback(props: any) {
@@ -212,23 +217,22 @@ export default class MultiPropPlugin extends Plugin {
 	getPropertiesCallback(file: TFile) {}
 
 	async addPropToSet(set: Set<string>, file: TFile) {
-		console.log({set})
+		console.log({ set });
 		await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
 			for (const key in frontmatter) {
-				console.log("Before adding,",set)
+				console.log("Before adding,", set);
 				set.add(key);
-				console.log("After adding,",set)
+				console.log("After adding,", set);
 			}
-		})
-		return set
+		});
+		return set;
 	}
 
 	async getPropsFromFolder(folder: TFolder, names: Set<string>) {
-
 		for (let obj of folder.children) {
 			if (obj instanceof TFile && obj.extension === "md") {
-				names = await this.addPropToSet(names,obj);
-				console.log("Operation performed",names)
+				names = await this.addPropToSet(names, obj);
+				console.log("Operation performed", names);
 			}
 			if (obj instanceof TFolder) {
 				if (this.settings.recursive) {
@@ -236,13 +240,11 @@ export default class MultiPropPlugin extends Plugin {
 				}
 			}
 		}
-		console.log("Looping finished",names)
+		console.log("Looping finished", names);
 		return [...names];
 	}
 
-	removingFromFolders(props: string){
-
-	}
+	removingFromFolders(props: string) {}
 
 	/** Iterates through all files in a folder and runs callback on each. */
 	searchThroughFolders(folder: TFolder, callback: (file: TFile) => any) {
