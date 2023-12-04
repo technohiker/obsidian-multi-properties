@@ -2,6 +2,7 @@ import { Menu, Notice, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 import { PropModal } from "./AddPropModal";
 import { MultiPropSettings, SettingTab } from "./SettingTab";
 import { RemoveModal } from "./RemoveModal";
+import { stringify } from "querystring";
 
 const defaultSettings = {
 	overwrite: false,
@@ -44,16 +45,20 @@ export default class MultiPropPlugin extends Plugin {
 		);
 
 		this.registerEvent(
-			this.app.workspace.on("file-menu", (menu, file) => {
-				if (file instanceof TFolder) {
+			this.app.workspace.on("file-menu", (menu, folder) => {
+				if (folder instanceof TFolder) {
 					menu.addItem((item) => {
 						item
 							.setIcon("tag")
 							.setTitle("Remove props from folder's notes")
-							.onClick(() => {
-								new RemoveModal(this.app, (props) => {
+							.onClick(async () => {
+								let names = await this.getPropsFromFolder(
+									folder,new Set()
+								)
+								console.log({names})
+								new RemoveModal(this.app, names, (props) => {
 									this.searchThroughFolders(
-										file,
+										folder,
 										this.removePropertiesCallback(props)
 									);
 								}).open();
@@ -84,23 +89,23 @@ export default class MultiPropPlugin extends Plugin {
 			})
 		);
 
-		this.registerEvent(
-			this.app.workspace.on("files-menu", (menu, files) => {
-				menu.addItem((item) => {
-					item
-						.setIcon("tag")
-						.setTitle("Remove props from selected files")
-						.onClick(() =>
-							new RemoveModal(this.app, (props) => {
-								this.searchThroughFiles(
-									files,
-									this.addPropertiesCallback(props)
-								);
-							}).open()
-						);
-				});
-			})
-		);
+		// this.registerEvent(
+		// 	this.app.workspace.on("files-menu", (menu, files) => {
+		// 		menu.addItem((item) => {
+		// 			item
+		// 				.setIcon("tag")
+		// 				.setTitle("Remove props from selected files")
+		// 				.onClick(() =>
+		// 					new RemoveModal(this.app, (props) => {
+		// 						this.searchThroughFiles(
+		// 							files,
+		// 							this.addPropertiesCallback(props)
+		// 						);
+		// 					}).open()
+		// 				);
+		// 		});
+		// 	})
+		// );
 
 		this.registerEvent(
 			this.app.workspace.on("search:results-menu", (menu: Menu, leaf: any) => {
@@ -128,31 +133,31 @@ export default class MultiPropPlugin extends Plugin {
 			})
 		);
 
-		this.registerEvent(
-			this.app.workspace.on("search:results-menu", (menu: Menu, leaf: any) => {
-				menu.addItem((item) => {
-					item
-						.setIcon("tag")
-						.setTitle("Remove props from search results")
-						.onClick(() => {
-							let files: any[] = [];
-							leaf.dom.vChildren.children.forEach((e: any) => {
-								files.push(e.file);
-							});
-							if (!files.length) {
-								new Notice("No files to remove properties from.", 4000);
-								return;
-							}
-							new RemoveModal(this.app, (props) => {
-								this.searchThroughFiles(
-									files,
-									this.addPropertiesCallback(props)
-								);
-							}).open();
-						});
-				});
-			})
-		);
+	// 	this.registerEvent(
+	// 		this.app.workspace.on("search:results-menu", (menu: Menu, leaf: any) => {
+	// 			menu.addItem((item) => {
+	// 				item
+	// 					.setIcon("tag")
+	// 					.setTitle("Remove props from search results")
+	// 					.onClick(() => {
+	// 						let files: any[] = [];
+	// 						leaf.dom.vChildren.children.forEach((e: any) => {
+	// 							files.push(e.file);
+	// 						});
+	// 						if (!files.length) {
+	// 							new Notice("No files to remove properties from.", 4000);
+	// 							return;
+	// 						}
+	// 						new RemoveModal(this.app, (props) => {
+	// 							this.searchThroughFiles(
+	// 								files,
+	// 								this.addPropertiesCallback(props)
+	// 							);
+	// 						}).open();
+	// 					});
+	// 			});
+	// 		})
+	// 	);
 	}
 
 	/** Add properties from a Map to a note.
@@ -194,7 +199,9 @@ export default class MultiPropPlugin extends Plugin {
 		};
 	}
 
-	removeProperties(file: TFile, props: string[]) {}
+	removeProperties(file: TFile, props: string[]) {
+		
+	}
 
 	removePropertiesCallback(props: any) {
 		return (file: TFile) => {
@@ -204,10 +211,41 @@ export default class MultiPropPlugin extends Plugin {
 
 	getPropertiesCallback(file: TFile) {}
 
-	getProperties(file: TFile) {}
+	async addPropToSet(set: Set<string>, file: TFile) {
+		console.log({set})
+		await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+			for (const key in frontmatter) {
+				console.log("Before adding,",set)
+				set.add(key);
+				console.log("After adding,",set)
+			}
+		})
+		return set
+	}
+
+	async getPropsFromFolder(folder: TFolder, names: Set<string>) {
+
+		for (let obj of folder.children) {
+			if (obj instanceof TFile && obj.extension === "md") {
+				names = await this.addPropToSet(names,obj);
+				console.log("Operation performed",names)
+			}
+			if (obj instanceof TFolder) {
+				if (this.settings.recursive) {
+					this.getPropsFromFolder(obj, names);
+				}
+			}
+		}
+		console.log("Looping finished",names)
+		return [...names];
+	}
+
+	removingFromFolders(props: string){
+
+	}
 
 	/** Iterates through all files in a folder and runs callback on each. */
-	searchThroughFolders(folder: TFolder, callback: (file: TFile) => void) {
+	searchThroughFolders(folder: TFolder, callback: (file: TFile) => any) {
 		for (let obj of folder.children) {
 			if (obj instanceof TFolder) {
 				if (this.settings.recursive) {
@@ -221,7 +259,7 @@ export default class MultiPropPlugin extends Plugin {
 	}
 
 	/** Iterates through selection of files and runs a given callback function on that file. */
-	searchThroughFiles(arr: TAbstractFile[], callback: (file: TFile) => void) {
+	searchThroughFiles(arr: TAbstractFile[], callback: (file: TFile) => any) {
 		for (let el of arr) {
 			if (el instanceof TFile && el.extension === "md") {
 				callback(el);

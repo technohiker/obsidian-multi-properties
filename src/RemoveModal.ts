@@ -6,16 +6,20 @@ import { NewPropData } from "./main";
 
 /** Loads a modal and handles form submissions. */
 export class RemoveModal extends Modal {
+	names: string[]
 	submission: (customProps: string[]) => void;
 	component: RemovePropForm;
 
-	constructor(app: App, submission: (customProps: string[]) => void) {
+	constructor(app: App, names: string[], submission: (customProps: string[]) => void) {
 		super(app);
+		this.names = names;
 		this.submission = submission;
+		console.log(this.names);
 	}
 
 	onSubmit(props: string[]) {
-		this.submission(props);
+		//this.submission(props);
+		console.log({props})
 		this.close();
 	}
 
@@ -25,6 +29,7 @@ export class RemoveModal extends Modal {
 		this.component = new RemovePropForm({
 			target: this.contentEl,
 			props: {
+				names: this.names,
 				submission: this.onSubmit.bind(this),
 			},
 		});
