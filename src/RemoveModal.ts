@@ -3,10 +3,12 @@
 import { Modal, App } from "obsidian";
 import RemovePropForm from "./RemovePropForm.svelte";
 import { NewPropData } from "./main";
+import { RemoveConfirmModal } from "./RemoveConfirmModal";
 
 /** Loads a modal and handles form submissions. */
 export class RemoveModal extends Modal {
 	names: string[];
+	props: string[];
 	submission: (customProps: string[]) => void;
 	component: RemovePropForm;
 
@@ -21,10 +23,21 @@ export class RemoveModal extends Modal {
 		console.log(this.names);
 	}
 
+	onConfirm(bool: boolean) {
+		if (bool) {
+			this.submission(this.props);
+			this.close();
+		}
+	}
+
 	onSubmit(props: string[]) {
-		this.submission(props);
-		console.log({ props });
-		this.close();
+		this.props = props;
+		console.log("New Props: ", this.props);
+		new RemoveConfirmModal(
+			this.app,
+			this.props,
+			this.onConfirm.bind(this)
+		).open();
 	}
 
 	onOpen(): void {
