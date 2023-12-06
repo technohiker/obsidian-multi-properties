@@ -1,6 +1,6 @@
 /** Modal to hold form that lets user remove props from selection. */
 
-import { Modal, App } from "obsidian";
+import { Modal, App, Notice } from "obsidian";
 import RemovePropForm from "./RemovePropForm.svelte";
 import { NewPropData } from "./main";
 import { RemoveConfirmModal } from "./RemoveConfirmModal";
@@ -17,6 +17,10 @@ export class RemoveModal extends Modal {
 		names: string[],
 		submission: (customProps: string[]) => void
 	) {
+		if (!names || names.length === 0) {
+			new Notice("No properties to remove");
+			return;
+		}
 		super(app);
 		this.names = names;
 		this.submission = submission;

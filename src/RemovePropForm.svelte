@@ -19,6 +19,9 @@
 
 	function onSubmit() {
 		console.log({ propNames });
+		if (propNames.length === 0) {
+			alert("Please select at least one property to remove.");
+		}
 		submission(propNames);
 	}
 </script>
@@ -48,5 +51,6 @@
 		flex-direction: column;
 		gap: 5px;
 		margin-top: 10px;
+		margin-bottom: 20px;
 	}
 </style>

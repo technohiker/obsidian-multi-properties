@@ -1,25 +1,24 @@
 /** Modal to hold form that lets user remove props from selection. */
 
 import { Modal, App, Notice } from "obsidian";
-import RemoveConfirmForm from "./RemoveConfirmForm.svelte";
+import AddConfirmForm from "./AddConfirmForm.svelte";
+import { NewPropData } from "./main";
 
 /** Loads a modal and handles form submissions. */
-export class RemoveConfirmModal extends Modal {
-	names: string[];
+export class AddConfirmModal extends Modal {
+	props: Map<string, NewPropData>;
 	submission: (bool: boolean) => void;
-	component: RemoveConfirmForm;
+	component: AddConfirmForm;
 
-	constructor(app: App, names: string[], submission: (bool: boolean) => void) {
-		if (!names || names.length === 0) {
-			new Notice("No properties to remove");
-			return;
-		}
+	constructor(
+		app: App,
+		props: Map<string, NewPropData>,
+		submission: (bool: boolean) => void
+	) {
 		super(app);
-		this.names = names;
+		this.props = props;
 		this.submission = submission;
-		console.log(this.names);
 	}
-
 	onSubmit() {
 		this.submission(true);
 		this.close();
@@ -31,12 +30,12 @@ export class RemoveConfirmModal extends Modal {
 	}
 
 	onOpen(): void {
-		this.titleEl.createEl("h2", { text: "Remove Properties" });
+		this.titleEl.createEl("h2", { text: "Add Properties" });
 
-		this.component = new RemoveConfirmForm({
+		this.component = new AddConfirmForm({
 			target: this.contentEl,
 			props: {
-				names: this.names,
+				props: this.props,
 				submission: this.onSubmit.bind(this),
 				cancel: this.onCancel.bind(this),
 			},

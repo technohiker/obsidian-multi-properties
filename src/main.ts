@@ -53,7 +53,10 @@ export default class MultiPropPlugin extends Plugin {
 							.setTitle("Remove props from folder's notes")
 							.onClick(async () => {
 								let names = await this.getPropsFromFolder(folder, new Set());
-								console.log({ names });
+								if (names.length === 0) {
+									new Notice("No properties to remove");
+									return;
+								}
 								new RemoveModal(this.app, names, (props) => {
 									this.searchThroughFolders(
 										folder,
