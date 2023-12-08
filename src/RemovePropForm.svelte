@@ -4,8 +4,6 @@
 
 	names.sort();
 
-	console.log("Form Names: ", names);
-
 	let propNames: string[] = [];
 
 	function handleCheckboxChange(event: any, string: string) {
@@ -18,7 +16,6 @@
 	}
 
 	function onSubmit() {
-		console.log({ propNames });
 		if (propNames.length === 0) {
 			alert("Please select at least one property to remove.");
 		}

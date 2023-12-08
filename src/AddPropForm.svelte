@@ -12,8 +12,6 @@
 	export let overwrite: boolean;
 	export let changeBool: (bool: boolean) => void;
 
-	console.log("Form constructing:", overwrite);
-
 	let countInputs = 1; //Could replace with UUID.
 	let formEl: HTMLFormElement;
 	let errorEl: HTMLDivElement;
@@ -105,7 +103,9 @@
 			if (
 				!(input.previousElementSibling.children[0] instanceof HTMLOptionElement)
 			)
-				return; //TODO: Implement error handling if inputs are inaccurate?  The entire form is dependent on this structure, though.
+				return;
+			//TODO: Implement error handling if inputs are inaccurate?
+			//The entire form is dependent on this structure, though.
 
 			//Get name, value and type from inputs.
 			let name = input.value;

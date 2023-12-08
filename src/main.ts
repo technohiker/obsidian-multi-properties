@@ -218,10 +218,7 @@ export default class MultiPropPlugin extends Plugin {
 	removeProperties(file: TFile, props: string[]) {
 		this.app.fileManager.processFrontMatter(file, (frontmatter) => {
 			for (const prop of props) {
-				if (!frontmatter[prop]) continue;
-				console.log({ frontmatter });
 				delete frontmatter[prop];
-				console.log({ frontmatter });
 			}
 		});
 	}
@@ -232,15 +229,10 @@ export default class MultiPropPlugin extends Plugin {
 		};
 	}
 
-	getPropertiesCallback(file: TFile) {}
-
 	async addPropToSet(set: Set<string>, file: TFile) {
-		console.log({ set });
 		await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
 			for (const key in frontmatter) {
-				console.log("Before adding,", set);
 				set.add(key);
-				console.log("After adding,", set);
 			}
 		});
 		return set;
@@ -250,7 +242,6 @@ export default class MultiPropPlugin extends Plugin {
 		for (let obj of folder.children) {
 			if (obj instanceof TFile && obj.extension === "md") {
 				names = await this.addPropToSet(names, obj);
-				console.log("Operation performed", names);
 			}
 			if (obj instanceof TFolder) {
 				if (this.settings.recursive) {
@@ -258,11 +249,8 @@ export default class MultiPropPlugin extends Plugin {
 				}
 			}
 		}
-		console.log("Looping finished", names);
 		return [...names];
 	}
-
-	removingFromFolders(props: string) {}
 
 	/** Iterates through all files in a folder and runs callback on each. */
 	searchThroughFolders(folder: TFolder, callback: (file: TFile) => any) {
@@ -297,7 +285,6 @@ export default class MultiPropPlugin extends Plugin {
 	async changeSettings(bool: boolean) {
 		this.settings.overwrite = bool;
 		await this.saveSettings();
-		console.log("Overwrite saved:", this.settings.overwrite);
 	}
 }
 

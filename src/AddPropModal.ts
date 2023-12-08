@@ -19,7 +19,6 @@ export class PropModal extends Modal {
 	) {
 		super(app);
 		this.submission = submission;
-		console.log("Constructed:", overwrite);
 		this.overwrite = overwrite;
 		this.changeBool = changeBool;
 	}
@@ -33,7 +32,6 @@ export class PropModal extends Modal {
 
 	updateBool(bool: boolean) {
 		this.overwrite = bool;
-		console.log("Updated:", this.overwrite);
 		this.changeBool(bool);
 	}
 

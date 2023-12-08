@@ -15,7 +15,7 @@ export class RemoveModal extends Modal {
 	constructor(
 		app: App,
 		names: string[],
-		submission: (customProps: string[]) => void,
+		submission: (customProps: string[]) => void
 	) {
 		if (!names || names.length === 0) {
 			new Notice("No properties to remove");
@@ -24,7 +24,6 @@ export class RemoveModal extends Modal {
 		super(app);
 		this.names = names;
 		this.submission = submission;
-		console.log(this.names);
 	}
 
 	onConfirm(bool: boolean) {
@@ -36,7 +35,6 @@ export class RemoveModal extends Modal {
 
 	onSubmit(props: string[]) {
 		this.props = props;
-		console.log("New Props: ", this.props);
 		new RemoveConfirmModal(
 			this.app,
 			this.props,
