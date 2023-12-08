@@ -8,15 +8,18 @@ import { NewPropData } from "./main";
 export class AddConfirmModal extends Modal {
 	props: Map<string, NewPropData>;
 	submission: (bool: boolean) => void;
+	overwrite: boolean;
 	component: AddConfirmForm;
 
 	constructor(
 		app: App,
 		props: Map<string, NewPropData>,
+		overwrite: boolean,
 		submission: (bool: boolean) => void
 	) {
 		super(app);
 		this.props = props;
+		this.overwrite = overwrite;
 		this.submission = submission;
 	}
 	onSubmit() {
@@ -36,6 +39,7 @@ export class AddConfirmModal extends Modal {
 			target: this.contentEl,
 			props: {
 				props: this.props,
+				overwrite: this.overwrite,
 				submission: this.onSubmit.bind(this),
 				cancel: this.onCancel.bind(this),
 			},

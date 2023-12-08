@@ -15,7 +15,7 @@ export class RemoveModal extends Modal {
 	constructor(
 		app: App,
 		names: string[],
-		submission: (customProps: string[]) => void
+		submission: (customProps: string[]) => void,
 	) {
 		if (!names || names.length === 0) {
 			new Notice("No properties to remove");

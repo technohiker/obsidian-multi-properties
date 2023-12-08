@@ -37,7 +37,7 @@ export default class MultiPropPlugin extends Plugin {
 										file,
 										this.addPropertiesCallback(props)
 									);
-								}).open()
+								}, this.settings.overwrite, (bool) => this.changeSettings(bool)).open()
 							);
 					});
 				}
@@ -84,7 +84,7 @@ export default class MultiPropPlugin extends Plugin {
 									files,
 									this.addPropertiesCallback(props)
 								);
-							}).open()
+							}, this.settings.overwrite, (bool) => this.changeSettings(bool)).open()
 						);
 				});
 			})
@@ -128,7 +128,7 @@ export default class MultiPropPlugin extends Plugin {
 									files,
 									this.addPropertiesCallback(props)
 								);
-							}).open();
+							}, this.settings.overwrite, (bool) => this.changeSettings(bool)).open();
 						});
 				});
 			})
@@ -277,6 +277,12 @@ export default class MultiPropPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	async changeSettings(bool: boolean){
+		this.settings.overwrite = bool
+		await this.saveSettings()
+		console.log(this.settings.overwrite)
 	}
 }
 
