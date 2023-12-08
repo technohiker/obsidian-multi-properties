@@ -12,13 +12,15 @@
 	export let overwrite: boolean;
 	export let changeBool: (bool: boolean) => void;
 
+	console.log("Form constructing:", overwrite);
+
 	let countInputs = 1; //Could replace with UUID.
 	let formEl: HTMLFormElement;
 	let errorEl: HTMLDivElement;
 	let alertText = ".";
 
-	function onCheckboxChange(){
-		console.log({overwrite})
+	function onCheckboxChange() {
+		overwrite = !overwrite;
 		changeBool(overwrite);
 	}
 
@@ -153,7 +155,13 @@
 	</p>
 	<p>If you want to add Tags, use the name "tags".</p>
 	<form on:submit|preventDefault bind:this={formEl}>
-		<input type="checkbox" on:change={onCheckboxChange} bind:checked={overwrite} />{"Overwrite existing properties"}
+		<label
+			><input
+				type="checkbox"
+				checked={overwrite}
+				on:change={onCheckboxChange}
+			/>{"Overwrite existing properties"}</label
+		>
 		<div class="modal-inputs-container">
 			{#each inputEls as input (input.id)}
 				<PropInput

@@ -32,12 +32,17 @@ export default class MultiPropPlugin extends Plugin {
 							.setIcon("tag")
 							.setTitle("Add props to folder's notes")
 							.onClick(() =>
-								new PropModal(this.app, (props) => {
-									this.searchThroughFolders(
-										file,
-										this.addPropertiesCallback(props)
-									);
-								}, this.settings.overwrite, (bool) => this.changeSettings(bool)).open()
+								new PropModal(
+									this.app,
+									(props) => {
+										this.searchThroughFolders(
+											file,
+											this.addPropertiesCallback(props)
+										);
+									},
+									this.settings.overwrite,
+									(bool) => this.changeSettings(bool)
+								).open()
 							);
 					});
 				}
@@ -79,12 +84,17 @@ export default class MultiPropPlugin extends Plugin {
 						.setIcon("tag")
 						.setTitle("Add props to selected files")
 						.onClick(() =>
-							new PropModal(this.app, (props) => {
-								this.searchThroughFiles(
-									files,
-									this.addPropertiesCallback(props)
-								);
-							}, this.settings.overwrite, (bool) => this.changeSettings(bool)).open()
+							new PropModal(
+								this.app,
+								(props) => {
+									this.searchThroughFiles(
+										files,
+										this.addPropertiesCallback(props)
+									);
+								},
+								this.settings.overwrite,
+								(bool) => this.changeSettings(bool)
+							).open()
 						);
 				});
 			})
@@ -123,12 +133,17 @@ export default class MultiPropPlugin extends Plugin {
 								new Notice("No files to add properties to.", 4000);
 								return;
 							}
-							new PropModal(this.app, (props) => {
-								this.searchThroughFiles(
-									files,
-									this.addPropertiesCallback(props)
-								);
-							}, this.settings.overwrite, (bool) => this.changeSettings(bool)).open();
+							new PropModal(
+								this.app,
+								(props) => {
+									this.searchThroughFiles(
+										files,
+										this.addPropertiesCallback(props)
+									);
+								},
+								this.settings.overwrite,
+								(bool) => this.changeSettings(bool)
+							).open();
 						});
 				});
 			})
@@ -279,10 +294,10 @@ export default class MultiPropPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	async changeSettings(bool: boolean){
-		this.settings.overwrite = bool
-		await this.saveSettings()
-		console.log(this.settings.overwrite)
+	async changeSettings(bool: boolean) {
+		this.settings.overwrite = bool;
+		await this.saveSettings();
+		console.log("Overwrite saved:", this.settings.overwrite);
 	}
 }
 

@@ -11,10 +11,15 @@ export class PropModal extends Modal {
 	changeBool: (bool: boolean) => void;
 	component: PropForm;
 
-	constructor(app: App, submission: (customProps: Map<string, any>) => void, overwrite: boolean, changeBool: (bool: boolean) => void) {
+	constructor(
+		app: App,
+		submission: (customProps: Map<string, any>) => void,
+		overwrite: boolean,
+		changeBool: (bool: boolean) => void
+	) {
 		super(app);
 		this.submission = submission;
-		console.log({overwrite})
+		console.log("Constructed:", overwrite);
 		this.overwrite = overwrite;
 		this.changeBool = changeBool;
 	}
@@ -28,13 +33,18 @@ export class PropModal extends Modal {
 
 	updateBool(bool: boolean) {
 		this.overwrite = bool;
-		console.log(this.overwrite)
+		console.log("Updated:", this.overwrite);
 		this.changeBool(bool);
 	}
 
 	onSubmit(props: Map<string, NewPropData>) {
 		this.props = props;
-		new AddConfirmModal(this.app, this.props, this.overwrite, this.onConfirm.bind(this)).open();
+		new AddConfirmModal(
+			this.app,
+			this.props,
+			this.overwrite,
+			this.onConfirm.bind(this)
+		).open();
 	}
 
 	onOpen(): void {
