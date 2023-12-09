@@ -57,9 +57,7 @@ export default class MultiPropPlugin extends Plugin {
 						item
 							.setIcon("archive")
 							.setTitle("Remove props from folder's notes")
-							.onClick(async () => {
-								this.createRemoveModal(folder);
-							});
+							.onClick(async () => this.createRemoveModal(folder));
 					});
 				}
 			})
@@ -85,9 +83,7 @@ export default class MultiPropPlugin extends Plugin {
 					item
 						.setIcon("archive")
 						.setTitle("Remove props from selected files")
-						.onClick(async () => {
-							this.createRemoveModal(files);
-						});
+						.onClick(async () => this.createRemoveModal(files));
 				});
 			})
 		);
