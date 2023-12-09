@@ -188,6 +188,7 @@ export default class MultiPropPlugin extends Plugin {
 			iterateFunc = (props: Map<string, any>) =>
 				this.searchFiles(iterable, this.addPropsCallback(props));
 		}
+
 		new PropModal(
 			this.app,
 			iterateFunc,
@@ -213,6 +214,7 @@ export default class MultiPropPlugin extends Plugin {
 			new Notice("No properties to remove");
 			return;
 		}
+
 		new RemoveModal(this.app, names, iterateFunc).open();
 	}
 

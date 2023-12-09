@@ -2,11 +2,7 @@
 	import { tick } from "svelte";
 	import PropInput from "./AddPropInput.svelte";
 	import { NewPropData } from "./main";
-	import {
-		KNOWN_BAD_CHARACTERS,
-		parseValue,
-		removeExtraCommas,
-	} from "./helpers";
+	import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
 
 	export let submission: (props: Map<string, any>) => void;
 	export let overwrite: boolean;
@@ -64,16 +60,6 @@
 
 		if (set.size < inputEls.length) return true;
 		else return false;
-	}
-	/** Remove any invalid tag characters from string.
-	 */
-	function cleanTags(str: string) {
-		//Taken from https://github.com/Gorkycreator/obsidian-quick-tagger/
-		let cleanStr = str;
-		for (let index in KNOWN_BAD_CHARACTERS) {
-			cleanStr = cleanStr.replaceAll(KNOWN_BAD_CHARACTERS[index], "");
-		}
-		return cleanStr;
 	}
 
 	/** Display an error message. */

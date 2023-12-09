@@ -14,8 +14,19 @@ export function removeExtraCommas(str: string): string {
 	return str.replace(/^,*(.*?),*$/g, "$1").replace(/,{2,}/g, ",");
 }
 
+/** Remove any invalid tag characters from string.
+ */
+export function cleanTags(str: string) {
+	//Taken from https://github.com/Gorkycreator/obsidian-quick-tagger/
+	let cleanStr = str;
+	for (let index in KNOWN_BAD_CHARACTERS) {
+		cleanStr = cleanStr.replaceAll(KNOWN_BAD_CHARACTERS[index], "");
+	}
+	return cleanStr;
+}
+
 //Taken from https://github.com/Gorkycreator/obsidian-quick-tagger/
-export const KNOWN_BAD_CHARACTERS = [
+const KNOWN_BAD_CHARACTERS = [
 	"‒",
 	"–",
 	"—",

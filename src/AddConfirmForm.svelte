@@ -10,8 +10,8 @@
 	let btnCancel: HTMLButtonElement;
 
 	const msg = overwrite
-		? "Any pre-existing text props will be overwritten."
-		: "Any pre-existing text props will be appended to.";
+		? "Any pre-existing text props will have their values overwritten."
+		: "Any pre-existing text props will have their values be appended to.";
 
 	onMount(() => {
 		//Focus on cancel to make sure user does not easily submit changes.
@@ -21,7 +21,7 @@
 
 <div>
 	<form on:submit|preventDefault={submission}>
-		<p>{msg}</p>
+		<p class="msg">{msg}</p>
 		<p>The following props will be added:</p>
 		<ul>
 			{#each [...props] as [propName, prop]}
@@ -35,3 +35,10 @@
 		<button on:click={cancel} bind:this={btnCancel}>Cancel</button>
 	</form>
 </div>
+
+<style>
+	.msg {
+		font-weight: bold;
+		padding-bottom: 10px;
+	}
+</style>
