@@ -192,7 +192,7 @@ export default class MultiPropPlugin extends Plugin {
 			this.app,
 			iterateFunc,
 			this.settings.overwrite,
-			this.changeOverwrite
+			this.changeOverwrite.bind(this)
 		).open();
 	}
 
