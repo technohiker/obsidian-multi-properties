@@ -2,7 +2,6 @@
 
 import { Modal, App, Notice } from "obsidian";
 import RemovePropForm from "./RemovePropForm.svelte";
-import { NewPropData } from "./main";
 import { RemoveConfirmModal } from "./RemoveConfirmModal";
 
 /** Loads a modal and handles form submissions. */

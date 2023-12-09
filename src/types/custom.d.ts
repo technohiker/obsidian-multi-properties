@@ -20,18 +20,26 @@ declare module "obsidian" {
 		): EventRef;
 	}
 	interface MetadataCache {
-		getAllPropertyInfos(): PropertyInfos
+		getAllPropertyInfos(): PropertyInfos;
 	}
 }
 
 interface PropertyInfos {
-	[name: string] : Property
+	[name: string]: Property;
 }
 
-interface Property{
-	name: string,
-	type: PropertyTypes,
-	count: number
+interface Property {
+	name: string;
+	type: PropertyTypes;
+	count: number;
 }
 
-type PropertyTypes =  "aliases" | "checkbox" | "date" | "datetime" | "multitext" | "number" | "tags" | "text"
+type PropertyTypes =
+	| "aliases"
+	| "checkbox"
+	| "date"
+	| "datetime"
+	| "multitext"
+	| "number"
+	| "tags"
+	| "text";

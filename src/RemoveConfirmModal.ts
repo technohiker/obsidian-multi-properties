@@ -2,6 +2,7 @@
 
 import { Modal, App, Notice } from "obsidian";
 import RemoveConfirmForm from "./RemoveConfirmForm.svelte";
+import MultiPropPlugin from "./main";
 
 /** Loads a modal and handles form submissions. */
 export class RemoveConfirmModal extends Modal {
@@ -10,11 +11,11 @@ export class RemoveConfirmModal extends Modal {
 	component: RemoveConfirmForm;
 
 	constructor(app: App, names: string[], submission: (bool: boolean) => void) {
+		super(app);
 		if (!names || names.length === 0) {
 			new Notice("No properties to remove");
 			return;
 		}
-		super(app);
 		this.names = names;
 		this.submission = submission;
 	}
