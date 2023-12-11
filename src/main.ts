@@ -179,6 +179,8 @@ export default class MultiPropPlugin extends Plugin {
 		return files;
 	}
 
+	/** Create modal for removing properties.  
+	 * Will call a different function depending on whether files or a folder is used. */
 	createPropModal(iterable: TAbstractFile[] | TFolder) {
 		let iterateFunc;
 		if (iterable instanceof TFolder) {
@@ -197,6 +199,8 @@ export default class MultiPropPlugin extends Plugin {
 		).open();
 	}
 
+	/** Create modal for removing properties.  
+	 * Will call a different function depending on whether files or a folder is used. */
 	async createRemoveModal(iterable: TAbstractFile[] | TFolder) {
 		let names;
 		let iterateFunc;
@@ -218,15 +222,14 @@ export default class MultiPropPlugin extends Plugin {
 		new RemoveModal(this.app, names, iterateFunc).open();
 	}
 
-	/**
-	 * Callback function to run addProperties inside iterative functions.
-	 */
+	/** Callback function to run addProperties inside iterative functions.*/
 	addPropsCallback(props: any) {
 		return (file: TFile) => {
 			addProperties(this.app, file, props, this.settings.overwrite);
 		};
 	}
 
+	/** Callback function to run removeProperties inside iterative functions. */
 	removePropsCallback(props: any) {
 		return (file: TFile) => {
 			removeProperties(this.app, file, props);

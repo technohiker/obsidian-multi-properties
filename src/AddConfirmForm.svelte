@@ -13,8 +13,8 @@
 		? "Any pre-existing text props will have their values overwritten."
 		: "Any pre-existing text props will have their values be appended to.";
 
+	//Focus on cancel to make sure user does not easily submit changes.
 	onMount(() => {
-		//Focus on cancel to make sure user does not easily submit changes.
 		btnCancel.focus();
 	});
 </script>

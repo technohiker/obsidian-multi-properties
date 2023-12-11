@@ -23,6 +23,7 @@ export class PropModal extends Modal {
 		this.changeBool = changeBool;
 	}
 
+	//Run form submission if user clicks confirm.
 	onConfirm(bool: boolean) {
 		if (bool) {
 			this.submission(this.props);
@@ -35,6 +36,7 @@ export class PropModal extends Modal {
 		this.changeBool(bool);
 	}
 
+	//Pull up confirmation form when user submits base form.
 	onSubmit(props: Map<string, NewPropData>) {
 		this.props = props;
 		new AddConfirmModal(

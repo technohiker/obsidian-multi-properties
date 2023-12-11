@@ -1,4 +1,6 @@
-//Adding files-menu method to Obsidian's type file.
+//Adding files-menu and search:results-menu method to Obsidian's type file.
+//These methods exist in Obsidian's code, but are not in the public API.
+//This file will allow TypeScript to run the methods without issue.
 import {} from "obsidian";
 
 declare module "obsidian" {

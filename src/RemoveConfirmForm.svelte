@@ -9,8 +9,8 @@
 
 	const word = names.length > 1 ? "properties" : "property";
 
+	//Focus on cancel to make sure user does not easily submit changes.
 	onMount(() => {
-		//Focus on cancel to make sure user does not easily submit changes.
 		btnCancel.focus();
 	});
 </script>

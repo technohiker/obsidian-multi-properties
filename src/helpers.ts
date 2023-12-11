@@ -1,3 +1,4 @@
+/** Return value from HTML input based on the input's type. */
 export function parseValue(input: HTMLInputElement, type: string) {
 	switch (type) {
 		case "number":
@@ -9,13 +10,12 @@ export function parseValue(input: HTMLInputElement, type: string) {
 	}
 }
 
+/** Remove leading and trailing commas, then replace multiple consecutive commas with a single comma.*/
 export function removeExtraCommas(str: string): string {
-	// Remove leading and trailing commas, then replace multiple consecutive commas with a single comma
 	return str.replace(/^,*(.*?),*$/g, "$1").replace(/,{2,}/g, ",");
 }
 
-/** Remove any invalid tag characters from string.
- */
+/** Remove any invalid tag characters from string.*/
 export function cleanTags(str: string) {
 	//Taken from https://github.com/Gorkycreator/obsidian-quick-tagger/
 	let cleanStr = str;
@@ -25,7 +25,8 @@ export function cleanTags(str: string) {
 	return cleanStr;
 }
 
-//Taken from https://github.com/Gorkycreator/obsidian-quick-tagger/
+//Taken from https://github.com/Gorkycreator/obsidian-quick-tagger/.
+//Commas removed.  Will instead be handled by removeExtraCommas.
 const KNOWN_BAD_CHARACTERS = [
 	"‒",
 	"–",

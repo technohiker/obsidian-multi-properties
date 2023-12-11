@@ -104,6 +104,7 @@
 				input.nextElementSibling,
 				input.nextElementSibling.type
 			);
+			//Check for tags.  Clean them of any invalid characters, then split by comma.
 			if (typeof value === "string") {
 				if (name === "tags") {
 					value = cleanTags(value);
@@ -130,7 +131,7 @@
 		//TODO: Error handling for when user submits with an empty name.
 		//Input validation doesn't trigger unless this code is in.  Why?  I didn't need this before.
 		if(obj.size < inputs.length) return;
-		
+
 		submission(obj);
 	}
 </script>
