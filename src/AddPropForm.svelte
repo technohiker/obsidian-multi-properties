@@ -95,6 +95,10 @@
 
 			//Get name, value and type from inputs.
 			let name = input.value;
+			if (name === "") {
+				input.reportValidity();
+				return;
+			}
 
 			let value: any = parseValue(
 				input.nextElementSibling,
@@ -122,6 +126,11 @@
 
 			obj.set(name, propObj);
 		});
+
+		//TODO: Error handling for when user submits with an empty name.
+		//Input validation doesn't trigger unless this code is in.  Why?  I didn't need this before.
+		if(obj.size < inputs.length) return;
+		
 		submission(obj);
 	}
 </script>
