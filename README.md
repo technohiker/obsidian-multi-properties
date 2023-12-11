@@ -8,7 +8,8 @@ There is now a form that allows you to remove selected Properties from a group o
 
 ## Demo:
 
-![Multi Properties Demo 0-10-1](https://github.com/fez-github/obsidian-multi-properties/assets/75589254/1356b2d4-16f3-42e9-a398-bc940c83b399)
+![Multi Properties Demo 1 0 0](https://github.com/fez-github/obsidian-multi-properties/assets/75589254/8483e98d-cc4f-4770-a0bf-7a5da2cab93d)
+
 
 ## Installation:
 
