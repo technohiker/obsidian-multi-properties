@@ -4,7 +4,10 @@ When installed, right-clicking on a folder will bring up an option to add Proper
 
 You can also select multiple notes with Shift+Mouse, and right-click the selection to get the same effect.
 
+There is now a form that allows you to remove selected Properties from a group of notes. The property selected will be permanently deleted, so use caution.
+
 ## Demo:
+
 ![Multi Properties Demo 0-10-1](https://github.com/fez-github/obsidian-multi-properties/assets/75589254/1356b2d4-16f3-42e9-a398-bc940c83b399)
 
 ## Installation:
@@ -15,13 +18,3 @@ If you wish to install it manually,
 
 1. Download the latest release.
 2. Extract the folder within the release and add it to `[yourVault]/.obsidian/plugins/`.
-
-## Ideas for Features:
-
-- [x] Toggle that lets user choose whether adding another value to a prop name that already exists will either overwrite the property, or append to it.
-- [ ] Would like to add tests for this plugin, but I'm not sure how to handle it for a plugin that writes directly to notes.
-
-## Known Issues:
-
-- [x] There are no safeguards for inputting invalid tags. If a tag contains an invalid character(comma, question mark, etc.), it will be added to the note, but Obsidian will not be able to recognize it.
-- [ ] Error Handling is currently non-existent. If a prop is not added correctly for whatever reason, you will not be notified of this.

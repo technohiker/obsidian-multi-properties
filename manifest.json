@@ -1,7 +1,7 @@
 {
 	"id": "multi-properties",
 	"name": "Multi Properties",
-	"version": "0.10.1",
+	"version": "1.0.0",
 	"minAppVersion": "1.4.13",
 	"description": "Adds Properties to multiple notes at once.  Either right-click a folder, or select multiple notes and right-click the selection.",
 	"author": "fez-github",
