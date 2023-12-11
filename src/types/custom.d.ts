@@ -1,4 +1,6 @@
-//Adding files-menu method to Obsidian's type file.
+//Adding files-menu and search:results-menu method to Obsidian's type file.
+//These methods exist in Obsidian's code, but are not in the public API.
+//This file will allow TypeScript to run the methods without issue.
 import {} from "obsidian";
 
 declare module "obsidian" {
@@ -20,18 +22,26 @@ declare module "obsidian" {
 		): EventRef;
 	}
 	interface MetadataCache {
-		getAllPropertyInfos(): PropertyInfos
+		getAllPropertyInfos(): PropertyInfos;
 	}
 }
 
 interface PropertyInfos {
-	[name: string] : Property
+	[name: string]: Property;
 }
 
-interface Property{
-	name: string,
-	type: PropertyTypes,
-	count: number
+interface Property {
+	name: string;
+	type: PropertyTypes;
+	count: number;
 }
 
-type PropertyTypes =  "aliases" | "checkbox" | "date" | "datetime" | "multitext" | "number" | "tags" | "text"
+type PropertyTypes =
+	| "aliases"
+	| "checkbox"
+	| "date"
+	| "datetime"
+	| "multitext"
+	| "number"
+	| "tags"
+	| "text";

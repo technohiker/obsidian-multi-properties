@@ -1,16 +1,22 @@
 <script lang="ts">
 	import { tick } from "svelte";
-	import PropInput from "./PropInput.svelte";
+	import PropInput from "./AddPropInput.svelte";
 	import { NewPropData } from "./main";
-	import { KNOWN_BAD_CHARACTERS, parseValue, removeExtraCommas } from "./helpers";
+	import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
 
 	export let submission: (props: Map<string, any>) => void;
-	export const overwrite: boolean = true;
+	export let overwrite: boolean;
+	export let changeBool: (bool: boolean) => void;
 
 	let countInputs = 1; //Could replace with UUID.
 	let formEl: HTMLFormElement;
 	let errorEl: HTMLDivElement;
 	let alertText = ".";
+
+	function onCheckboxChange() {
+		overwrite = !overwrite;
+		changeBool(overwrite);
+	}
 
 	//Array of objects that will be passed as props to PropInput.
 	let inputEls = [
@@ -55,16 +61,6 @@
 		if (set.size < inputEls.length) return true;
 		else return false;
 	}
-	/** Remove any invalid tag characters from string.
-	 */
-	function cleanTags(str: string) {
-		//Taken from https://github.com/Gorkycreator/obsidian-quick-tagger/
-		let cleanStr = str;
-		for (let index in KNOWN_BAD_CHARACTERS) {
-			cleanStr = cleanStr.replaceAll(KNOWN_BAD_CHARACTERS[index], "");
-		}
-		return cleanStr;
-	}
 
 	/** Display an error message. */
 	function runError(errorText: string) {
@@ -93,15 +89,25 @@
 			if (
 				!(input.previousElementSibling.children[0] instanceof HTMLOptionElement)
 			)
-				return; //TODO: Implement error handling if inputs are inaccurate?  The entire form is dependent on this structure, though.
+				return;
+			//TODO: Implement error handling if inputs are inaccurate?
+			//The entire form is dependent on this structure, though.
 
 			//Get name, value and type from inputs.
 			let name = input.value;
+			if (name === "") {
+				input.reportValidity();
+				return;
+			}
 
-			let value: any = parseValue(input.nextElementSibling,input.nextElementSibling.type);
-			if(typeof value === "string") {
+			let value: any = parseValue(
+				input.nextElementSibling,
+				input.nextElementSibling.type
+			);
+			//Check for tags.  Clean them of any invalid characters, then split by comma.
+			if (typeof value === "string") {
 				if (name === "tags") {
-				value = cleanTags(value);
+					value = cleanTags(value);
 				}
 				if (value.contains(",")) {
 					let str = removeExtraCommas(value);
@@ -121,6 +127,11 @@
 
 			obj.set(name, propObj);
 		});
+
+		//TODO: Error handling for when user submits with an empty name.
+		//Input validation doesn't trigger unless this code is in.  Why?  I didn't need this before.
+		if(obj.size < inputs.length) return;
+
 		submission(obj);
 	}
 </script>
@@ -140,6 +151,13 @@
 	</p>
 	<p>If you want to add Tags, use the name "tags".</p>
 	<form on:submit|preventDefault bind:this={formEl}>
+		<label
+			><input
+				type="checkbox"
+				checked={overwrite}
+				on:change={onCheckboxChange}
+			/>{"Overwrite existing properties"}</label
+		>
 		<div class="modal-inputs-container">
 			{#each inputEls as input (input.id)}
 				<PropInput
