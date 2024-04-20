@@ -149,7 +149,7 @@
   </p>
   <p>
     If you want to make a List property, use the Text data type and separate
-    each value with commas.
+    each value with a "{delimiter}".
   </p>
   <p>If you want to add Tags, use the name "tags".</p>
   <form on:submit|preventDefault bind:this={formEl}>

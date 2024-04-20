@@ -1,4 +1,12 @@
-import { Menu, Notice, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
+import {
+  Menu,
+  Notice,
+  Plugin,
+  TAbstractFile,
+  TFile,
+  TFolder,
+  CachedMetadata,
+} from "obsidian";
 import { PropModal } from "./AddPropModal";
 import { MultiPropSettings, SettingTab } from "./SettingTab";
 import { RemoveModal } from "./RemoveModal";
@@ -34,6 +42,7 @@ export default class MultiPropPlugin extends Plugin {
 
   async onload() {
     await this.loadSettings();
+    console.log(this.app.metadataCache);
     this.addSettingTab(new SettingTab(this.app, this));
 
     /** Add menu item on folder right-click to add properties to all notes in folder.
