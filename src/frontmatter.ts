@@ -47,9 +47,8 @@ export async function addPropToSet(app: App, set: Set<string>, file: TFile) {
 export function removeProperties(app: App, file: TFile, props: string[]) {
   app.fileManager.processFrontMatter(file, (frontmatter) => {
     for (const prop of props) {
-      console.log(prop);
-      console.log(frontmatter);
-      delete frontmatter[prop];
+      //delete frontmatter[prop];
+      frontmatter[prop] = undefined; //"Hacky" workaround, commented code will work in later version."
     }
   });
 }
