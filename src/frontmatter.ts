@@ -21,12 +21,14 @@ export function addProperties(
       let type1 = value.type;
       let type2 = propCache[key.toLowerCase()].type;
 
-      if (!canBeAppended(type1, type2)) {
-        frontmatter[key] = value.data;
-        continue;
-      } else {
+      if (canBeAppended(type1, type2)) {
+        if (frontmatter[key] === value.data) continue; //Leave identical values alone.
+
         let arr = mergeIntoArrays(frontmatter[key], value.data);
         frontmatter[key] = arr;
+        continue;
+      } else {
+        frontmatter[key] = value.data;
         continue;
       }
     }
