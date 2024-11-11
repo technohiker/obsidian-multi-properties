@@ -1,3 +1,10 @@
+# Todos
+- [ ] On AddPropForm, examine flex-grow.  The name field shrinks to the minimum amount on Android.  How to prevent this?  Minimum value?
+- [ ] When pushing new update, do it in `{id}-{v}.zip` format.
+- [ ] Record attempt to reproduce recursive props not appearing.
+- [ ] Change empty string in prop value to null value.  Currently commented out on AddPropForm 119.  Test it.
+- [ ] Load a template file into the GUI.
+
 # Multi-Properties
 
 Obsidian.md's Properties are very useful for adding miscellaneous information on notes, but there is currently no functionality for adding properties to multiple files at once.  To make things more convenient for myself and others, I decided to make a plugin to introduce that functionality.

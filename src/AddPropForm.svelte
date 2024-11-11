@@ -116,6 +116,8 @@
         }
       }
 
+      //if(value === "") value === null
+
       let inputType: string =
         input.previousElementSibling.children[0].innerText.toLowerCase();
 
