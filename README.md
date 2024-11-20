@@ -1,10 +1,10 @@
 # Todos
-- [ ] On AddPropForm, examine flex-grow.  The name field shrinks to the minimum amount on Android.  How to prevent this?  Minimum value?
+- [x] On AddPropForm, examine flex-grow.  The name field shrinks to the minimum amount on Android.  How to prevent this?  Used width: auto.
 - [ ] When pushing new update, do it in `{id}-{v}.zip` format.
 - [ ] Record attempt to reproduce recursive props not appearing.
 - [x] Change empty string in prop value to null value.  Currently commented out on AddPropForm 119.  Test it.
 - [ ] Load a template file into the GUI.
-- [ ] No multi-selection for bookmarks.
+- [ ] No multi-selection for bookmarks.(when event is available)
 
 # Multi-Properties
 
