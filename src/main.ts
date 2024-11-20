@@ -20,7 +20,7 @@ const defaultSettings = {
 
 export interface NewPropData {
   type: string;
-  data: string | string[];
+  data: string | string[] | null;
   overwrite: boolean;
   delimiter: string;
 }

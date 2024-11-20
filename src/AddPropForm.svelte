@@ -115,8 +115,7 @@
           value = str.split(delimiter);
         }
       }
-
-      //if(value === "") value === null
+      if(value === "") value = null
 
       let inputType: string =
         input.previousElementSibling.children[0].innerText.toLowerCase();
@@ -135,6 +134,8 @@
     //TODO: Error handling for when user submits with an empty name.
     //Input validation doesn't trigger unless this code is in.  Why?  I didn't need this before.
     if (obj.size < inputs.length) return;
+
+    console.log(obj)
 
     submission(obj);
   }

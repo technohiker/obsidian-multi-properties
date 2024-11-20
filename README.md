@@ -2,8 +2,9 @@
 - [ ] On AddPropForm, examine flex-grow.  The name field shrinks to the minimum amount on Android.  How to prevent this?  Minimum value?
 - [ ] When pushing new update, do it in `{id}-{v}.zip` format.
 - [ ] Record attempt to reproduce recursive props not appearing.
-- [ ] Change empty string in prop value to null value.  Currently commented out on AddPropForm 119.  Test it.
+- [x] Change empty string in prop value to null value.  Currently commented out on AddPropForm 119.  Test it.
 - [ ] Load a template file into the GUI.
+- [ ] No multi-selection for bookmarks.
 
 # Multi-Properties
 

@@ -12,6 +12,7 @@ export function addProperties(
   let propCache = app.metadataCache.getAllPropertyInfos();
   app.fileManager.processFrontMatter(file, (frontmatter) => {
     for (const [key, value] of props) {
+      console.log(value);
       if (!frontmatter[key] || overwrite) {
         frontmatter[key] = value.data;
         continue;
@@ -23,6 +24,7 @@ export function addProperties(
 
       if (canBeAppended(type1, type2)) {
         if (frontmatter[key] === value.data) continue; //Leave identical values alone.
+        if(!value.data) continue; //Do not merge empty values.
 
         let arr = mergeIntoArrays(frontmatter[key], value.data);
         frontmatter[key] = arr;
