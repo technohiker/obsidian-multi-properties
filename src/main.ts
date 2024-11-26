@@ -137,21 +137,25 @@ export default class MultiPropPlugin extends Plugin {
   }
   async getPropsFromFolder(folder: TFolder, names: Set<string>) {
     for (let obj of folder.children) {
+      console.log(obj.name)
+      console.log(names)
       if (obj instanceof TFile && obj.extension === "md") {
         names = await addPropToSet(this.app, names, obj);
       }
       if (obj instanceof TFolder) {
         if (this.settings.recursive) {
-          this.getPropsFromFolder(obj, names);
+          await this.getPropsFromFolder(obj, names);
         }
       }
     }
-    return [...names];
+    return [...names].sort();
   }
 
   async getPropsFromFiles(files: TAbstractFile[], names: Set<string>) {
     for (let file of files) {
       if (file instanceof TFile && file.extension === "md") {
+        console.log({file})
+        console.log({names})
         names = await addPropToSet(this.app, names, file);
       }
     }
@@ -219,6 +223,7 @@ export default class MultiPropPlugin extends Plugin {
 
     if (iterable instanceof TFolder) {
       names = await this.getPropsFromFolder(iterable, new Set());
+      console.log("Final Names", names)
       iterateFunc = (props: string[]) =>
         this.searchFolders(iterable, this.removePropsCallback(props));
     } else {

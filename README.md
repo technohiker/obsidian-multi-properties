@@ -1,10 +1,15 @@
 # Todos
 - [x] On AddPropForm, examine flex-grow.  The name field shrinks to the minimum amount on Android.  How to prevent this?  Used width: auto.
 - [ ] When pushing new update, do it in `{id}-{v}.zip` format.
-- [ ] Record attempt to reproduce recursive props not appearing.
 - [x] Change empty string in prop value to null value.  Currently commented out on AddPropForm 119.  Test it.
 - [ ] Load a template file into the GUI.
-- [ ] No multi-selection for bookmarks.(when event is available)
+- [x] No multi-selection for bookmarks.(when event is available)
+
+# Patch Notes:
+- Props with no value typed in will leave an empty value on the note file, instead of an empty string as it used to.("")
+- `name` Prop field no longer scales down with screen size.  Now the form will properly scroll when overflowing.  Addresses an issue where the `name` field could not be selected on mobile.
+- Fixed issue where some Props in subfolders were not being acquired when attempting to remove Props from a folder.
+- Props that appear on Remove Prop list are now alphabetized.
 
 # Multi-Properties
 

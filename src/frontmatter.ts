@@ -41,6 +41,7 @@ export function addProperties(
 export async function addPropToSet(app: App, set: Set<string>, file: TFile) {
   await app.fileManager.processFrontMatter(file, (frontmatter) => {
     for (const key in frontmatter) {
+      console.log({key})
       set.add(key);
     }
   });
