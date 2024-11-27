@@ -5,17 +5,18 @@ import {
   TAbstractFile,
   TFile,
   TFolder,
-  CachedMetadata,
 } from "obsidian";
 import { PropModal } from "./AddPropModal";
 import { MultiPropSettings, SettingTab } from "./SettingTab";
 import { RemoveModal } from "./RemoveModal";
 import { addProperties, addPropToSet, removeProperties } from "./frontmatter";
+import { PropertyTypes } from "./types/custom";
 
-const defaultSettings = {
+const defaultSettings: MultiPropSettings = {
   overwrite: false,
   recursive: true,
   delimiter: ",",
+  defaultPropPath: ""
 };
 
 export interface NewPropData {
@@ -42,7 +43,11 @@ export default class MultiPropPlugin extends Plugin {
 
   async onload() {
     await this.loadSettings();
-    console.log(this.app.metadataCache);
+
+    const file = this.app.vault.getAbstractFileByPath(`Folder1/Note2.md`)
+    
+    console.log(this.readYamlProperties(file as TFile))
+
     this.addSettingTab(new SettingTab(this.app, this));
 
     /** Add menu item on folder right-click to add properties to all notes in folder.
@@ -137,8 +142,6 @@ export default class MultiPropPlugin extends Plugin {
   }
   async getPropsFromFolder(folder: TFolder, names: Set<string>) {
     for (let obj of folder.children) {
-      console.log(obj.name)
-      console.log(names)
       if (obj instanceof TFile && obj.extension === "md") {
         names = await addPropToSet(this.app, names, obj);
       }
@@ -154,8 +157,6 @@ export default class MultiPropPlugin extends Plugin {
   async getPropsFromFiles(files: TAbstractFile[], names: Set<string>) {
     for (let file of files) {
       if (file instanceof TFile && file.extension === "md") {
-        console.log({file})
-        console.log({names})
         names = await addPropToSet(this.app, names, file);
       }
     }
@@ -194,10 +195,11 @@ export default class MultiPropPlugin extends Plugin {
     return files;
   }
 
-  /** Create modal for removing properties.
+  /** Create modal for adding properties.
    * Will call a different function depending on whether files or a folder is used. */
   createPropModal(iterable: TAbstractFile[] | TFolder) {
     let iterateFunc;
+    this.app.vault.getAllLoadedFiles
     if (iterable instanceof TFolder) {
       iterateFunc = (props: Map<string, any>) =>
         this.searchFolders(iterable, this.addPropsCallback(props));
@@ -205,6 +207,25 @@ export default class MultiPropPlugin extends Plugin {
       iterateFunc = (props: Map<string, any>) =>
         this.searchFiles(iterable, this.addPropsCallback(props));
     }
+
+
+    const file = this.app.vault.getAbstractFileByPath(`${this.settings.defaultPropPath}.md`)
+    console.log(file) 
+
+    let defaultProps
+    if(file === null){
+      defaultProps = []
+    } 
+    else{
+      try{
+        defaultProps = this.readYamlProperties(file as TFile)
+      }
+      catch(e){
+        new Notice(`${e}.  Check if you entered a valid path.`)
+      }
+    }
+
+    console.log(defaultProps)
 
     new PropModal(
       this.app,
@@ -237,6 +258,65 @@ export default class MultiPropPlugin extends Plugin {
     }
 
     new RemoveModal(this.app, names, iterateFunc).open();
+  }
+
+  /** Read through a given file and get name/value of props. 
+   *  Revised from https://forum.obsidian.md/t/how-to-programmatically-access-a-files-properties-types/77826/4.
+  */
+  readYamlProperties(file: TFile){
+
+    const metadata = this.app.metadataCache.getFileCache(file); 
+    const frontmatter = metadata?.frontmatter
+
+    if (!frontmatter) {
+      new Notice("Not a valid Props template.")
+      return;
+    } 
+
+    const allPropsWithType = this.app.metadataCache.getAllPropertyInfos()
+    //console.log(allPropsWithType)
+
+    let result: {name: string, value: any, type: PropertyTypes}[] = []
+
+    for(let [key,value] of Object.entries(frontmatter)){
+      const keyLower = key.toLowerCase()
+      const obj = {name: key, value: value, type: allPropsWithType[keyLower].type}
+
+      result.push(obj)
+    }
+    return result
+    // const allTypes = this.app.metadataTypeManager.types
+    // console.table(allTypes)
+
+    // let result = []
+    // for (const [fmKey, fmValue] of Object.entries(frontmatter)) {
+    //   const fmKeyLower = fmKey.toLowerCase() 
+    //   result.push([fmKey, allPropWithType[fmKeyLower]?.type, allTypes[fmKeyLower]?.type])
+// }
+
+
+    // let content = await (await this.app.vault.cachedRead(file)).split('\n')
+    // console.log(content)
+
+    // if(content[0] !== `---`){
+    //   new Notice("Not a valid Props template.")
+    //   return;
+    // }
+
+    // const map = new Map();
+    // let i = 1
+
+    // while(i < content.length){
+    //   if(content[i] === `---`) break;
+
+    //   const [name, value] = content[i].split(': ')
+    //   map.set(name,value);
+
+    //   i++;
+    // }
+    // console.log({map})
+
+    // return map
   }
 
   /** Callback function to run addProperties inside iterative functions.*/

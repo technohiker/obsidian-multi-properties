@@ -4,10 +4,15 @@
 	export let isFirst: boolean;
 	export let removeInput: (id: number) => void;
 	export let id: number;
+
+	export let typeVal: string = "text"
 	export let nameVal: string = "";
+	export let valueVal: string = ""
 
 	let inputType: string;
 	let inputEl: HTMLInputElement;
+
+	let valueEl: HTMLInputElement;
 
 	const options: Record<string, string> = {
 		Text: "string",
@@ -23,6 +28,11 @@
 		inputEl.focus();
 		inputEl.select();
 	});
+
+	function changeType(type: string){
+		valueEl.type = type
+		console.log(valueEl.value)
+	}
 </script>
 
 <div class="modal-input-container">
@@ -33,7 +43,7 @@
 		tabindex={isFirst ? -1 : 0}
 		href="href">X</a
 	>
-	<select id="type-input" class="flex-obj" bind:value={inputType}>
+	<select id="type-input" class="flex-obj" bind:value={inputType} on:change={() => changeType(inputType)}>
 		{#each Object.keys(options) as key}
 			<option value={options[key]}>{key}</option>
 		{/each}
@@ -48,11 +58,12 @@
 		bind:value={nameVal}
 		required
 	/>
-	<input
+	<input bind:this={valueEl}
 		id="value-input"
-		type={inputType}
+		type="text"
 		name="value[]"
 		placeholder="value"
+		bind:value={valueVal}
 		class="value-input flex-obj"
 	/>
 </div>

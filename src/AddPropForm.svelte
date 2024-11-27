@@ -24,7 +24,9 @@
     {
       id: 1,
       isFirst: true,
+      typeDef: "",
       nameDef: "",
+      valueDef: ""
     },
   ];
 
@@ -35,7 +37,9 @@
     const newInput = {
       id: countInputs,
       isFirst: false,
+      typeDef: "",
       nameDef: "",
+      valueDef: ""
     };
 
     inputEls = [...inputEls, newInput];
@@ -168,7 +172,9 @@
         <PropInput
           isFirst={input.isFirst}
           id={input.id}
+          bind:typeVal={input.typeDef}
           bind:nameVal={input.nameDef}
+          valueVal={input.valueDef}
           {removeInput}
         />
       {/each}
