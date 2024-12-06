@@ -44,10 +44,6 @@ export default class MultiPropPlugin extends Plugin {
   async onload() {
     await this.loadSettings();
 
-    const file = this.app.vault.getAbstractFileByPath(`Folder1/Note2.md`)
-    
-    console.log(this.readYamlProperties(file as TFile))
-
     this.addSettingTab(new SettingTab(this.app, this));
 
     /** Add menu item on folder right-click to add properties to all notes in folder.
@@ -208,30 +204,29 @@ export default class MultiPropPlugin extends Plugin {
         this.searchFiles(iterable, this.addPropsCallback(props));
     }
 
-
-    const file = this.app.vault.getAbstractFileByPath(`${this.settings.defaultPropPath}.md`)
-    console.log(file) 
-
-    let defaultProps
-    if(file === null){
-      defaultProps = []
-    } 
+    let defaultProps: { name: string; value: any; type: PropertyTypes; }[]
+    if(!this.settings.defaultPropPath){
+      defaultProps = [{name: "", value: "", type: "text"}]
+    }
     else{
       try{
-        defaultProps = this.readYamlProperties(file as TFile)
+        const file = this.app.vault.getAbstractFileByPath(`${this.settings.defaultPropPath}.md`)
+        let tmp = this.readYamlProperties(file as TFile)
+        if(tmp === undefined) throw Error("Undefined path.")
+        defaultProps = tmp
       }
       catch(e){
-        new Notice(`${e}.  Check if you entered a valid path.`)
+        new Notice(`${e}.  Check if you entered a valid path in the Default Props File setting.`, 4000)
+        defaultProps = []
       }
     }
-
-    console.log(defaultProps)
 
     new PropModal(
       this.app,
       iterateFunc,
       this.settings.overwrite,
       this.settings.delimiter,
+      defaultProps,
       this.changeOverwrite.bind(this)
     ).open();
   }
@@ -244,7 +239,6 @@ export default class MultiPropPlugin extends Plugin {
 
     if (iterable instanceof TFolder) {
       names = await this.getPropsFromFolder(iterable, new Set());
-      console.log("Final Names", names)
       iterateFunc = (props: string[]) =>
         this.searchFolders(iterable, this.removePropsCallback(props));
     } else {
@@ -253,7 +247,7 @@ export default class MultiPropPlugin extends Plugin {
         this.searchFiles(iterable, this.removePropsCallback(props));
     }
     if (names.length === 0) {
-      new Notice("No properties to remove");
+      new Notice("No properties to remove", 4000);
       return;
     }
 
@@ -268,13 +262,14 @@ export default class MultiPropPlugin extends Plugin {
     const metadata = this.app.metadataCache.getFileCache(file); 
     const frontmatter = metadata?.frontmatter
 
+    console.log({frontmatter})
+
     if (!frontmatter) {
-      new Notice("Not a valid Props template.")
+      new Notice("Not a valid Props template.", 4000)
       return;
     } 
 
     const allPropsWithType = this.app.metadataCache.getAllPropertyInfos()
-    //console.log(allPropsWithType)
 
     let result: {name: string, value: any, type: PropertyTypes}[] = []
 
@@ -285,38 +280,6 @@ export default class MultiPropPlugin extends Plugin {
       result.push(obj)
     }
     return result
-    // const allTypes = this.app.metadataTypeManager.types
-    // console.table(allTypes)
-
-    // let result = []
-    // for (const [fmKey, fmValue] of Object.entries(frontmatter)) {
-    //   const fmKeyLower = fmKey.toLowerCase() 
-    //   result.push([fmKey, allPropWithType[fmKeyLower]?.type, allTypes[fmKeyLower]?.type])
-// }
-
-
-    // let content = await (await this.app.vault.cachedRead(file)).split('\n')
-    // console.log(content)
-
-    // if(content[0] !== `---`){
-    //   new Notice("Not a valid Props template.")
-    //   return;
-    // }
-
-    // const map = new Map();
-    // let i = 1
-
-    // while(i < content.length){
-    //   if(content[i] === `---`) break;
-
-    //   const [name, value] = content[i].split(': ')
-    //   map.set(name,value);
-
-    //   i++;
-    // }
-    // console.log({map})
-
-    // return map
   }
 
   /** Callback function to run addProperties inside iterative functions.*/

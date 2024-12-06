@@ -1,48 +1,61 @@
 <script lang="ts">
-  import { tick } from "svelte";
+  import { onMount, tick } from "svelte";
   import PropInput from "./AddPropInput.svelte";
   import { NewPropData } from "./main";
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
+  import type { PropertyTypes } from "./types/custom";
 
   export let submission: (props: Map<string, any>) => void;
   export let overwrite: boolean;
   export let delimiter: string = ",";
+  export let defaultProps: { name: string; value: any; type: PropertyTypes; }[] = []
   export let changeBool: (bool: boolean) => void;
 
-  let countInputs = 1; //Could replace with UUID.
+  let countInputs = 0; //Could replace with UUID.
   let formEl: HTMLFormElement;
   let errorEl: HTMLDivElement;
   let alertText = ".";
+
+  let inputEls: {
+    id: number;
+    isFirst: boolean;
+    typeDef: PropertyTypes;
+    nameDef: string;
+    valueDef: any;
+    }[] = []
 
   function onCheckboxChange() {
     overwrite = !overwrite;
     changeBool(overwrite);
   }
 
-  //Array of objects that will be passed as props to PropInput.
-  let inputEls = [
-    {
-      id: 1,
-      isFirst: true,
-      typeDef: "",
-      nameDef: "",
-      valueDef: ""
-    },
-  ];
+  onMount(() => {
+      addInputs(defaultProps)
+  })
 
   /** Add new input to inputEls */
-  function addInput() {
-    countInputs++;
+  function addInputs(inputs: {type: PropertyTypes, name: string, value: any}[] = [{type: "text", name: "", value: ""}]) {
 
-    const newInput = {
-      id: countInputs,
-      isFirst: false,
-      typeDef: "",
-      nameDef: "",
-      valueDef: ""
-    };
+    let arr = []
+    for(let input of inputs){
+      countInputs++
+      arr.push({
+        id: countInputs,
+        isFirst: countInputs === 1 ? true : false,
+        typeDef: input.type,
+        nameDef: input.name,
+        valueDef: input.value
+      })
+    }
+    // const newInput = {
+    //   id: countInputs,
+    //   isFirst: countInputs === 1 ? true : false,
+    //   typeDef: type,
+    //   nameDef: name,
+    //   valueDef: value
+    // };
 
-    inputEls = [...inputEls, newInput];
+    inputEls = [...inputEls, ...arr];
   }
 
   /** Remove input from inputEls */
@@ -180,7 +193,7 @@
       {/each}
     </div>
     <div class="modal-add-container">
-      <a on:click={addInput} class="a-btn" href="href">Add</a>
+      <a on:click={() => addInputs([{type: "text", name: "", value: ""}])} class="a-btn" href="href">Add</a>
     </div>
     <div class="modal-button-container">
       <button on:click={onSubmit} class="btn-submit">Submit</button>

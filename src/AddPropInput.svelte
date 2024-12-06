@@ -9,29 +9,44 @@
 	export let nameVal: string = "";
 	export let valueVal: string = ""
 
-	let inputType: string;
+	//let inputType: string;
 	let inputEl: HTMLInputElement;
 
 	let valueEl: HTMLInputElement;
+	let selectEl: HTMLSelectElement
 
 	const options: Record<string, string> = {
-		Text: "string",
-		Number: "number",
-		Checkbox: "checkbox",
-		Date: "date",
-		Datetime: "datetime-local",
+		text: "string",
+		multitext: "string",
+		number: "number",
+		checkbox: "checkbox",
+		date: "date",
+		datetime: "datetime-local",
 	};
+
+	// const options: Record<string, string> = {
+	// 	string: "text",
+	// 	number: "number",
+	// 	checkbox: "checkbox",
+	// 	date: "date",
+	// 	Datetime: "datetime-local"
+	// }
 
 	//Set focus on input when modal is opened so user can immediately type into it.
 	onMount(async () => {
+		console.log({typeVal})
 		await tick();
 		inputEl.focus();
 		inputEl.select();
+		console.log(selectEl.value)
 	});
 
 	function changeType(type: string){
-		valueEl.type = type
-		console.log(valueEl.value)
+		//valueEl.type = type
+		valueEl.type = options[type]
+		// console.log({type})
+		// console.log(options)
+		// console.log(options[type])
 	}
 </script>
 
@@ -43,7 +58,7 @@
 		tabindex={isFirst ? -1 : 0}
 		href="href">X</a
 	>
-	<select id="type-input" class="flex-obj" bind:value={inputType} on:change={() => changeType(inputType)}>
+	<select bind:this={selectEl} id="type-input" class="flex-obj" bind:value={typeVal} on:change={() => changeType(typeVal)}>
 		{#each Object.keys(options) as key}
 			<option value={options[key]}>{key}</option>
 		{/each}
