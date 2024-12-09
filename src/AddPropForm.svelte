@@ -30,7 +30,7 @@
   }
 
   onMount(() => {
-      addInputs(defaultProps)
+    defaultProps.length > 0 ? addInputs(defaultProps) : addInputs([{type: "text" ,name: "", value: ""}])
   })
 
   /** Add new input to inputEls */
