@@ -5,15 +5,12 @@
 	export let removeInput: (id: number) => void;
 	export let id: number;
 
-	export let typeVal: string = "text"
+	export let typeVal: string = "text";
 	export let nameVal: string = "";
-	export let valueVal: string = ""
+	export let valueVal: string = "";
 
-	//let inputType: string;
 	let inputEl: HTMLInputElement;
-
 	let valueEl: HTMLInputElement;
-	let selectEl: HTMLSelectElement
 
 	let optionVal: string
 	//Form names tied to input types.
@@ -34,12 +31,12 @@
 		datetime: "Datetime"
 	}
 
-	//Set focus on input when modal is opened so user can immediately type into it.
 	onMount(async () => {
-		await tick();
+		await tick();  //Focus won't work right without tick().
 		inputEl.focus();
 		inputEl.select();
-		optionVal = options[convertProps[typeVal]]
+
+		optionVal = options[convertProps[typeVal]]  //Load default type.
 
 	});
 
@@ -56,7 +53,7 @@
 		tabindex={isFirst ? -1 : 0}
 		href="href">X</a
 	>
-	<select bind:this={selectEl} id="type-input" class="flex-obj" bind:value={optionVal} on:change={() => changeType(optionVal)}>
+	<select id="type-input" class="flex-obj" bind:value={optionVal} on:change={() => changeType(optionVal)}>
 		{#each Object.keys(options) as key}
 			<option value={options[key]}>{key}</option>
 		{/each}

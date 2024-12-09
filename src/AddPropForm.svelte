@@ -47,20 +47,11 @@
         valueDef: input.value
       })
     }
-    // const newInput = {
-    //   id: countInputs,
-    //   isFirst: countInputs === 1 ? true : false,
-    //   typeDef: type,
-    //   nameDef: name,
-    //   valueDef: value
-    // };
-
     inputEls = [...inputEls, ...arr];
   }
 
   /** Remove input from inputEls */
   async function removeInput(id: number) {
-    //Remove this input.
     inputEls = inputEls.filter((input) => input.id !== id);
     await tick();
 
