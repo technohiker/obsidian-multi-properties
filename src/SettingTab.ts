@@ -61,15 +61,15 @@ export class SettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName("Default Props File")
       .setDesc(
-        "Select a file with properties that you want to load into the Multi Properties form by default.  Type in the full path of the desired file.(ex. Templates/PropFile1)"
+        "Select a file with properties that you want to load into the Multi Properties form by default.  Type in the full path of the desired file.(ex. Templates/PropFile 1)"
       )
       .addText((text) => {
-        text.setValue(this.plugin.settings.defaultPropPath)
+        text.setValue(this.plugin.settings.defaultPropPath);
         text.onChange(async (value) => {
-          this.plugin.settings.defaultPropPath = value
+          this.plugin.settings.defaultPropPath = value;
           await this.plugin.saveSettings();
-        })
-      })
+        });
+      });
   }
 }
 
@@ -77,5 +77,5 @@ export interface MultiPropSettings {
   overwrite: boolean;
   recursive: boolean;
   delimiter: string;
-  defaultPropPath: string
+  defaultPropPath: string;
 }
