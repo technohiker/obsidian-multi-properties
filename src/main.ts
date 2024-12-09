@@ -216,7 +216,7 @@ export default class MultiPropPlugin extends Plugin {
         defaultProps = tmp
       }
       catch(e){
-        new Notice(`${e}.  Check if you entered a valid path in the Default Props File setting.`, 4000)
+        new Notice(`${e}.  Check if you entered a valid path in the Default Props File setting.`, 10000)
         defaultProps = []
       }
     }

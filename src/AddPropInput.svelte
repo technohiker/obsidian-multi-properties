@@ -15,38 +15,36 @@
 	let valueEl: HTMLInputElement;
 	let selectEl: HTMLSelectElement
 
+	let optionVal: string
+	//Form names tied to input types.
 	const options: Record<string, string> = {
-		text: "string",
-		multitext: "string",
-		number: "number",
-		checkbox: "checkbox",
-		date: "date",
-		datetime: "datetime-local",
+		Text: "string",
+		Number: "number",
+		Checkbox: "checkbox",
+		Date: "date",
+		Datetime: "datetime-local",
 	};
-
-	// const options: Record<string, string> = {
-	// 	string: "text",
-	// 	number: "number",
-	// 	checkbox: "checkbox",
-	// 	date: "date",
-	// 	Datetime: "datetime-local"
-	// }
+	//Match Obsidian data types to form names.
+	const convertProps: Record<string, string> = {
+		text: "Text",
+		multitext: "Text",
+		number: "Number",
+		checkbox: "Checkbox",
+		date: "Date",
+		datetime: "Datetime"
+	}
 
 	//Set focus on input when modal is opened so user can immediately type into it.
 	onMount(async () => {
-		console.log({typeVal})
 		await tick();
 		inputEl.focus();
 		inputEl.select();
-		console.log(selectEl.value)
+		optionVal = options[convertProps[typeVal]]
+
 	});
 
 	function changeType(type: string){
-		//valueEl.type = type
-		valueEl.type = options[type]
-		// console.log({type})
-		// console.log(options)
-		// console.log(options[type])
+		valueEl.type = type
 	}
 </script>
 
@@ -58,7 +56,7 @@
 		tabindex={isFirst ? -1 : 0}
 		href="href">X</a
 	>
-	<select bind:this={selectEl} id="type-input" class="flex-obj" bind:value={typeVal} on:change={() => changeType(typeVal)}>
+	<select bind:this={selectEl} id="type-input" class="flex-obj" bind:value={optionVal} on:change={() => changeType(optionVal)}>
 		{#each Object.keys(options) as key}
 			<option value={options[key]}>{key}</option>
 		{/each}

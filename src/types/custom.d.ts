@@ -38,10 +38,10 @@ interface Property {
 
 type PropertyTypes =
 	| "aliases"
+	| "tags"
 	| "checkbox"
 	| "date"
 	| "datetime"
 	| "multitext"
 	| "number"
-	| "tags"
 	| "text";
