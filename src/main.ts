@@ -1,11 +1,4 @@
-import {
-  Menu,
-  Notice,
-  Plugin,
-  TAbstractFile,
-  TFile,
-  TFolder,
-} from "obsidian";
+import { Menu, Notice, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 import { PropModal } from "./AddPropModal";
 import { MultiPropSettings, SettingTab } from "./SettingTab";
 import { RemoveModal } from "./RemoveModal";
@@ -16,7 +9,7 @@ const defaultSettings: MultiPropSettings = {
   overwrite: false,
   recursive: true,
   delimiter: ",",
-  defaultPropPath: ""
+  defaultPropPath: "",
 };
 
 export interface NewPropData {
@@ -195,7 +188,7 @@ export default class MultiPropPlugin extends Plugin {
    * Will call a different function depending on whether files or a folder is used. */
   createPropModal(iterable: TAbstractFile[] | TFolder) {
     let iterateFunc;
-    this.app.vault.getAllLoadedFiles
+    this.app.vault.getAllLoadedFiles;
     if (iterable instanceof TFolder) {
       iterateFunc = (props: Map<string, any>) =>
         this.searchFolders(iterable, this.addPropsCallback(props));
@@ -204,20 +197,23 @@ export default class MultiPropPlugin extends Plugin {
         this.searchFiles(iterable, this.addPropsCallback(props));
     }
 
-    let defaultProps: { name: string; value: any; type: PropertyTypes; }[]
-    if(!this.settings.defaultPropPath){
-      defaultProps = [{name: "", value: "", type: "text"}]
-    }
-    else{
-      try{
-        const file = this.app.vault.getAbstractFileByPath(`${this.settings.defaultPropPath}.md`)
-        let tmp = this.readYamlProperties(file as TFile)
-        if(tmp === undefined) throw Error("Undefined path.")
-        defaultProps = tmp
-      }
-      catch(e){
-        new Notice(`${e}.  Check if you entered a valid path in the Default Props File setting.`, 10000)
-        defaultProps = []
+    let defaultProps: { name: string; value: any; type: PropertyTypes }[];
+    if (!this.settings.defaultPropPath) {
+      defaultProps = [{ name: "", value: "", type: "text" }];
+    } else {
+      try {
+        const file = this.app.vault.getAbstractFileByPath(
+          `${this.settings.defaultPropPath}.md`
+        );
+        let tmp = this.readYamlProperties(file as TFile);
+        if (tmp === undefined) throw Error("Undefined path.");
+        defaultProps = tmp;
+      } catch (e) {
+        new Notice(
+          `${e}.  Check if you entered a valid path in the Default Props File setting.`,
+          10000
+        );
+        defaultProps = [];
       }
     }
 
@@ -251,35 +247,42 @@ export default class MultiPropPlugin extends Plugin {
       return;
     }
 
-    new RemoveModal(this.app, names, iterateFunc).open();
+    const sortedNames = [...names].sort((a, b) =>
+      a.toLowerCase() > b.toLowerCase() ? 1 : -1
+    );
+
+    new RemoveModal(this.app, sortedNames, iterateFunc).open();
   }
 
-  /** Read through a given file and get name/value of props. 
+  /** Read through a given file and get name/value of props.
    *  Revised from https://forum.obsidian.md/t/how-to-programmatically-access-a-files-properties-types/77826/4.
-  */
-  readYamlProperties(file: TFile){
+   */
+  readYamlProperties(file: TFile) {
+    const metadata = this.app.metadataCache.getFileCache(file);
+    const frontmatter = metadata?.frontmatter;
 
-    const metadata = this.app.metadataCache.getFileCache(file); 
-    const frontmatter = metadata?.frontmatter
-
-    console.log({frontmatter})
+    console.log({ frontmatter });
 
     if (!frontmatter) {
-      new Notice("Not a valid Props template.", 4000)
+      new Notice("Not a valid Props template.", 4000);
       return;
-    } 
-
-    const allPropsWithType = this.app.metadataCache.getAllPropertyInfos()
-
-    let result: {name: string, value: any, type: PropertyTypes}[] = []
-
-    for(let [key,value] of Object.entries(frontmatter)){
-      const keyLower = key.toLowerCase()
-      const obj = {name: key, value: value, type: allPropsWithType[keyLower].type}
-
-      result.push(obj)
     }
-    return result
+
+    const allPropsWithType = this.app.metadataCache.getAllPropertyInfos();
+
+    let result: { name: string; value: any; type: PropertyTypes }[] = [];
+
+    for (let [key, value] of Object.entries(frontmatter)) {
+      const keyLower = key.toLowerCase();
+      const obj = {
+        name: key,
+        value: value,
+        type: allPropsWithType[keyLower].type,
+      };
+
+      result.push(obj);
+    }
+    return result;
   }
 
   /** Callback function to run addProperties inside iterative functions.*/
