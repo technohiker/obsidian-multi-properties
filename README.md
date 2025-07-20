@@ -8,7 +8,7 @@ There are 3 kinds of note selections you can choose to add multiple properties a
 
 1. All notes in a folder. Right-click a folder.
 2. A selection of notes in the File Explorer. Select multiple notes with Shift+Mouse Click, then right-click the selection.
-3. All notes in a Search result. Click on the `# results` text below the Search bar, and your Property options will pop up.
+3. All notes in a Search result. To search for specific property use `[any_your_property]` query. Click on the `# results` text below the Search bar, and your Property options will pop up.
 
 ## Adding & Editing Properties:
 
