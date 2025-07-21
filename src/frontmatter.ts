@@ -12,7 +12,12 @@ export function addProperties(
   let propCache = app.metadataCache.getAllPropertyInfos();
   app.fileManager.processFrontMatter(file, (frontmatter) => {
     for (const [key, value] of props) {
-      console.log(value);
+      //Tags should always be a List, even if there is just one tag.
+      if (key === "tags" && !Array.isArray(value.data)) {
+        frontmatter[key] = [value.data];
+        continue;
+      }
+
       if (!frontmatter[key] || overwrite) {
         frontmatter[key] = value.data;
         continue;
@@ -24,7 +29,7 @@ export function addProperties(
 
       if (canBeAppended(type1, type2)) {
         if (frontmatter[key] === value.data) continue; //Leave identical values alone.
-        if(!value.data) continue; //Do not merge empty values.
+        if (!value.data) continue; //Do not merge empty values.
 
         let arr = mergeIntoArrays(frontmatter[key], value.data);
         frontmatter[key] = arr;
@@ -41,7 +46,7 @@ export function addProperties(
 export async function addPropToSet(app: App, set: Set<string>, file: TFile) {
   await app.fileManager.processFrontMatter(file, (frontmatter) => {
     for (const key in frontmatter) {
-      console.log({key})
+      console.log({ key });
       set.add(key);
     }
   });
