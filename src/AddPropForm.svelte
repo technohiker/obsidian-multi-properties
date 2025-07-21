@@ -53,7 +53,6 @@
         valueDef: input.value,
       });
     }
-    console.log(inputEls);
     inputEls = [...inputEls, ...arr];
   }
 

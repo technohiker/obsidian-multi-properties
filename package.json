@@ -1,6 +1,6 @@
 {
   "name": "obsidian-multi-properties",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
@@ -17,7 +17,7 @@
     "@typescript-eslint/eslint-plugin": "5.29.0",
     "@typescript-eslint/parser": "5.29.0",
     "builtin-modules": "3.3.0",
-    "esbuild": "0.17.3",
+    "esbuild": "^0.25.8",
     "esbuild-svelte": "^0.8.0",
     "obsidian": "latest",
     "svelte": "^4.2.1",
