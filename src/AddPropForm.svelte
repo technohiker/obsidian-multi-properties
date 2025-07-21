@@ -8,7 +8,8 @@
   export let submission: (props: Map<string, any>) => void;
   export let overwrite: boolean;
   export let delimiter: string = ",";
-  export let defaultProps: { name: string; value: any; type: PropertyTypes; }[] = []
+  export let defaultProps: { name: string; value: any; type: PropertyTypes }[] =
+    [];
   export let changeBool: (bool: boolean) => void;
 
   let countInputs = 0; //Could replace with UUID.
@@ -22,7 +23,7 @@
     typeDef: PropertyTypes;
     nameDef: string;
     valueDef: any;
-    }[] = []
+  }[] = [];
 
   function onCheckboxChange() {
     overwrite = !overwrite;
@@ -30,23 +31,29 @@
   }
 
   onMount(() => {
-    defaultProps.length > 0 ? addInputs(defaultProps) : addInputs([{type: "text" ,name: "", value: ""}])
-  })
+    defaultProps.length > 0
+      ? addInputs(defaultProps)
+      : addInputs([{ type: "text", name: "", value: "" }]);
+  });
 
   /** Add new input to inputEls */
-  function addInputs(inputs: {type: PropertyTypes, name: string, value: any}[] = [{type: "text", name: "", value: ""}]) {
-
-    let arr = []
-    for(let input of inputs){
-      countInputs++
+  function addInputs(
+    inputs: { type: PropertyTypes; name: string; value: any }[] = [
+      { type: "text", name: "", value: "" },
+    ]
+  ) {
+    let arr = [];
+    for (let input of inputs) {
+      countInputs++;
       arr.push({
         id: countInputs,
         isFirst: countInputs === 1 ? true : false,
         typeDef: input.type,
         nameDef: input.name,
-        valueDef: input.value
-      })
+        valueDef: input.value,
+      });
     }
+    console.log(inputEls);
     inputEls = [...inputEls, ...arr];
   }
 
@@ -123,7 +130,7 @@
           value = str.split(delimiter);
         }
       }
-      if(value === "") value = null
+      if (value === "") value = null;
 
       let inputType: string =
         input.previousElementSibling.children[0].innerText.toLowerCase();
@@ -143,7 +150,7 @@
     //Input validation doesn't trigger unless this code is in.  Why?  I didn't need this before.
     if (obj.size < inputs.length) return;
 
-    console.log(obj)
+    console.log(obj);
 
     submission(obj);
   }
@@ -178,13 +185,17 @@
           id={input.id}
           bind:typeVal={input.typeDef}
           bind:nameVal={input.nameDef}
-          valueVal={input.valueDef}
+          bind:valueVal={input.valueDef}
           {removeInput}
         />
       {/each}
     </div>
     <div class="modal-add-container">
-      <a on:click={() => addInputs([{type: "text", name: "", value: ""}])} class="a-btn" href="href">Add</a>
+      <a
+        on:click={() => addInputs([{ type: "text", name: "", value: "" }])}
+        class="a-btn"
+        href="href">Add</a
+      >
     </div>
     <div class="modal-button-container">
       <button on:click={onSubmit} class="btn-submit">Submit</button>
