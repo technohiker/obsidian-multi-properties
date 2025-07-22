@@ -1,4 +1,4 @@
-import { Menu, Notice, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
+import { Menu, Notice, Plugin, TAbstractFile, TFile, TFolder, FileView } from "obsidian";
 import { PropModal } from "./AddPropModal";
 import { MultiPropSettings, SettingTab } from "./SettingTab";
 import { RemoveModal } from "./RemoveModal";
@@ -34,10 +34,59 @@ export default class MultiPropPlugin extends Plugin {
     await this.saveSettings();
   }
 
+  private _getFilesFromActiveWindow(): TFile[] | null {
+    const activeLeaf = this.app.workspace.activeLeaf;
+    if (!activeLeaf) {
+      new Notice("No active tab found.", 4000);
+      return null;
+    }
+    const activeRoot = activeLeaf.getRoot();
+    const files: TFile[] = [];
+    const fileSet = new Set<string>();
+
+    this.app.workspace.iterateAllLeaves((leaf) => {
+      if (leaf.getRoot() === activeRoot && leaf.view instanceof FileView) {
+        const file = leaf.view.file;
+        if (file && !fileSet.has(file.path)) {
+          files.push(file);
+          fileSet.add(file.path);
+        }
+      }
+    });
+
+    return files;
+  }
+
   async onload() {
     await this.loadSettings();
 
     this.addSettingTab(new SettingTab(this.app, this));
+
+    this.addCommand({
+      id: "add-props-to-open-tabs",
+      name: "Add props to open tabs",
+      callback: () => {
+        const files = this._getFilesFromActiveWindow();
+        if (!files || !files.length) {
+          new Notice("No open tabs to add properties to.", 4000);
+          return;
+        }
+        this.createPropModal(files);
+      },
+    });
+
+    this.addCommand({
+      id: "remove-props-from-open-tabs",
+      name: "Remove props from open tabs",
+      callback: () => {
+        const files = this._getFilesFromActiveWindow();
+        if (!files || !files.length) {
+          new Notice("No open tabs to remove properties from.", 4000);
+          return;
+        }
+        this.createRemoveModal(files);
+      },
+    });
 
     /** Add menu item on folder right-click to add properties to all notes in folder.
      * PropModal returns Props on submit, which is then passed to searchThroughFolders via callback.
