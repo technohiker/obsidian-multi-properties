@@ -23,7 +23,8 @@ if (!fs.existsSync(vaultPath)) {
     process.exit(0);
 }
 
-const pluginDirName = 'obsidian-multi-properties';
+const manifest = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../manifest.json'), 'utf8'));
+const pluginDirName = manifest.id;
 const pluginDestPath = path.join(vaultPath, '.obsidian', 'plugins', pluginDirName);
 
 if (!fs.existsSync(pluginDestPath)) {

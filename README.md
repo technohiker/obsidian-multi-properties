@@ -105,7 +105,8 @@ This guide provides steps for manually testing the "Multi-Properties" plugin in 
 1.  Ensure you have a dedicated test vault.
 2.  Make sure the `OBSIDIAN_TEST_VAULT_PATH` environment variable is set correctly to the path of your test vault.
 3.  Install the plugin into your test vault by running `npm run build-and-install:test`.
-4.  Initialize the test vault with test notes by running `npm run initialize-test-vault`. This will provide you with a `test-note.md` file to test against.
+4.  **Enable the Plugin:** In your test vault, go to `Settings > Community Plugins`, find "Multi Properties", and toggle it on.
+5.  Initialize the test vault with test notes by running `npm run initialize-test-vault`. This will provide you with a `test-note.md` file to test against.
 
 ### Testing Scenarios
 
