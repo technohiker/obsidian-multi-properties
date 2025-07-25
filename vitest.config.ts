@@ -1,17 +1,17 @@
 import { defineConfig } from 'vitest/config';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { svelteTesting } from '@testing-library/svelte/vite';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [],
+  plugins: [svelte()],
   test: {
     globals: true,
     environment: 'jsdom',
     include: ['tests/**/*.test.ts'],
-    alias: {
-      'obsidian': path.resolve(__dirname, './tests/obsidian-mocks.ts'),
-    },
     setupFiles: ['./vitest-setup.js'],
+    alias: [
+      { find: /^svelte$/, replacement: 'svelte/internal' },
+      { find: 'obsidian', replacement: path.resolve(__dirname, './tests/obsidian-mocks.ts') },
+    ],
   },
 });

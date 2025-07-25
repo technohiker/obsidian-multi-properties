@@ -371,3 +371,21 @@ export const Plugin = MockPlugin;
 export class PluginSettingTab {}
 export class Menu {}
 export class TAbstractFile {}
+export class Modal {
+    contentEl: HTMLElement;
+    titleEl: HTMLElement;
+
+    constructor() {
+        this.contentEl = document.createElement('div');
+        this.titleEl = document.createElement('div');
+        (this.titleEl as any).createEl = (tag: string, options: any) => {
+            const el = document.createElement(tag);
+            if (options.text) {
+                el.textContent = options.text;
+            }
+            return el;
+        };
+    }
+
+    onOpen() {}
+}

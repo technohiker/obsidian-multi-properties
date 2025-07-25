@@ -75,10 +75,16 @@ npm run initialize-test-vault
     ```
     *(Use `npm run dev` for automatic rebuilding during development.)*
 
-2.  **Run Tests:** Execute the automated test suite. This command will first install the latest build of the plugin into your test vault and then run the tests.
+2.  **Run Tests:** Execute the automated test suite.
     ```bash
     npm test
     ```
+
+### Testing
+
+This project uses [Vitest](https://vitest.dev/) for unit and component testing and the [Svelte Testing Library](https://testing-library.com/docs/svelte-testing-library/intro/) for interacting with Svelte components. The test suite covers all major UI components and utility functions, ensuring a stable and reliable codebase.
+
+All tests are located in the `tests/` directory.
 
 ### Personal Vault Scripts (Optional)
 

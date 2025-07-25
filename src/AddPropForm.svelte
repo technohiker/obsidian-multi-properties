@@ -5,12 +5,12 @@
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
   import type { PropertyTypes } from "./types/custom";
 
-  export let submission: (props: Map<string, any>) => void;
+  export let submission: (props: Map<string, NewPropData>) => void;
   export let overwrite: boolean;
-  export let delimiter: string = ",";
-  export let defaultProps: { name: string; value: any; type: PropertyTypes }[] =
-    [];
+  export let delimiter: string;
+  export let defaultProps: { name: string; value: any; type: PropertyTypes }[];
   export let changeBool: (bool: boolean) => void;
+  export let propCache: any;
 
   let countInputs = 0; //Could replace with UUID.
   let formEl: HTMLFormElement;
@@ -124,19 +124,16 @@
         if (name === "tags") {
           value = cleanTags(value);
         }
-        if (value.contains(delimiter)) {
+        if (typeof value === 'string' && value.includes(",")) {
           let str = removeExtraCommas(value);
           value = str.split(delimiter);
         }
       }
       if (value === "") value = null;
 
-      let inputType: string =
-        input.previousElementSibling.children[0].innerText.toLowerCase();
-
       //Store data into object.
       let propObj: NewPropData = {
-        type: inputType,
+        type: 'text',
         data: value,
         overwrite: false,
         delimiter: delimiter,

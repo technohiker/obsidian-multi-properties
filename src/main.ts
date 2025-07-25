@@ -181,7 +181,7 @@ export default class MultiPropPlugin extends Plugin {
   async getPropsFromFolder(folder: TFolder, names: Set<string>) {
     for (let obj of folder.children) {
       if (obj instanceof TFile && obj.extension === "md") {
-        names = await addPropToSet(this.app, names, obj);
+        names = await addPropToSet(this.app.fileManager.processFrontMatter, names, obj);
       }
       if (obj instanceof TFolder) {
         if (this.settings.recursive) {
@@ -195,7 +195,7 @@ export default class MultiPropPlugin extends Plugin {
   async getPropsFromFiles(files: TAbstractFile[], names: Set<string>) {
     for (let file of files) {
       if (file instanceof TFile && file.extension === "md") {
-        names = await addPropToSet(this.app, names, file);
+        names = await addPropToSet(this.app.fileManager.processFrontMatter, names, file);
       }
     }
     return [...names];
@@ -337,14 +337,14 @@ export default class MultiPropPlugin extends Plugin {
   /** Callback function to run addProperties inside iterative functions.*/
   addPropsCallback(props: any) {
     return (file: TFile) => {
-      addProperties(this.app, file, props, this.settings.overwrite);
+      addProperties(this.app.fileManager.processFrontMatter, file, props, this.settings.overwrite, this.app.metadataCache.getAllPropertyInfos());
     };
   }
 
   /** Callback function to run removeProperties inside iterative functions. */
   removePropsCallback(props: any) {
     return (file: TFile) => {
-      removeProperties(this.app, file, props);
+      removeProperties(this.app.fileManager.processFrontMatter, file, props);
     };
   }
 }
