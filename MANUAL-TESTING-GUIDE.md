@@ -74,7 +74,28 @@ This guide provides steps for manually testing the "Multi-Properties" plugin in 
     -   Select properties to remove, click "Submit", and then click "Cancel" on the confirmation modal.
     -   **Verification:** Check the frontmatter of `test-note.md`. No properties should be removed.
 
-### 3. Settings Tab
+### 3. Window-Specific Operations
+
+These commands operate on all the files open in the current window. To test this, you will need to have multiple notes open in a split-pane layout.
+
+1.  Open your test vault in Obsidian.
+2.  Open several notes (e.g., `Note-01.md`, `Note-02.md`, `Note-03.md`) in a split-pane layout.
+3.  Make sure you have one of the panes active.
+
+#### Scenarios to test:
+
+-   **Add properties to open tabs:**
+    -   Open the command palette (Ctrl/Cmd + P).
+    -   Run the command "Multi-Properties: Add props to open tabs".
+    -   Add one or more properties in the modal and click "Submit".
+    -   **Verification:** Check the frontmatter of all the open notes in the current window. The new properties should be present in all of them.
+-   **Remove properties from open tabs:**
+    -   Open the command palette (Ctrl/Cmd + P).
+    -   Run the command "Multi-Properties: Remove props from open tabs".
+    -   Select one or more properties to remove and click "Submit".
+    -   **Verification:** Check the frontmatter of all the open notes in the current window. The selected properties should be removed from all of them.
+
+### 4. Settings Tab
 
 1.  Open Obsidian's settings.
 2.  Go to "Community Plugins" and find "Multi-Properties".
