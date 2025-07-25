@@ -12,6 +12,7 @@
     "build-and-install:test": "npm run build && npm run install:test",
     "build-and-install:personal": "npm run build && npm run install:personal",
     "open-personal-vault": "node scripts/open-personal-vault.mjs",
+    "setup:test": "npm run build && npm run install:test && npm run initialize-test-vault",
     "test": "vitest run"
   },
   "keywords": [],

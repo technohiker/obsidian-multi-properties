@@ -59,17 +59,24 @@ cd obsidian-multi-properties
 npm install
 ```
 
-### Step 3: Initialize the Test Vault
+### Step 3: Full Test Environment Setup
 
-Now, run the initialization script. This command will copy the necessary test notes from the `test-notes` directory into your configured test vault.
+For a complete one-step setup, run the new `setup:test` script. This is the recommended way to get your test environment ready.
+
+This single command will:
+1.  **Build** the plugin from source.
+2.  **Install** the built plugin into your test vault.
+3.  **Initialize** the vault by cleaning it and copying over the latest test notes.
 
 ```bash
-npm run initialize-test-vault
+npm run setup:test
 ```
 
-### Step 4: Build, Install, and Test
+After the script finishes, you will need to **manually enable the plugin** in your test vault's settings (`Settings > Community Plugins`).
 
-The build and installation scripts have been streamlined for a more modular workflow.
+### Step 4: Build, Install, and Test (Manual Steps)
+
+If you prefer to run the steps individually, you can use the following scripts. This is useful if you only want to update the plugin code without resetting the test notes, for example.
 
 1.  **Build the Plugin:** Compiles the TypeScript source into `main.js`.
     ```bash
@@ -81,11 +88,12 @@ The build and installation scripts have been streamlined for a more modular work
     -   **Test Vault:** `npm run install:test`
     -   **Personal Vault:** `npm run install:personal`
 
-3.  **Build and Install Together:** To build and install in a single step, you can use these convenience scripts:
-    -   **Test Vault:** `npm run build-and-install:test`
-    -   **Personal Vault:** `npm run build-and-install:personal`
+3.  **Initialize the Test Vault:** This command will clean your test vault and copy the necessary test notes from the `test-notes` directory.
+    ```bash
+    npm run initialize-test-vault
+    ```
 
-4.  **Run Tests:** Execute the automated test suite. This command assumes the plugin has already been built and installed in the test vault.
+4.  **Run Tests:** Execute the automated test suite.
     ```bash
     npm test
     ```
@@ -104,9 +112,9 @@ This guide provides steps for manually testing the "Multi-Properties" plugin in 
 
 1.  Ensure you have a dedicated test vault.
 2.  Make sure the `OBSIDIAN_TEST_VAULT_PATH` environment variable is set correctly to the path of your test vault.
-3.  Install the plugin into your test vault by running `npm run build-and-install:test`.
+3.  Run the full test environment setup using `npm run setup:test`.
 4.  **Enable the Plugin:** In your test vault, go to `Settings > Community Plugins`, find "Multi Properties", and toggle it on.
-5.  Initialize the test vault with test notes by running `npm run initialize-test-vault`. This will provide you with a `test-note.md` file to test against.
+5.  The `setup:test` script will automatically provide you with a `test-note.md` file to test against.
 
 ### Testing Scenarios
 
