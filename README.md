@@ -1,34 +1,98 @@
-# Multi-Properties
+# Obsidian Multi-Properties Plugin
 
-Obsidian.md's Properties are very useful for adding miscellaneous information on notes, but there is currently no functionality for adding properties to multiple files at once. To make things more convenient for myself and others, I decided to make a plugin to introduce that functionality.
+This plugin allows you to add, edit, or remove frontmatter properties from multiple notes at once, streamlining your workflow when managing metadata across your vault.
 
-## Accessing the Forms:
+## Features
 
-There are 3 kinds of note selections you can choose to add multiple properties at once.
+You can act on multiple notes at once in several ways:
 
-1. All notes in a folder. Right-click a folder.
-2. A selection of notes in the File Explorer. Select multiple notes with Shift+Mouse Click, then right-click the selection.
-3. All notes in a Search result. To search for specific property use `[any_your_property]` query. Click on the `# results` text below the Search bar, and your Property options will pop up.
+-   **Folders:** Right-click a folder in the File Explorer to affect all notes within it (and optionally, all sub-folders).
+-   **File Selections:** Select multiple files using `Shift+Click` or `Ctrl/Cmd+Click`, then right-click the selection.
+-   **Search Results:** After performing a search, right-click the search pane to modify all resulting notes.
+-   **All Open Tabs:** Run a command to add or remove properties from all currently open tabs in the active window.
 
-## Adding & Editing Properties:
+### Actions
 
-Right-click on one of the above selections to bring up an option to add Properties to all notes within a folder. Upon clicking this, a form will pop up asking you to input your Properties. Once you type in the Properties and desired values, submit the form and they will be added to all notes in the selection.
+-   **Add/Edit Properties:** A form will appear allowing you to input new properties and their values. If a property already exists on a note, you can choose to either overwrite its value or append to it (for text-based properties).
+-   **Remove Properties:** A form will list all unique properties found within the selected notes. You can then choose which properties to permanently remove from all targeted notes.
 
-If you type in the name of an existing Property, your value will either override the current value of that Property on all of the notes in the selection, or the new value will be appended onto the existing value. Whichever one occurs will depend on your settings, which can be changed directly from the form. Note that this will only work with text-based Properties.
+### Settings
 
-## Removing Properties:
+-   **Overwrite Existing Properties:** Toggle whether to replace or append to existing property values.
+-   **Recursive Folder Operations:** Choose whether actions on folders should apply to notes in sub-folders.
+-   **List Delimiter:** Set a custom delimiter for list-type properties.
+-   **Default Properties File:** Specify a note to load a default set of properties from when adding new ones.
 
-Right-clicking a selection will also pull up an option to remove selected Properties from a group of notes. The property selected will be permanently deleted from all notes you initially targeted, so use caution. Back up your files if you want to be on the safe side.
+---
 
-## Demo:
+## Development Guide
 
-![Multi Properties Demo 1 0 0](https://github.com/fez-github/obsidian-multi-properties/assets/75589254/8483e98d-cc4f-4770-a0bf-7a5da2cab93d)
+Follow these instructions to set up a local development environment. This project requires a dedicated, separate Obsidian vault for running automated tests.
 
-## Installation:
+### Prerequisites
 
-This project is available as an Obsidian community plugin that can be installed directly in the app. Go to Settings->Community Plugins->Browser, and search the name `Multi Properties`.
+-   [Node.js](https://nodejs.org/)
+-   The [Obsidian](https://obsidian.md/) application.
 
-If you wish to install it outside of Obsidian's Community Plugins menu, follow these steps.
+### Step 1: Create and Configure the Test Vault
 
-1. Download the latest release.
-2. Extract the folder within the zip file in the current release, and add it to `<yourVault>/.obsidian/plugins/`.
+1.  **Create a New Vault:** Open the Obsidian application and create a new, empty vault. This vault will be used exclusively for running automated tests. You can name it anything you like (e.g., "Multi-Properties Test Vault").
+2.  **Set the Environment Variable:** You must tell the project scripts where to find this new vault by setting the `OBSIDIAN_TEST_VAULT_PATH` environment variable. Set it to the **absolute path** of the test vault you just created.
+
+    **Windows (PowerShell):**
+    ```powershell
+    $env:OBSIDIAN_TEST_VAULT_PATH="C:\Users\YourUser\Documents\Obsidian\Multi-Properties-Test-Vault"
+    ```
+
+    **macOS/Linux (bash/zsh):**
+    ```bash
+    export OBSIDIAN_TEST_VAULT_PATH="/Users/YourUser/Documents/Obsidian/Multi-Properties-Test-Vault"
+    ```
+
+### Step 2: Initial Project Setup
+
+Clone the repository and install the necessary Node.js dependencies.
+
+```bash
+git clone https://github.com/your-username/obsidian-multi-properties.git
+cd obsidian-multi-properties
+npm install
+```
+
+### Step 3: Initialize the Test Vault
+
+Now, run the initialization script. This command will copy the necessary test notes from the `test-notes` directory into your configured test vault and then attempt to open the vault in Obsidian.
+
+```bash
+npm run initialize-test-vault
+```
+
+### Step 4: Build and Test
+
+1.  **Build the Plugin:** Compile the TypeScript source into `main.js`.
+    ```bash
+    npm run build
+    ```
+    *(Use `npm run dev` for automatic rebuilding during development.)*
+
+2.  **Run Tests:** Execute the automated test suite. This command will first install the latest build of the plugin into your test vault and then run the tests.
+    ```bash
+    npm test
+    ```
+
+### Personal Vault Scripts (Optional)
+
+If you want to install the plugin in your primary, day-to-day vault for manual testing, you must set the `OBSIDIAN_PERSONAL_VAULT_PATH` environment variable.
+
+-   `npm run install-plugin-personal`: Copies the plugin into your personal vault.
+-   `npm run open-personal-vault`: Opens your personal vault in Obsidian.
+
+## Installation
+
+This plugin is available in the Obsidian community plugin store. You can install it directly from within the Obsidian app by going to `Settings > Community Plugins > Browse` and searching for "Multi Properties".
+
+For manual installation:
+
+1.  Download the latest release from the [releases page](https://github.com/fez-github/obsidian-multi-properties/releases).
+2.  Extract the contents of the zip file.
+3.  Copy the extracted folder to your vault's plugin folder: `<your-vault>/.obsidian/plugins/`.

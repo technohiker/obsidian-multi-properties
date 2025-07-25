@@ -5,25 +5,38 @@
   "scripts": {
     "dev": "node esbuild.config.mjs",
     "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-    "version": "node version-bump.mjs && git add manifest.json versions.json"
+    "version": "node version-bump.mjs && git add manifest.json versions.json",
+    "initialize-test-vault": "node scripts/initialize-test-vault.mjs",
+    "install-plugin-test": "node scripts/install-plugin-test.mjs",
+    "install-plugin-personal": "node scripts/install-plugin-personal.mjs",
+    "open-personal-vault": "node scripts/open-personal-vault.mjs",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.1.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/svelte": "^5.2.8",
     "@tsconfig/svelte": "^5.0.2",
     "@types/jest": "^29.5.5",
     "@types/node": "^16.11.6",
     "@typescript-eslint/eslint-plugin": "5.29.0",
     "@typescript-eslint/parser": "5.29.0",
+    "@vitest/ui": "^3.2.4",
     "builtin-modules": "3.3.0",
     "esbuild": "^0.25.8",
     "esbuild-svelte": "^0.8.0",
+    "fs-extra": "^11.1.1",
+    "jsdom": "^26.1.0",
     "obsidian": "latest",
+    "open": "^9.1.0",
     "svelte": "^4.2.1",
     "svelte-preprocess": "^5.0.4",
     "tslib": "2.4.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "vitest": "^3.2.4"
   },
   "type": "module"
 }
