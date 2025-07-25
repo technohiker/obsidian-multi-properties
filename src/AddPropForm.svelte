@@ -10,7 +10,6 @@
   export let delimiter: string;
   export let defaultProps: { name: string; value: any; type: PropertyTypes }[];
   export let changeBool: (bool: boolean) => void;
-  export let propCache: any;
 
   let countInputs = 0; //Could replace with UUID.
   let formEl: HTMLFormElement;
@@ -187,10 +186,11 @@
       {/each}
     </div>
     <div class="modal-add-container">
-      <a
+      <button
+        type="button"
         on:click={() => addInputs([{ type: "text", name: "", value: "" }])}
         class="a-btn"
-        href="href">Add</a
+        >Add</button
       >
     </div>
     <div class="modal-button-container">

@@ -46,18 +46,17 @@
 </script>
 
 <div class="modal-input-container">
-	<a
+	<button
+		type="button"
 		id="del-btn"
-		on:click={(event) => {
-			event.preventDefault();
+		on:click={() => {
 			if (!isFirst) {
 				removeInput(id);
 			}
 		}}
 		class="btn-del {isFirst ? 'btn-inactive' : ''}"
 		tabindex={isFirst ? -1 : 0}
-		href="#"
-		>X</a
+		>X</button
 	>
 	<select id="type-input" class="flex-obj" bind:value={optionVal} on:change={() => changeType(optionVal)}>
 		{#each Object.keys(options) as key}
