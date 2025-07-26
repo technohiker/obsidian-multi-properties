@@ -9,7 +9,7 @@ You can act on multiple notes at once in several ways:
 -   **Folders:** Right-click a folder in the File Explorer to affect all notes within it (and optionally, all sub-folders).
 -   **File Selections:** Select multiple files using `Shift+Click` or `Ctrl/Cmd+Click`, then right-click the selection.
 -   **Search Results:** After performing a search, right-click the search pane to modify all resulting notes.
--   **All Open Tabs:** Run a command to add or remove properties from all currently open tabs in the active window.
+-   **All Open Tabs in Active Tab Group:** Run a command to add or remove properties from all currently open tabs in the active tab group.
 
 ### Actions
 
@@ -145,21 +145,21 @@ This guide provides steps for manually testing the "Multi-Properties" plugin in 
     -   Run the command "Multi-Properties: Remove props from current note".
     -   Remove a property and verify it is removed from `test-note.md`.
 
-#### 2. Window-Specific Operations
+#### 2. Tab Group-Specific Operations
 
-These commands operate on all the files open in the current window.
+These commands operate on all the files open in the current tab group.
 
 1.  Open several notes (e.g., `Note-01.md`, `Note-02.md`, `Note-03.md`) in a split-pane layout.
 2.  Open the command palette (Ctrl/Cmd + P).
 
 ##### Scenarios to test:
 
--   **Add properties to open tabs:**
-    -   Run the command "Multi-Properties: Add props to open tabs".
-    -   Add properties and verify they are saved correctly in **all** open notes.
--   **Remove properties from open tabs:**
-    -   Run the command "Multi-Properties: Remove props from open tabs".
-    -   Remove properties and verify they are removed from **all** open notes.
+-   **Add properties to tabs in active tab group:**
+    -   Run the command "Multi-Properties: Add props to tabs in active tab group".
+    -   Add properties and verify they are saved correctly in **all** open notes in the active tab group.
+-   **Remove properties from tabs in active tab group:**
+    -   Run the command "Multi-Properties: Remove props from tabs in active tab group".
+    -   Remove properties and verify they are removed from **all** open notes in the active tab group.
 
 #### 3. Context Menu Operations
 

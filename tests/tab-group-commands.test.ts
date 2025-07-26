@@ -15,7 +15,7 @@ vi.mock("../src/AddPropModal", () => {
   return { PropModal };
 });
 
-describe("Window-specific Commands", () => {
+describe("Tab Group-specific Commands", () => {
   let app: MockApp;
   let workspace: MockWorkspace;
   let plugin: MultiPropPlugin;
@@ -28,38 +28,38 @@ describe("Window-specific Commands", () => {
     vi.clearAllMocks();
   });
 
-  it("should add props only to tabs in the active window", async () => {
-    // Setup two windows (roots)
-    const window1 = new MockWorkspaceSplit("window1");
-    const window2 = new MockWorkspaceSplit("window2");
+  it("should add props only to tabs in the active tab group", async () => {
+    // Setup two tab groups (roots)
+    const tabGroup1 = new MockWorkspaceSplit("tabGroup1");
+    const tabGroup2 = new MockWorkspaceSplit("tabGroup2");
 
-    // Setup files and leaves for window 1
+    // Setup files and leaves for tab group 1
     const file1 = new TFile("file1.md");
     const leaf1 = new MockWorkspaceLeaf("leaf1", file1, app);
-    workspace.addLeaf(leaf1, window1);
+    workspace.addLeaf(leaf1, tabGroup1);
 
     const file2 = new TFile("file2.md");
     const leaf2 = new MockWorkspaceLeaf("leaf2", file2, app);
-    workspace.addLeaf(leaf2, window1);
+    workspace.addLeaf(leaf2, tabGroup1);
 
-    // Setup files and leaves for window 2
+    // Setup files and leaves for tab group 2
     const file3 = new TFile("file3.md");
     const leaf3 = new MockWorkspaceLeaf("leaf3", file3, app);
-    workspace.addLeaf(leaf3, window2);
+    workspace.addLeaf(leaf3, tabGroup2);
 
-    // Set active leaf to be in the first window
+    // Set active leaf to be in the first tab group
     workspace.activeLeaf = leaf1;
 
     const createPropModalSpy = vi.spyOn(plugin, "createPropModal");
 
     // Find and execute the command
     const command = app.commands.find(
-      (cmd) => cmd.id === "add-props-to-window-tabs"
+      (cmd) => cmd.id === "add-props-to-tab-group"
     );
     expect(command).toBeDefined();
     await command.callback();
 
-    // Expect the PropModal to be created with files from the active window only
+    // Expect the PropModal to be created with files from the active tab group only
     expect(createPropModalSpy).toHaveBeenCalledTimes(1);
     expect(createPropModalSpy).toHaveBeenCalledWith([file1, file2]);
   });

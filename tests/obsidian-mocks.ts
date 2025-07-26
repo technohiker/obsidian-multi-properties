@@ -1,9 +1,26 @@
+import { vi } from 'vitest';
+
+vi.mock('obsidian', () => ({
+    ...vi.importActual('obsidian'),
+    App: MockApp,
+    Plugin: MockPlugin,
+    PluginSettingTab: PluginSettingTab,
+    Notice: Notice,
+    Menu: Menu,
+    TAbstractFile: TAbstractFile,
+    TFile: TFile,
+    TFolder: TFolder,
+    Modal: Modal,
+    FileView: FileView,
+    WorkspaceLeaf: MockWorkspaceLeaf,
+    WorkspaceSplit: MockWorkspaceSplit,
+    Setting: MockSetting,
+}));
+
 // tests/obsidian-mocks.ts
 
 // This file mocks the 'obsidian' module.
 // It is crucial for testing plugins without needing a live Obsidian instance.
-
-import { vi } from 'vitest';
 
 // Mock the entire 'obsidian' module
 vi.mock('obsidian', () => ({

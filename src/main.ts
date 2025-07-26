@@ -36,7 +36,7 @@ export default class MultiPropPlugin extends Plugin {
     await this.saveSettings();
   }
 
-  private _getFilesFromWindow(leaf: WorkspaceLeaf | null): TFile[] {
+  private _getFilesFromTabGroup(leaf: WorkspaceLeaf | null): TFile[] {
     if (!leaf) {
       return [];
     }
@@ -104,12 +104,12 @@ export default class MultiPropPlugin extends Plugin {
     });
 
     this.addCommand({
-      id: "add-props-to-window-tabs",
-      name: "Add props to tabs in active window",
+      id: "add-props-to-tab-group",
+      name: "Add props to tabs in active tab group",
       callback: async () => {
-        const files = this._getFilesFromWindow(this.app.workspace.activeLeaf);
+        const files = this._getFilesFromTabGroup(this.app.workspace.activeLeaf);
         if (!files || !files.length) {
-          new Notice("No open tabs in the active window to add properties to.", 4000);
+          new Notice("No open tabs in the active tab group to add properties to.", 4000);
           return;
         }
         await this.createPropModal(files);
@@ -117,12 +117,12 @@ export default class MultiPropPlugin extends Plugin {
     });
 
     this.addCommand({
-      id: "remove-props-from-window-tabs",
-      name: "Remove props from tabs in active window",
+      id: "remove-props-from-tab-group",
+      name: "Remove props from tabs in active tab group",
       callback: async () => {
-        const files = this._getFilesFromWindow(this.app.workspace.activeLeaf);
+        const files = this._getFilesFromTabGroup(this.app.workspace.activeLeaf);
         if (!files || !files.length) {
-          new Notice("No open tabs in the active window to remove properties from.", 4000);
+          new Notice("No open tabs in the active tab group to remove properties from.", 4000);
           return;
         }
         await this.createRemoveModal(files);
