@@ -50,6 +50,9 @@ const context = await esbuild.context({
 	sourcemap: prod ? false : "inline",
 	treeShaking: true,
 	outfile: "main.js",
+	define: {
+		"process.env.DEV_BUILD": prod ? "false" : "true",
+	},
 });
 
 if (prod) {

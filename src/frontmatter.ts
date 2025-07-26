@@ -1,16 +1,18 @@
-import { App, TFile } from "obsidian";
+import { TFile } from "obsidian";
 import { NewPropData } from "./main";
+
+type FileProcessor = (file: TFile, callback: (frontmatter: any) => void) => Promise<void> | void;
 
 /** Add properties from a Map to a note.
  */
 export function addProperties(
-  app: App,
+  fileProcessor: FileProcessor,
   file: TFile,
   props: Map<string, NewPropData>,
-  overwrite: boolean
+  overwrite: boolean,
+  propCache: any
 ) {
-  let propCache = app.metadataCache.getAllPropertyInfos();
-  app.fileManager.processFrontMatter(file, (frontmatter) => {
+  fileProcessor(file, (frontmatter) => {
     for (const [key, value] of props) {
       //Tags should always be a List, even if there is just one tag.
       if (key === "tags" && !Array.isArray(value.data)) {
@@ -43,8 +45,8 @@ export function addProperties(
 }
 
 /** Iterate through all props in a list and add them to an existing set. */
-export async function addPropToSet(app: App, set: Set<string>, file: TFile) {
-  await app.fileManager.processFrontMatter(file, (frontmatter) => {
+export async function addPropToSet(fileProcessor: FileProcessor, set: Set<string>, file: TFile) {
+  await fileProcessor(file, (frontmatter) => {
     for (const key in frontmatter) {
       console.log({ key });
       set.add(key);
@@ -54,8 +56,8 @@ export async function addPropToSet(app: App, set: Set<string>, file: TFile) {
 }
 
 /** Remove properties from a note. */
-export function removeProperties(app: App, file: TFile, props: string[]) {
-  app.fileManager.processFrontMatter(file, (frontmatter) => {
+export function removeProperties(fileProcessor: FileProcessor, file: TFile, props: string[]) {
+  fileProcessor(file, (frontmatter) => {
     for (const prop of props) {
       //delete frontmatter[prop];
       frontmatter[prop] = undefined; //"Hacky" workaround, commented code will work in later version."
