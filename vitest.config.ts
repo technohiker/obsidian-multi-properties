@@ -8,5 +8,12 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     include: ['tests/**/*.test.ts'],
+    setupFiles: ['./tests/test-setup.js'],
+  },
+  resolve: {
+    alias: {
+      obsidian: path.resolve(__dirname, 'tests/obsidian.mock.ts'),
+    },
   },
 });
+

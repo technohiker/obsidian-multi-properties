@@ -1,36 +1,7 @@
 import { vi, expect, test, beforeEach, describe } from 'vitest';
 
-const mocks = vi.hoisted(() => {
-    class MockTFile {
-        constructor(public path: string, public extension: string = 'md') {}
-        get name() { return this.path.split('/').pop() || ''; }
-    }
-    class MockTFolder {
-        children: any[];
-        constructor(public path: string, children: any[] = []) { this.children = children; }
-        get name() { return this.path.split('/').pop() || ''; }
-    }
-    class MockApp {
-        workspace = {
-            activeLeaf: null,
-            iterateAllLeaves: vi.fn(),
-        };
-        fileManager = { processFrontMatter: vi.fn() };
-        vault = { getAbstractFileByPath: vi.fn() };
-        commands: any[] = [];
-        addCommand = vi.fn((cmd) => { this.commands.push(cmd); });
-    }
-    return {
-        TFile: MockTFile,
-        TFolder: MockTFolder,
-        Notice: vi.fn(),
-        Plugin: class { constructor(app: any, manifest: any) {} },
-        Modal: class {},
-        FileView: class {},
-        WorkspaceLeaf: class {},
-        WorkspaceTabs: class {},
-        App: MockApp,
-    };
+const mocks = vi.hoisted(async () => {
+  return await import('./obsidian.mock');
 });
 
 vi.mock('obsidian', () => mocks);
@@ -42,12 +13,13 @@ describe('MultiPropPlugin Tests', () => {
   let app: any;
   let plugin: MultiPropPlugin;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
-    app = new mocks.App();
+    const resolvedMocks = await mocks;
+    app = new resolvedMocks.App();
     // @ts-ignore
     plugin = new MultiPropPlugin(app, {});
-    plugin.onload();
+    await plugin.onload();
   });
 
   test('should register "Add props to tabs in active tab group" command', () => {
@@ -70,10 +42,11 @@ describe('MultiPropPlugin Tests', () => {
     });
 
     test('searchFolders should iterate recursively through folders', async () => {
-      const file1 = new TFile('file1.md');
-      const file2 = new TFile('file2.md');
-      const subFolder = new TFolder('sub', [file2]);
-      const rootFolder = new TFolder('root', [file1, subFolder]);
+      const resolvedMocks = await mocks;
+      const file1 = new resolvedMocks.TFile('file1.md');
+      const file2 = new resolvedMocks.TFile('file2.md');
+      const subFolder = new resolvedMocks.TFolder('sub', [file2]);
+      const rootFolder = new resolvedMocks.TFolder('root', [file1, subFolder]);
       const callback = vi.fn();
       plugin.settings.recursive = true;
       // @ts-ignore

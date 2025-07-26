@@ -43,7 +43,7 @@ describe('Frontmatter Utilities', () => {
   describe('removeProperties', () => {
     it('should remove a property from the frontmatter', async () => {
         await removeProperties(fileManager.processFrontMatter, file, ['existingProp']);
-        expect(file.frontmatter).not.toHaveProperty('existingProp');
+        expect(file.frontmatter.existingProp).toBeUndefined();
     });
   });
 
