@@ -196,6 +196,44 @@ These actions are performed by right-clicking in the File Explorer or Search pan
 
 -   `npm run open-personal-vault`: Opens your personal vault in Obsidian (requires `OBSIDIAN_PERSONAL_VAULT_PATH` to be set).
 
+### All Available Commands
+
+Here is a comprehensive list of all scripts available in `package.json`:
+
+#### Development
+*   `npm run dev`
+    *   Runs a development server that watches for file changes and rebuilds the plugin automatically.
+*   `npm run build:dev`
+    *   Creates a development build of the plugin.
+
+#### Building & Versioning
+*   `npm run build`
+    *   Creates a production-ready build of the plugin.
+*   `npm run version`
+    *   Bumps the plugin version in `manifest.json` and `versions.json` and stages the changes for commit.
+
+#### Testing
+*   `npm test`
+    *   Runs the test suite using Vitest.
+*   `npm run setup:test`
+    *   Sets up the test environment by building the plugin, initializing a test vault, and installing the plugin into it.
+*   `npm run initialize-test-vault`
+    *   Initializes a test vault for Obsidian.
+*   `npm run install:test`
+    *   Installs the plugin into the test vault.
+*   `npm run build-and-install:test`
+    *   Builds the plugin and installs it into the test vault.
+
+#### Personal/Manual Use
+*   `npm run setup:dev`
+    *   Initializes a test vault for development.
+*   `npm run install:personal`
+    *   Installs the plugin into a personal or development vault.
+*   `npm run build-and-install:personal`
+    *   Builds the plugin and installs it into a personal vault.
+*   `npm run open-personal-vault`
+    *   Opens the personal Obsidian vault.
+
 ## Installation
 
 This plugin is available in the Obsidian community plugin store. You can install it directly from within the Obsidian app by going to `Settings > Community Plugins > Browse` and searching for "Multi Properties".
