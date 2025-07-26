@@ -1,11 +1,14 @@
 # Obsidian Multi-Properties Plugin
 
+This is a fork of the [original Multi-Properties plugin](https://github.com/technohiker/obsidian-multi-properties) by `technohiker`, with additional features and development improvements.
+
 This plugin allows you to add, edit, or remove frontmatter properties from multiple notes at once, streamlining your workflow when managing metadata across your vault.
 
 ## Features
 
 You can act on multiple notes at once in several ways:
 
+-   **Current Note:** Use a command to add or remove properties from the currently active note.
 -   **Folders:** Right-click a folder in the File Explorer to affect all notes within it (and optionally, all sub-folders).
 -   **File Selections:** Select multiple files using `Shift+Click` or `Ctrl/Cmd+Click`, then right-click the selection.
 -   **Search Results:** After performing a search, right-click the search pane to modify all resulting notes.
@@ -13,7 +16,7 @@ You can act on multiple notes at once in several ways:
 
 ### Actions
 
--   **Add/Edit Properties:** A form will appear allowing you to input new properties and their values. If a property already exists on a note, you can choose to either overwrite its value or append to it (for text-based properties).
+-   **Add/Edit Properties:** A form will appear allowing you to input new properties and their values. If a property already exists on a note, you can choose to either overwrite its value or append to it (for text-based properties). Editing a property is achieved by adding a property with the same name and selecting the "overwrite" option.
 -   **Remove Properties:** A form will list all unique properties found within the selected notes. You can then choose which properties to permanently remove from all targeted notes.
 
 ### Settings
@@ -54,7 +57,7 @@ Follow these instructions to set up a local development environment. This projec
 Clone the repository and install the necessary Node.js dependencies.
 
 ```bash
-git clone https://github.com/your-username/obsidian-multi-properties.git
+git clone https://github.com/notuntoward/obsidian-multi-properties.git
 cd obsidian-multi-properties
 npm install
 ```
@@ -101,21 +104,6 @@ If you prefer to run the steps individually, you can use the following scripts. 
 ### Testing
 
 This project uses [Vitest](https://vitest.dev/) for unit and component testing. These tests cover individual functions and UI components in isolation. All Vitest tests are located in the `tests/` directory and can be run with `npm test`.
-
-### Live Integration Testing
-
-For true end-to-end testing, the plugin must be tested within a running instance of Obsidian. A live test script is provided to verify that all commands work correctly and that files are modified as expected.
-
-**To run the live integration test:**
-
-1.  Ensure your test vault is set up by running:
-    ```bash
-    npm run setup:dev
-    ```
-2.  In your test vault, go to `Settings > Community Plugins` and ensure the **"Multi Properties"** plugin is **enabled**.
-3.  Open the command palette (`Ctrl/Cmd+P`).
-4.  Run the command: **"Multi-Properties: Run Live Integration Test (DEV)"**.
-5.  Open the developer console (`Ctrl+Shift+I` or `Cmd+Option+I`) and click the **"Console"** tab to view the test results.
 
 ## Manual Testing Guide
 
@@ -214,6 +202,6 @@ This plugin is available in the Obsidian community plugin store. You can install
 
 For manual installation:
 
-1.  Download the latest release from the [releases page](https://github.com/fez-github/obsidian-multi-properties/releases).
+1.  Download the latest release from the [releases page](https://github.com/notuntoward/obsidian-multi-properties/releases).
 2.  Extract the contents of the zip file.
 3.  Copy the extracted folder to your vault's plugin folder: `<your-vault>/.obsidian/plugins/`.
