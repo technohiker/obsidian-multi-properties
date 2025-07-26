@@ -114,6 +114,18 @@
         return;
       }
 
+      const selectEl = input.previousElementSibling as HTMLSelectElement;
+      const htmlType = selectEl.value;
+
+      const reverseOptions: Record<string, PropertyTypes> = {
+        "string": "text",
+        "number": "number",
+        "checkbox": "checkbox",
+        "date": "date",
+        "datetime-local": "datetime"
+      }
+      const obsidianType = reverseOptions[htmlType] ?? 'text';
+
       let value: any = parseValue(
         input.nextElementSibling,
         input.nextElementSibling.type
@@ -132,7 +144,7 @@
 
       //Store data into object.
       let propObj: NewPropData = {
-        type: 'text',
+        type: obsidianType,
         data: value,
         overwrite: false,
         delimiter: delimiter,

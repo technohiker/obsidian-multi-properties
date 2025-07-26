@@ -14,7 +14,6 @@ describe('AddPropForm.svelte', () => {
         delimiter: ',',
         defaultProps: [],
         changeBool: changeBoolMock,
-        propCache: {},
       },
     });
 

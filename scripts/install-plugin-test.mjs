@@ -34,4 +34,20 @@ fs.copyFileSync(
   path.join(pluginPath, 'styles.css')
 );
 
+const enabledPluginsPath = path.join(
+  testVaultPath,
+  '.obsidian',
+  'enabled-plugins.json'
+);
+let enabledPlugins = [];
+if (fs.existsSync(enabledPluginsPath)) {
+  enabledPlugins = JSON.parse(fs.readFileSync(enabledPluginsPath, 'utf8'));
+}
+
+if (!enabledPlugins.includes(pluginName)) {
+  enabledPlugins.push(pluginName);
+  fs.writeFileSync(enabledPluginsPath, JSON.stringify(enabledPlugins, null, 2));
+  console.log(`Plugin enabled in test vault.`);
+}
+
 console.log(`Plugin installed successfully in test vault: ${pluginPath}`);

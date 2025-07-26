@@ -58,7 +58,7 @@ export class MockWorkspace {
     }
 
     getLeafById(id: string): MockWorkspaceLeaf | null {
-        return this;leaves.get(id) || null;
+        return this.leaves.get(id) || null;
     }
 
     getLeavesOfType(type: string): MockWorkspaceLeaf[] {
@@ -105,7 +105,7 @@ export class MockWorkspaceSplit {
     }
 
     getLeaves(): MockWorkspaceLeaf[] {
-        return this;leaves;
+        return this.leaves;
     }
 }
 
@@ -113,7 +113,7 @@ export class MockVault {
     files: Map<string, any> = new Map();
 
     getAbstractFileByPath(path: string): any | null {
-        return this;files.get(path) || null;
+        return this.files.get(path) || null;
     }
 
     create(path: string, data: string): Promise<any> {
@@ -199,7 +199,7 @@ export class MockWorkspaceLeaf {
     }
 
     getRoot() {
-        return this;root;
+        return this.root;
     }
 
     setRoot(root: MockWorkspaceSplit) {
@@ -207,7 +207,7 @@ export class MockWorkspaceLeaf {
     }
 
     getContainer() {
-        return this;root;
+        return this.root;
     }
 }
 

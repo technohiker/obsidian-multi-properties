@@ -100,9 +100,22 @@ If you prefer to run the steps individually, you can use the following scripts. 
 
 ### Testing
 
-This project uses [Vitest](https://vitest.dev/) for unit and component testing and the [Svelte Testing Library](https://testing-library.com/docs/svelte-testing-library/intro/) for interacting with Svelte components. The test suite covers all major UI components and utility functions, ensuring a stable and reliable codebase.
+This project uses [Vitest](https://vitest.dev/) for unit and component testing. These tests cover individual functions and UI components in isolation. All Vitest tests are located in the `tests/` directory and can be run with `npm test`.
 
-All tests are located in the `tests/` directory.
+### Live Integration Testing
+
+For true end-to-end testing, the plugin must be tested within a running instance of Obsidian. A live test script is provided to verify that all commands work correctly and that files are modified as expected.
+
+**To run the live integration test:**
+
+1.  Ensure your test vault is set up by running:
+    ```bash
+    npm run setup:test
+    ```
+2.  In your test vault, go to `Settings > Community Plugins` and ensure the **"Multi Properties"** plugin is **enabled**.
+3.  Open the command palette (`Ctrl/Cmd+P`).
+4.  Run the command: **"Multi-Properties: Run Live Integration Test (DEV)"**.
+5.  Open the developer console (`Ctrl+Shift+I` or `Cmd+Option+I`) and click the **"Console"** tab to view the test results.
 
 ## Manual Testing Guide
 
@@ -118,89 +131,58 @@ This guide provides steps for manually testing the "Multi-Properties" plugin in 
 
 ### Testing Scenarios
 
-#### 1. Adding Properties
+#### 1. Command Palette Operations
 
-1.  Open your test vault in Obsidian.
-2.  Open the `test-note.md` file.
-3.  Open the command palette (Ctrl/Cmd + P).
-4.  Run the command "Multi-Properties: Add properties to current note".
-5.  The "Add Properties" modal should appear.
+1.  Open your test vault and open the `test-note.md` file.
+2.  Open the command palette (Ctrl/Cmd + P).
 
 ##### Scenarios to test:
 
--   **Add a single text property:**
-    -   Enter a property name (e.g., `my-property`).
-    -   Enter a value (e.g., `my-value`).
-    -   Click "Submit".
-    -   **Verification:** Check the frontmatter of `test-note.md`. The new property should be present.
--   **Add multiple properties:**
-    -   Click the "Add" button to add more input rows.
-    -   Fill in several properties with different names, types, and values.
-    -   Click "Submit".
-    -   **Verification:** Check the frontmatter of `test-note.md`. All new properties should be present.
--   **Add a list property:**
-    -   Enter a property name (e.g., `my-list`).
-    -   Select the "Text" type.
-    -   Enter a comma-separated value (e.g., `item1,item2,item3`).
-    -   Click "Submit".
-    -   **Verification:** Check the frontmatter of `test-note.md`. The property should be a list.
--   **Add tags:**
-    -   Enter `tags` as the property name.
-    -   Enter a comma-separated list of tags (e.g., `tag1,tag2,tag3`).
-    -   Click "Submit".
-    -   **Verification:** Check the frontmatter of `test-note.md`. The tags should be added to the `tags` property.
--   **Test data types:**
-    -   Add properties of different types (Number, Checkbox, Date, Datetime) and verify they are saved correctly in the frontmatter.
--   **Test "Overwrite existing properties" checkbox:**
-    -   Add a property that already exists in `test-note.md` (e.g., `aliases`).
-    -   First, try adding it with the "Overwrite" checkbox unchecked. It should not overwrite the existing property.
-    -   Then, try again with the "Overwrite" checkbox checked. It should overwrite the existing property.
-    -   **Verification:** Check the frontmatter of `test-note.md` after each step.
+-   **Add properties to current note:**
+    -   Run the command "Multi-Properties: Add props to current note".
+    -   Add a property and verify it is saved correctly in `test-note.md`.
+-   **Remove properties from current note:**
+    -   Run the command "Multi-Properties: Remove props from current note".
+    -   Remove a property and verify it is removed from `test-note.md`.
 
-#### 2. Removing Properties
+#### 2. Window-Specific Operations
 
-1.  Open your test vault in Obsidian.
-2.  Open the `test-note.md` file.
-3.  Open the command palette (Ctrl/Cmd + P).
-4.  Run the command "Multi-Properties: Remove properties from current note".
-5.  The "Remove Properties" modal should appear, listing all properties from the current note.
+These commands operate on all the files open in the current window.
 
-##### Scenarios to test:
-
--   **Remove a single property:**
-    -   Check the box next to one property.
-    -   Click "Submit".
-    -   A confirmation modal should appear. Click "Continue".
-    -   **Verification:** Check the frontmatter of `test-note.md`. The property should be removed.
--   **Remove multiple properties:**
-    -   Check the boxes next to several properties.
-    -   Use the "Check All" / "Uncheck All" button to test its functionality.
-    -   Click "Submit" and confirm.
-    -   **Verification:** Check the frontmatter of `test-note.md`. All selected properties should be removed.
--   **Cancel removal:**
-    -   Select properties to remove, click "Submit", and then click "Cancel" on the confirmation modal.
-    -   **Verification:** Check the frontmatter of `test-note.md`. No properties should be removed.
-
-#### 3. Window-Specific Operations
-
-These commands operate on all the files open in the current window. To test this, you will need to have multiple notes open in a split-pane layout.
-
-1.  Open your test vault in Obsidian.
-2.  Open several notes (e.g., `Note-01.md`, `Note-02.md`, `Note-03.md`) in a split-pane layout.
-3.  Make sure you have one of the panes active.
+1.  Open several notes (e.g., `Note-01.md`, `Note-02.md`, `Note-03.md`) in a split-pane layout.
+2.  Open the command palette (Ctrl/Cmd + P).
 
 ##### Scenarios to test:
 
 -   **Add properties to open tabs:**
-    -   Open the command palette (Ctrl/Cmd + P).
     -   Run the command "Multi-Properties: Add props to open tabs".
-    -   Add one or more properties in the modal and click "Submit".
-    -   **Verification:** Check the frontmatter of all the open notes in the current window. The new properties should be present in all of them.
+    -   Add properties and verify they are saved correctly in **all** open notes.
 -   **Remove properties from open tabs:**
-    -   Open the command palette (Ctrl/Cmd + P).
     -   Run the command "Multi-Properties: Remove props from open tabs".
-    -   Select one or more properties to remove and click "Submit".
-    -   **Verification:** Check the frontmatter of all the open notes in the current window. The selected properties should be removed from all of them.
+    -   Remove properties and verify they are removed from **all** open notes.
+
+#### 3. Context Menu Operations
+
+These actions are performed by right-clicking in the File Explorer or Search panes.
+
+##### Scenarios to test:
+
+-   **Folder Operations:**
+    1.  In the File Explorer, right-click on the `test-notes` folder.
+    2.  Select "Add props to folder's notes".
+    3.  Add a property and verify it is added to all notes within the `test-notes` folder.
+    4.  Right-click the folder again, select "Remove props from folder's notes", and verify the property is removed from all notes.
+-   **Multi-File Selection:**
+    1.  In the File Explorer, `Ctrl/Cmd+Click` to select several notes (e.g., `Note-04.md`, `Note-05.md`).
+    2.  Right-click the selection and choose "Add props to selected files".
+    3.  Add a property and verify it is added only to the selected notes.
+    4.  Repeat the selection, choose "Remove props from selected files", and verify the property is removed.
+-   **Search Results:**
+    1.  Open the Search pane (Ctrl/Cmd + Shift + F).
+    2.  Search for `content:"Test Note"`.
+    3.  In the search results pane, click the "More options" menu (three dots) and select "Add props to search results".
+    4.  Add a property and verify it is added to all notes in the search results.
+    5.  Repeat the search and use the menu to remove the property, verifying it was removed.
 
 #### 4. Settings Tab
 

@@ -1,4 +1,3 @@
-
 import fs from 'fs-extra';
 import path from 'path';
 import open from 'open';
@@ -29,8 +28,24 @@ const __dirname = path.dirname(__filename);
 
     try {
         console.log(`Cleaning and initializing test vault at: ${vaultPath}...`);
-        // Empty the directory to ensure a clean state
-        await fs.emptyDir(vaultPath);
+
+        // Get all items in the vault root
+        const items = await fs.readdir(vaultPath);
+
+        // Loop through and remove each item, except for the .obsidian directory
+        for (const item of items) {
+            if (item !== '.obsidian') {
+                await fs.remove(path.join(vaultPath, item));
+            }
+        }
+
+        // Now, specifically clean the plugins directory inside .obsidian
+        const pluginsPath = path.join(vaultPath, '.obsidian', 'plugins');
+        // emptyDir will ensure the directory exists, and then clean it.
+        await fs.emptyDir(pluginsPath);
+
+        console.log('Cleaned vault root and plugins directory.');
+
         // Copy the contents of test-notes into the vault
         await fs.copy(sourceDir, vaultPath, { overwrite: true });
         console.log('Test vault initialized successfully.');
