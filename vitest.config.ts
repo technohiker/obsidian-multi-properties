@@ -8,9 +8,5 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     include: ['tests/**/*.test.ts'],
-    alias: [
-      { find: /^svelte$/, replacement: 'svelte/internal' },
-      { find: 'obsidian', replacement: path.resolve(__dirname, './tests/obsidian-mocks.ts') },
-    ],
   },
 });

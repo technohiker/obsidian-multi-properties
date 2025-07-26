@@ -1,13 +1,8 @@
-feat(windowing): Correctly identify tabs in active window pane
+refactor(terminology): Use correct Obsidian terminology
 
-This commit fixes a bug where the plugin would incorrectly identify all tabs in a multi-pane window as being part of the same "active window". The logic now correctly distinguishes between different tab groups (panes) within the same window frame by checking the immediate parent of the active leaf.
+This commit refactors the codebase to use the correct Obsidian terminology. "Window" is now used to refer to a `WorkspaceWindow` instance (the main window or a pop-out), and "tab group" is used to refer to a pane within a window that holds a set of tabs.
 
-- The `_getFilesFromWindow` method now uses `leaf.parent` to identify the correct tab group.
-- This provides more granular window detection, especially for split panes.
-
-fix(dev): Streamline development and testing workflow
-
-- The `setup:dev` script has been corrected to only run the necessary `initialize-test-vault.mjs` script, which now handles the entire development setup process.
-- Removed the redundant and incorrect `install:test` script and references to it.
-- Added a new test file `tests/window-commands.test.ts` to verify the windowing logic.
-- Corrected various issues in the test mocks to ensure they work correctly with the new logic and `vitest`.
+- Renamed `_getFilesFromWindow` to `_getFilesFromTabGroup`.
+- Renamed commands and user-facing strings to use "tab group".
+- Renamed `tests/window-commands.test.ts` to `tests/tab-group-commands.test.ts` and updated its content.
+- Updated `README.md` to use the correct terminology.

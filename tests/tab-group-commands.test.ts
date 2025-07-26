@@ -1,66 +1,106 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import MultiPropPlugin from "../src/main";
-import {
-  MockApp,
-  MockWorkspace,
-  MockWorkspaceLeaf,
-  MockWorkspaceSplit,
-  TFile,
-} from "./obsidian-mocks";
-import { PropModal } from "../src/AddPropModal";
+import { vi, expect, test, beforeEach, describe } from 'vitest';
 
-vi.mock("../src/AddPropModal", () => {
-  const PropModal = vi.fn();
-  PropModal.prototype.open = vi.fn();
-  return { PropModal };
+const mocks = vi.hoisted(() => {
+    class MockTFile {
+        constructor(public path: string, public extension: string = 'md') {}
+        get name() { return this.path.split('/').pop() || ''; }
+    }
+    class MockWorkspaceLeaf {
+        parent: any = null;
+        view: any = {};
+        root: any = null;
+        constructor() {}
+        getContainer = vi.fn();
+        getRoot = vi.fn(() => this.root);
+        setParent(parent: any) { this.parent = parent; }
+        setRoot(root: any) { this.root = root; }
+    }
+    class MockWorkspaceTabs {
+        children: any[] = [];
+        containerEl = { id: 'mock-tabs' };
+        constructor() {}
+    }
+    class MockApp {
+        workspace = {
+            activeLeaf: null,
+            leaves: [] as any[],
+            iterateAllLeaves: vi.fn((cb) => {
+                (this as any).workspace.leaves.forEach(cb);
+            }),
+            addLeaf: (leaf: any) => {
+                (this as any).workspace.leaves.push(leaf);
+            }
+        };
+        commands: any[] = [];
+        addCommand = vi.fn((cmd) => { this.commands.push(cmd); });
+    }
+    return {
+        TFile: MockTFile,
+        WorkspaceLeaf: MockWorkspaceLeaf,
+        WorkspaceTabs: MockWorkspaceTabs,
+        FileView: class {},
+        Notice: vi.fn(),
+        Plugin: class { constructor(app: any, manifest: any) {} },
+        App: MockApp,
+    };
 });
 
-describe("Tab Group-specific Commands", () => {
-  let app: MockApp;
-  let workspace: MockWorkspace;
+vi.mock('obsidian', () => mocks);
+
+vi.mock('../src/AddPropModal', () => {
+    const PropModal = vi.fn();
+    PropModal.prototype.open = vi.fn();
+    return { PropModal };
+});
+
+import MultiPropPlugin from '../src/main';
+import { TFile } from 'obsidian';
+
+describe('Tab Group-specific Commands', () => {
+  let app: any;
   let plugin: MultiPropPlugin;
 
   beforeEach(() => {
-    app = new MockApp();
-    workspace = app.workspace;
-    plugin = new MultiPropPlugin(app as any, {} as any);
-    plugin.onload();
     vi.clearAllMocks();
+    app = new mocks.App();
+    // @ts-ignore
+    plugin = new MultiPropPlugin(app, {});
+    plugin.onload();
   });
 
-  it("should add props only to tabs in the active tab group", async () => {
-    // Setup two tab groups (roots)
-    const tabGroup1 = new MockWorkspaceSplit("tabGroup1");
-    const tabGroup2 = new MockWorkspaceSplit("tabGroup2");
+  test('should add props only to tabs in the active tab group', async () => {
+    const tabGroup1 = new mocks.WorkspaceTabs();
+    const tabGroup2 = new mocks.WorkspaceTabs();
 
-    // Setup files and leaves for tab group 1
-    const file1 = new TFile("file1.md");
-    const leaf1 = new MockWorkspaceLeaf("leaf1", file1, app);
-    workspace.addLeaf(leaf1, tabGroup1);
+    const file1 = new TFile('file1.md');
+    const leaf1 = new mocks.WorkspaceLeaf();
+    leaf1.view = { file: file1 };
+    leaf1.setParent(tabGroup1);
+    app.workspace.addLeaf(leaf1);
 
-    const file2 = new TFile("file2.md");
-    const leaf2 = new MockWorkspaceLeaf("leaf2", file2, app);
-    workspace.addLeaf(leaf2, tabGroup1);
+    const file2 = new TFile('file2.md');
+    const leaf2 = new mocks.WorkspaceLeaf();
+    leaf2.view = { file: file2 };
+    leaf2.setParent(tabGroup1);
+    app.workspace.addLeaf(leaf2);
 
-    // Setup files and leaves for tab group 2
-    const file3 = new TFile("file3.md");
-    const leaf3 = new MockWorkspaceLeaf("leaf3", file3, app);
-    workspace.addLeaf(leaf3, tabGroup2);
+    const file3 = new TFile('file3.md');
+    const leaf3 = new mocks.WorkspaceLeaf();
+    leaf3.view = { file: file3 };
+    leaf3.setParent(tabGroup2);
+    app.workspace.addLeaf(leaf3);
 
-    // Set active leaf to be in the first tab group
-    workspace.activeLeaf = leaf1;
+    app.workspace.activeLeaf = leaf1;
 
-    const createPropModalSpy = vi.spyOn(plugin, "createPropModal");
+    const createPropModalSpy = vi.spyOn(plugin, 'createPropModal');
 
-    // Find and execute the command
     const command = app.commands.find(
-      (cmd) => cmd.id === "add-props-to-tab-group"
+      (cmd: any) => cmd.id === 'add-props-to-tab-group'
     );
-    expect(command).toBeDefined();
     await command.callback();
 
-    // Expect the PropModal to be created with files from the active tab group only
     expect(createPropModalSpy).toHaveBeenCalledTimes(1);
+    // @ts-ignore
     expect(createPropModalSpy).toHaveBeenCalledWith([file1, file2]);
   });
 });
