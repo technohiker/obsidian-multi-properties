@@ -3,6 +3,26 @@
 // This file mocks the 'obsidian' module.
 // It is crucial for testing plugins without needing a live Obsidian instance.
 
+import { vi } from 'vitest';
+
+// Mock the entire 'obsidian' module
+vi.mock('obsidian', () => ({
+    ...vi.importActual('obsidian'),
+    App: MockApp,
+    Plugin: MockPlugin,
+    PluginSettingTab: PluginSettingTab,
+    Notice: Notice,
+    Menu: Menu,
+    TAbstractFile: TAbstractFile,
+    TFile: TFile,
+    TFolder: TFolder,
+    Modal: Modal,
+    FileView: FileView,
+    WorkspaceLeaf: MockWorkspaceLeaf,
+    WorkspaceSplit: MockWorkspaceSplit,
+    Setting: MockSetting,
+}));
+
 // Extend the global Array prototype for the 'remove' method used in the plugin
 declare global {
     interface Array<T> {
@@ -92,20 +112,35 @@ export class MockWorkspace {
 }
 
 export class MockWorkspaceSplit {
-    leaves: MockWorkspaceLeaf[] = [];
     id: string;
+    children: (MockWorkspaceSplit | MockWorkspaceLeaf)[] = [];
+    leaves: MockWorkspaceLeaf[] = []; // Keep for existing tests, but new logic will use children
 
     constructor(id: string) {
         this.id = id;
     }
 
     addLeaf(leaf: MockWorkspaceLeaf) {
-        this.leaves.push(leaf);
+        this.children.push(leaf);
+        this.leaves.push(leaf); // Keep for existing tests
         leaf.setRoot(this);
     }
 
     getLeaves(): MockWorkspaceLeaf[] {
-        return this.leaves;
+        // This is a simplified version for existing tests.
+        // The new logic in main.ts will traverse `children`.
+        const allLeaves: MockWorkspaceLeaf[] = [];
+        function collect(split: MockWorkspaceSplit) {
+            for (const child of split.children) {
+                if (child instanceof MockWorkspaceLeaf) {
+                    allLeaves.push(child);
+                } else {
+                    collect(child as MockWorkspaceSplit);
+                }
+            }
+        }
+        collect(this);
+        return allLeaves;
     }
 }
 
@@ -388,4 +423,40 @@ export class Modal {
     }
 
     onOpen() {}
+}
+
+export class TFile extends TAbstractFile {
+    path: string;
+    name: string;
+    frontmatter: any;
+    extension: string;
+
+    constructor(path: string) {
+        super();
+        this.path = path;
+        this.name = path.split('/').pop() || '';
+        this.frontmatter = {};
+        this.extension = path.split('.').pop() || '';
+    }
+}
+
+export class TFolder extends TAbstractFile {
+    path: string;
+    name: string;
+    children: TAbstractFile[];
+
+    constructor(path: string, children: TAbstractFile[] = []) {
+        super();
+        this.path = path;
+        this.name = path.split('/').pop() || '';
+        this.children = children;
+    }
+}
+
+export class FileView {
+    file: TFile;
+
+    constructor(file: TFile) {
+        this.file = file;
+    }
 }

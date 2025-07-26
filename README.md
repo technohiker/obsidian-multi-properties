@@ -110,7 +110,7 @@ For true end-to-end testing, the plugin must be tested within a running instance
 
 1.  Ensure your test vault is set up by running:
     ```bash
-    npm run setup:test
+    npm run setup:dev
     ```
 2.  In your test vault, go to `Settings > Community Plugins` and ensure the **"Multi Properties"** plugin is **enabled**.
 3.  Open the command palette (`Ctrl/Cmd+P`).

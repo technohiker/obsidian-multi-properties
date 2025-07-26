@@ -8,13 +8,13 @@ import { RemoveConfirmModal } from "./RemoveConfirmModal";
 export class RemoveModal extends Modal {
   names: string[];
   props: string[];
-  submission: (customProps: string[]) => void;
+  submission: (customProps: string[]) => Promise<void>;
   component: RemovePropForm;
 
   constructor(
     app: App,
     names: string[],
-    submission: (customProps: string[]) => void
+    submission: (customProps: string[]) => Promise<void>
   ) {
     if (!names || names.length === 0) {
       new Notice("No properties to remove");
@@ -25,9 +25,9 @@ export class RemoveModal extends Modal {
     this.submission = submission;
   }
 
-  onConfirm(bool: boolean) {
+  async onConfirm(bool: boolean) {
     if (bool) {
-      this.submission(this.props);
+      await this.submission(this.props);
       this.close();
     }
   }

@@ -1,47 +1,85 @@
-import { describe, it, expect, vi } from 'vitest';
-import { addProperties } from '../src/frontmatter';
-import { TFile } from 'obsidian';
+import { describe, it, expect, beforeEach } from "vitest";
+import { addProperties, removeProperties, addPropToSet } from "../src/frontmatter";
+import { TFile } from "obsidian";
+import { MockFileManager } from "./obsidian-mocks";
 
-describe('addProperties', () => {
-  it('should add new properties to the frontmatter', () => {
-    const file = { path: 'test.md' } as TFile;
-    const props = new Map();
-    props.set('newProp', { type: 'text', data: 'newValue' });
+describe("Frontmatter Utilities", () => {
+  let fileManager: MockFileManager;
+  let file: TFile;
 
-    const fileProcessor = (file: TFile, callback: (frontmatter: any) => void) => {
-      const frontmatter = {};
-      callback(frontmatter);
-      expect(frontmatter).toEqual({ newProp: 'newValue' });
-    };
-
-    addProperties(fileProcessor, file, props, false, {});
+  beforeEach(() => {
+    fileManager = new MockFileManager();
+    file = {
+      path: "test.md",
+      frontmatter: {
+        existingProp: "oldValue",
+        tags: ["a", "b"],
+      },
+    } as TFile;
   });
 
-  it('should overwrite existing properties when overwrite is true', () => {
-    const file = { path: 'test.md' } as TFile;
-    const props = new Map();
-    props.set('existingProp', { type: 'text', data: 'newValue' });
+  describe("addProperties", () => {
+    it("should add new properties to the frontmatter", async () => {
+      const props = new Map();
+      props.set("newProp", { type: "text", data: "newValue" });
 
-    const fileProcessor = (file: TFile, callback: (frontmatter: any) => void) => {
-      const frontmatter = { existingProp: 'oldValue' };
-      callback(frontmatter);
-      expect(frontmatter).toEqual({ existingProp: 'newValue' });
-    };
+      await addProperties(fileManager.processFrontMatter.bind(fileManager), file, props, false, {});
+      expect(file.frontmatter).toEqual({
+        existingProp: "oldValue",
+        tags: ["a", "b"],
+        newProp: "newValue",
+      });
+    });
 
-    addProperties(fileProcessor, file, props, true, {});
+    it("should overwrite existing properties when overwrite is true", async () => {
+      const props = new Map();
+      props.set("existingProp", { type: "text", data: "newValue" });
+
+      await addProperties(fileManager.processFrontMatter.bind(fileManager), file, props, true, {});
+      expect(file.frontmatter.existingProp).toBe("newValue");
+    });
+
+    it("should not overwrite existing properties when overwrite is false", async () => {
+      const props = new Map();
+      props.set("existingProp", { type: "text", data: "newValue" });
+      const propCache = { existingprop: { type: "text" } };
+
+      await addProperties(fileManager.processFrontMatter.bind(fileManager), file, props, false, propCache);
+      expect(file.frontmatter.existingProp).toEqual(["oldValue", "newValue"]);
+    });
+
+    it("should merge tags correctly", async () => {
+      const props = new Map();
+      props.set("tags", { type: "tag", data: "c" });
+
+      await addProperties(fileManager.processFrontMatter.bind(fileManager), file, props, false, {});
+      expect(file.frontmatter.tags).toEqual(["a", "b", "c"]);
+    });
   });
 
-  it('should append to existing properties when overwrite is false and types are compatible', () => {
-    const file = { path: 'test.md' } as TFile;
-    const props = new Map();
-    props.set('existingProp', { type: 'text', data: 'newValue' });
+  describe("removeProperties", () => {
+    it("should remove a property from the frontmatter", async () => {
+      const propsToRemove = ["existingProp"];
+      await removeProperties(fileManager.processFrontMatter.bind(fileManager), file, propsToRemove);
+      expect(file.frontmatter.existingProp).toBeUndefined();
+    });
 
-    const fileProcessor = (file: TFile, callback: (frontmatter: any) => void) => {
-      const frontmatter = { existingProp: 'oldValue' };
-      callback(frontmatter);
-      expect(frontmatter).toEqual({ existingProp: ['oldValue', 'newValue'] });
-    };
+    it("should remove multiple properties from the frontmatter", async () => {
+      file.frontmatter.anotherProp = "anotherValue";
+      const propsToRemove = ["existingProp", "tags"];
+      await removeProperties(fileManager.processFrontMatter.bind(fileManager), file, propsToRemove);
+      expect(file.frontmatter.existingProp).toBeUndefined();
+      expect(file.frontmatter.tags).toBeUndefined();
+      expect(file.frontmatter.anotherProp).toBe("anotherValue");
+    });
+  });
 
-    addProperties(fileProcessor, file, props, false, { existingprop: { type: 'text' } });
+  describe("addPropToSet", () => {
+    it("should add all properties from a file to a set", async () => {
+      const propSet = new Set<string>();
+      await addPropToSet(fileManager.processFrontMatter.bind(fileManager), propSet, file);
+      expect(propSet).toContain("existingProp");
+      expect(propSet).toContain("tags");
+    });
   });
 });

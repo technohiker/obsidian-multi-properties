@@ -7,17 +7,17 @@ import MultiPropPlugin from "./main";
 /** Loads a modal and handles form submissions. */
 export class RemoveConfirmModal extends Modal {
   names: string[];
-  submission: (bool: boolean) => void;
+  submission: (bool: boolean) => Promise<void>;
   component: RemoveConfirmForm;
 
-  constructor(app: App, names: string[], submission: (bool: boolean) => void) {
+  constructor(app: App, names: string[], submission: (bool: boolean) => Promise<void>) {
     super(app);
     this.names = names;
     this.submission = submission;
   }
 
-  onSubmit() {
-    this.submission(true);
+  async onSubmit() {
+    await this.submission(true);
     this.close();
   }
 

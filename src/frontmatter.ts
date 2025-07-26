@@ -5,18 +5,19 @@ type FileProcessor = (file: TFile, callback: (frontmatter: any) => void) => Prom
 
 /** Add properties from a Map to a note.
  */
-export function addProperties(
+export async function addProperties(
   fileProcessor: FileProcessor,
   file: TFile,
   props: Map<string, NewPropData>,
   overwrite: boolean,
   propCache: any
 ) {
-  fileProcessor(file, (frontmatter) => {
+  await fileProcessor(file, (frontmatter) => {
     for (const [key, value] of props) {
-      //Tags should always be a List, even if there is just one tag.
-      if (key === "tags" && !Array.isArray(value.data)) {
-        frontmatter[key] = [value.data];
+      if (key === "tags") {
+        const existingTags = frontmatter[key] || [];
+        const newTags = Array.isArray(value.data) ? value.data : [value.data];
+        frontmatter[key] = [...new Set([...existingTags, ...newTags])];
         continue;
       }
 
@@ -56,8 +57,8 @@ export async function addPropToSet(fileProcessor: FileProcessor, set: Set<string
 }
 
 /** Remove properties from a note. */
-export function removeProperties(fileProcessor: FileProcessor, file: TFile, props: string[]) {
-  fileProcessor(file, (frontmatter) => {
+export async function removeProperties(fileProcessor: FileProcessor, file: TFile, props: string[]) {
+  await fileProcessor(file, (frontmatter) => {
     for (const prop of props) {
       //delete frontmatter[prop];
       frontmatter[prop] = undefined; //"Hacky" workaround, commented code will work in later version."

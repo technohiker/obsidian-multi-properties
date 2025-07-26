@@ -2,11 +2,23 @@ import fs from 'fs-extra';
 import path from 'path';
 import open from 'open';
 import { fileURLToPath } from 'url';
+import 'dotenv/config';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 (async () => {
+    // --- Build Development Version ---
+    try {
+        console.log('Building development version of the plugin...');
+        execSync('npm run build:dev', { stdio: 'inherit' });
+        console.log('Build successful.');
+    } catch (err) {
+        console.error('Failed to build plugin:', err);
+        process.exit(1);
+    }
+
     const vaultPath = process.env.OBSIDIAN_TEST_VAULT_PATH;
 
     if (!vaultPath) {
@@ -48,7 +60,50 @@ const __dirname = path.dirname(__filename);
 
         // Copy the contents of test-notes into the vault
         await fs.copy(sourceDir, vaultPath, { overwrite: true });
-        console.log('Test vault initialized successfully.');
+        console.log('Test notes copied successfully.');
+
+        // --- Install Plugin ---
+        const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+        const pluginName = manifest.id;
+        const buildDir = './';
+        const pluginPath = path.join(pluginsPath, pluginName);
+
+        if (!fs.existsSync(pluginPath)) {
+          fs.mkdirSync(pluginPath, { recursive: true });
+        }
+
+        fs.copyFileSync(
+          path.join(buildDir, 'main.js'),
+          path.join(pluginPath, 'main.js')
+        );
+        fs.copyFileSync(
+          path.join(buildDir, 'manifest.json'),
+          path.join(pluginPath, 'manifest.json')
+        );
+        fs.copyFileSync(
+          path.join(buildDir, 'styles.css'),
+          path.join(pluginPath, 'styles.css')
+        );
+
+        const enabledPluginsPath = path.join(
+          vaultPath,
+          '.obsidian',
+          'enabled-plugins.json'
+        );
+        let enabledPlugins = [];
+        if (fs.existsSync(enabledPluginsPath)) {
+          enabledPlugins = JSON.parse(fs.readFileSync(enabledPluginsPath, 'utf8'));
+        }
+
+        if (!enabledPlugins.includes(pluginName)) {
+          enabledPlugins.push(pluginName);
+          fs.writeFileSync(enabledPluginsPath, JSON.stringify(enabledPlugins, null, 2));
+          console.log(`Plugin enabled in test vault.`);
+        }
+
+        console.log(`Plugin installed successfully in test vault: ${pluginPath}`);
+
+
     } catch (err) {
         console.error('Failed to initialize test vault:', err);
         process.exit(1);

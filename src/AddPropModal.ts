@@ -6,7 +6,7 @@ import { PropertyTypes } from "./types/custom";
 
 /** Loads a modal and handles form submissions. */
 export class PropModal extends Modal {
-  submission: (customProps: Map<string, any>) => void;
+  submission: (customProps: Map<string, any>) => Promise<void>;
   props: Map<string, NewPropData>;
   overwrite: boolean;
   delimiter: string;
@@ -16,7 +16,7 @@ export class PropModal extends Modal {
 
   constructor(
     app: App,
-    submission: (customProps: Map<string, any>) => void,
+    submission: (customProps: Map<string, any>) => Promise<void>,
     overwrite: boolean,
     delimiter: string,
     defaultProps: any,
@@ -31,9 +31,9 @@ export class PropModal extends Modal {
   }
 
   //Run form submission if user clicks confirm.
-  onConfirm(bool: boolean) {
+  async onConfirm(bool: boolean) {
     if (bool) {
-      this.submission(this.props);
+      await this.submission(this.props);
       this.close();
     }
   }
