@@ -34,7 +34,8 @@ describe('MultiPropPlugin Tests', () => {
 
   describe('File Iteration', () => {
     test('searchFiles should iterate over a list of files', async () => {
-      const files = [new TFile('file1.md'), new TFile('file2.md')];
+      const resolvedMocks = await mocks;
+      const files = [new resolvedMocks.TFile('file1.md'), new resolvedMocks.TFile('file2.md')];
       const callback = vi.fn();
       // @ts-ignore
       await plugin.searchFiles(files, callback);

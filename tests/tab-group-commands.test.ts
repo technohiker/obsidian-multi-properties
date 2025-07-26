@@ -33,19 +33,19 @@ describe('Tab Group-specific Commands', () => {
     const tabGroup1 = new resolvedMocks.WorkspaceTabs();
     const tabGroup2 = new resolvedMocks.WorkspaceTabs();
 
-    const file1 = new TFile('file1.md');
+    const file1 = new resolvedMocks.TFile('file1.md');
     const leaf1 = new resolvedMocks.WorkspaceLeaf();
     leaf1.view = { file: file1 };
     leaf1.setParent(tabGroup1);
     app.workspace.addLeaf(leaf1);
 
-    const file2 = new TFile('file2.md');
+    const file2 = new resolvedMocks.TFile('file2.md');
     const leaf2 = new resolvedMocks.WorkspaceLeaf();
     leaf2.view = { file: file2 };
     leaf2.setParent(tabGroup1);
     app.workspace.addLeaf(leaf2);
 
-    const file3 = new TFile('file3.md');
+    const file3 = new resolvedMocks.TFile('file3.md');
     const leaf3 = new resolvedMocks.WorkspaceLeaf();
     leaf3.view = { file: file3 };
     leaf3.setParent(tabGroup2);
