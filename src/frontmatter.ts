@@ -13,7 +13,11 @@ export function addProperties(
   app.fileManager.processFrontMatter(file, (frontmatter) => {
     for (const [key, value] of props) {
       //Tags should always be a List, even if there is just one tag.
-      if (key === "tags" && !Array.isArray(value.data)) {
+      if (
+        key === "tags" &&
+        !frontmatter.hasOwnProperty("tags") &&
+        !Array.isArray(value.data)
+      ) {
         frontmatter[key] = [value.data];
         continue;
       }
