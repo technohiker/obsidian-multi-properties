@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { onMount, tick } from "svelte";
 
-	export let isFirst: boolean;
+	//export let isFirst: boolean;
 	export let removeInput: (id: number) => void;
 	export let id: number;
 
 	export let typeVal: string = "text";
 	export let nameVal: string = "";
 	export let valueVal: string = "";
+	export let totalInputs: number;
 
 	let inputEl: HTMLInputElement;
 	let valueEl: HTMLInputElement;
@@ -48,10 +49,14 @@
 <div class="modal-input-container">
 	<a
 		id="del-btn"
-		on:click={() => (isFirst ? false : removeInput(id))}
-		class="btn-del {isFirst ? 'btn-inactive' : ''}"
-		tabindex={isFirst ? -1 : 0}
-		href="href">X</a
+		on:click={() => {
+			// Only disable removal if there is exactly 1 input
+    		if (totalInputs <= 1) return;
+    		removeInput(id);
+  		}}
+  		class="btn-del {totalInputs <= 1 ? 'btn-inactive' : ''}"
+  		tabindex={totalInputs <= 1 ? -1 : 0}
+  		href="href">X</a
 	>
 	<select id="type-input" class="flex-obj" bind:value={optionVal} on:change={() => changeType(optionVal)}>
 		{#each Object.keys(options) as key}
