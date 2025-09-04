@@ -216,6 +216,7 @@ export default class MultiPropPlugin extends Plugin {
         defaultProps = [];
       }
     }
+    const allProps = this.getAllUsedProperties();
 
     new PropModal(
       this.app,
@@ -223,8 +224,16 @@ export default class MultiPropPlugin extends Plugin {
       this.settings.overwrite,
       this.settings.delimiter,
       defaultProps,
-      this.changeOverwrite.bind(this)
+      this.changeOverwrite.bind(this),
+      allProps
     ).open();
+  }
+
+  getAllUsedProperties(): string[] {
+    const allProps = this.app.metadataCache.getAllPropertyInfos();
+    return Object.keys(allProps).sort((a, b) =>
+      a.toLowerCase().localeCompare(b.toLowerCase())
+    );
   }
 
   /** Create modal for removing properties.

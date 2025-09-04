@@ -11,15 +11,16 @@
   export let defaultProps: { name: string; value: any; type: PropertyTypes }[] =
     [];
   export let changeBool: (bool: boolean) => void;
-
-  let countInputs = 0; //Could replace with UUID.
+  export let suggestedProps: string[] = [];
+  
+  let countInputs = 0;
   let formEl: HTMLFormElement;
   let errorEl: HTMLDivElement;
   let alertText = ".";
-
   let inputEls: {
     id: number;
     isFirst: boolean;
+    totalInputs: number;
     typeDef: PropertyTypes;
     nameDef: string;
     valueDef: any;
@@ -66,6 +67,12 @@
     if (!inputs) return;
 
     inputs[inputs.length - 2].focus();
+  }
+
+  function addSuggested(propName: string) {
+    if (!inputEls.find(el => el.nameDef === propName)) {
+      addInputs([{ type: "text", name: propName, value: "" }]);
+    }
   }
 
   /** See if there are duplicate property names.*/
@@ -160,6 +167,16 @@
     <div>ERROR</div>
     <div id="alert-text">{alertText}</div>
   </div>
+
+  <p>Select from existing properties or create new ones:</p>
+  <div class="suggested-props">
+    {#each suggestedProps as propName}
+      <button type="button" class="prop-chip" on:click={() => addSuggested(propName)}>
+        {propName}
+      </button>
+    {/each}
+  </div>
+
   <p>
     Type in a property name, then value. Use the dropbox to choose what type of
     data you wish to store.
@@ -182,6 +199,7 @@
         <PropInput
           isFirst={input.isFirst}
           id={input.id}
+          totalInputs={inputEls.length}
           bind:typeVal={input.typeDef}
           bind:nameVal={input.nameDef}
           bind:valueVal={input.valueDef}

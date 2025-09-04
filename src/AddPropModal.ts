@@ -13,6 +13,7 @@ export class PropModal extends Modal {
   defaultProps: { name: string; value: any; type: PropertyTypes; }[];
   changeBool: (bool: boolean) => void;
   component: PropForm;
+  suggestedProps: string[]
 
   constructor(
     app: App,
@@ -20,7 +21,8 @@ export class PropModal extends Modal {
     overwrite: boolean,
     delimiter: string,
     defaultProps: any,
-    changeBool: (bool: boolean) => void
+    changeBool: (bool: boolean) => void,
+    suggestedProps: string[] = []
   ) {
     super(app);
     this.submission = submission;
@@ -28,6 +30,7 @@ export class PropModal extends Modal {
     this.delimiter = delimiter;
     this.defaultProps = defaultProps;
     this.changeBool = changeBool;
+    this.suggestedProps = suggestedProps;
   }
 
   //Run form submission if user clicks confirm.
@@ -65,6 +68,7 @@ export class PropModal extends Modal {
         delimiter: this.delimiter,
         defaultProps: this.defaultProps,
         changeBool: this.updateBool.bind(this),
+        suggestedProps: this.suggestedProps,
       },
     });
   }
