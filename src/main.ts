@@ -239,46 +239,28 @@ export default class MultiPropPlugin extends Plugin {
   /** Create modal for removing properties.
    * Will call a different function depending on whether files or a folder is used. */
   async createRemoveModal(iterable: TAbstractFile[] | TFolder) {
+    let names;
     let iterateFunc;
 
     if (iterable instanceof TFolder) {
+      names = await this.getPropsFromFolder(iterable, new Set());
       iterateFunc = (props: string[]) =>
         this.searchFolders(iterable, this.removePropsCallback(props));
     } else {
+      names = await this.getPropsFromFiles(iterable, new Set());
       iterateFunc = (props: string[]) =>
         this.searchFiles(iterable, this.removePropsCallback(props));
     }
-
-    const sortedNames = await this.getNamesFromProperties(iterable)
-
-    if (!sortedNames) {
-      return
-    }
-
-    new RemoveModal(this.app, sortedNames, iterateFunc).open();
-  }
-
-  /** Will collect the names of the properties selected files and folders */
-  async getNamesFromProperties(iterable: TAbstractFile[] | TFolder) {
-    let names;
-
-    if (iterable instanceof TFolder) {
-      names = await this.getPropsFromFolder(iterable, new Set());
-    }
-    else {
-      names = await this.getPropsFromFiles(iterable, new Set());
-    }
-
     if (names.length === 0) {
       new Notice("No properties to remove", 4000);
-      return
+      return;
     }
 
     const sortedNames = [...names].sort((a, b) =>
       a.toLowerCase() > b.toLowerCase() ? 1 : -1
     );
 
-    return sortedNames
+    new RemoveModal(this.app, sortedNames, iterateFunc).open();
   }
 
   /** Read through a given file and get name/value of props.
