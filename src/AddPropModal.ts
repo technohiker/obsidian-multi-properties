@@ -1,8 +1,10 @@
 import { Modal, App } from "obsidian";
+import { Component, mount, SvelteComponent } from "svelte";
 import PropForm from "./AddPropForm.svelte";
 import { NewPropData } from "./main";
 import { AddConfirmModal } from "./AddConfirmModal";
 import { PropertyTypes } from "./types/custom";
+import { ComponentType } from "@testing-library/svelte/types/component-types";
 
 /** Loads a modal and handles form submissions. */
 export class PropModal extends Modal {
@@ -10,10 +12,9 @@ export class PropModal extends Modal {
   props: Map<string, NewPropData>;
   overwrite: boolean;
   delimiter: string;
-  defaultProps: { name: string; value: any; type: PropertyTypes; }[];
+  defaultProps: { name: string; value: any; type: PropertyTypes }[];
   changeBool: (bool: boolean) => void;
-  component: PropForm;
-
+  component: any;
   constructor(
     app: App,
     submission: (customProps: Map<string, any>) => Promise<void>,
@@ -57,7 +58,7 @@ export class PropModal extends Modal {
   onOpen(): void {
     this.titleEl.createEl("h2", { text: "Add Properties" });
 
-    this.component = new PropForm({
+    this.component = mount(PropForm, {
       target: this.contentEl,
       props: {
         submission: this.onSubmit.bind(this),

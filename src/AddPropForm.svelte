@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
-  import PropInput from "./AddPropInput.svelte";
+  import AddPropInput from "./AddPropInput.svelte";
   import { NewPropData } from "./main";
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
   import type { PropertyTypes } from "./types/custom";
@@ -118,13 +118,13 @@
       const htmlType = selectEl.value;
 
       const reverseOptions: Record<string, PropertyTypes> = {
-        "string": "text",
-        "number": "number",
-        "checkbox": "checkbox",
-        "date": "date",
-        "datetime-local": "datetime"
-      }
-      const obsidianType = reverseOptions[htmlType] ?? 'text';
+        string: "text",
+        number: "number",
+        checkbox: "checkbox",
+        date: "date",
+        "datetime-local": "datetime",
+      };
+      const obsidianType = reverseOptions[htmlType] ?? "text";
 
       let value: any = parseValue(
         input.nextElementSibling,
@@ -135,7 +135,7 @@
         if (name === "tags") {
           value = cleanTags(value);
         }
-        if (typeof value === 'string' && value.includes(",")) {
+        if (typeof value === "string" && value.includes(",")) {
           let str = removeExtraCommas(value);
           value = str.split(delimiter);
         }
@@ -187,7 +187,7 @@
     >
     <div class="modal-inputs-container">
       {#each inputEls as input (input.id)}
-        <PropInput
+        <AddPropInput
           isFirst={input.isFirst}
           id={input.id}
           bind:typeVal={input.typeDef}
@@ -201,8 +201,7 @@
       <button
         type="button"
         on:click={() => addInputs([{ type: "text", name: "", value: "" }])}
-        class="a-btn"
-        >Add</button
+        class="a-btn">Add</button
       >
     </div>
     <div class="modal-button-container">

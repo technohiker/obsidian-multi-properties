@@ -66,7 +66,6 @@
         <label>
           <input
             type="checkbox"
-            bind:value={input.name}
             bind:checked={input.isChecked}
             on:change={(event) => onCheckboxChange(event)}
           />
