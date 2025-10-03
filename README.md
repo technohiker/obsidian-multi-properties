@@ -1,8 +1,10 @@
 # Obsidian Multi-Properties Plugin
 
-This is a fork of the [original Multi-Properties plugin](https://github.com/technohiker/obsidian-multi-properties) by `technohiker`, with additional features and development improvements.
-
 This plugin allows you to add, edit, or remove frontmatter properties from multiple notes at once, streamlining your workflow when managing metadata across your vault.
+
+## Demo
+
+![Multi Properties Demo 1 0 0](https://github.com/fez-github/obsidian-multi-properties/assets/75589254/8483e98d-cc4f-4770-a0bf-7a5da2cab93d)
 
 ## Features
 
@@ -236,10 +238,9 @@ Here is a comprehensive list of all scripts available in `package.json`:
 
 ## Installation
 
-This plugin is available in the Obsidian community plugin store. You can install it directly from within the Obsidian app by going to `Settings > Community Plugins > Browse` and searching for "Multi Properties".
+This project is available as an Obsidian community plugin that can be installed directly in the app. Go to Settings->Community Plugins->Browser, and search the name `Multi Properties`.
 
-For manual installation:
+If you wish to install it outside of Obsidian's Community Plugins menu, follow these steps.
 
-1.  Download the latest release from the [releases page](https://github.com/notuntoward/obsidian-multi-properties/releases).
-2.  Extract the contents of the zip file.
-3.  Copy the extracted folder to your vault's plugin folder: `<your-vault>/.obsidian/plugins/`.
+1. Download the latest release from https://github.com/technohiker/obsidian-multi-properties/.
+2. Extract the folder within the zip file in the current release, and add it to `<yourVault>/.obsidian/plugins/`.
