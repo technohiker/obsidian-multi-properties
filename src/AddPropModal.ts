@@ -10,7 +10,7 @@ export class PropModal extends Modal {
   props: Map<string, NewPropData>;
   overwrite: boolean;
   delimiter: string;
-  defaultProps: { name: string; value: any; type: PropertyTypes; }[];
+  defaultProps: { name: string; value: any; type: PropertyTypes }[];
   changeBool: (bool: boolean) => void;
   component: PropForm;
 

@@ -6,43 +6,43 @@ import { NewPropData } from "./main";
 
 /** Loads a modal and handles form submissions. */
 export class AddConfirmModal extends Modal {
-	props: Map<string, NewPropData>;
-	submission: (bool: boolean) => void;
-	overwrite: boolean;
-	component: AddConfirmForm;
+  props: Map<string, NewPropData>;
+  submission: (bool: boolean) => void;
+  overwrite: boolean;
+  component: AddConfirmForm;
 
-	constructor(
-		app: App,
-		props: Map<string, NewPropData>,
-		overwrite: boolean,
-		submission: (bool: boolean) => void
-	) {
-		super(app);
-		this.props = props;
-		this.overwrite = overwrite;
-		this.submission = submission;
-	}
-	onSubmit() {
-		this.submission(true);
-		this.close();
-	}
+  constructor(
+    app: App,
+    props: Map<string, NewPropData>,
+    overwrite: boolean,
+    submission: (bool: boolean) => void
+  ) {
+    super(app);
+    this.props = props;
+    this.overwrite = overwrite;
+    this.submission = submission;
+  }
+  onSubmit() {
+    this.submission(true);
+    this.close();
+  }
 
-	onCancel() {
-		this.submission(false);
-		this.close();
-	}
+  onCancel() {
+    this.submission(false);
+    this.close();
+  }
 
-	onOpen(): void {
-		this.titleEl.createEl("h2", { text: "Add Properties" });
+  onOpen(): void {
+    this.titleEl.createEl("h2", { text: "Add Properties" });
 
-		this.component = new AddConfirmForm({
-			target: this.contentEl,
-			props: {
-				props: this.props,
-				overwrite: this.overwrite,
-				submission: this.onSubmit.bind(this),
-				cancel: this.onCancel.bind(this),
-			},
-		});
-	}
+    this.component = new AddConfirmForm({
+      target: this.contentEl,
+      props: {
+        props: this.props,
+        overwrite: this.overwrite,
+        submission: this.onSubmit.bind(this),
+        cancel: this.onCancel.bind(this),
+      },
+    });
+  }
 }
