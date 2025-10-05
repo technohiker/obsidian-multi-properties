@@ -355,24 +355,7 @@ export default class MultiPropPlugin extends Plugin {
     }
 
     let defaultProps: { name: string; value: any; type: PropertyTypes }[];
-    if (!this.settings.defaultPropPath) {
-      defaultProps = [{ name: "", value: "", type: "text" }];
-    } else {
-      try {
-        const file = this.app.vault.getAbstractFileByPath(
-          `${this.settings.defaultPropPath}.md`
-        );
-        let tmp = this.readYamlProperties(file as TFile);
-        if (tmp === undefined) throw Error("Undefined path.");
-        defaultProps = tmp;
-      } catch (e) {
-        new Notice(
-          `${e}.  Check if you entered a valid path in the Default Props File setting.`,
-          10000
-        );
-        defaultProps = [];
-      }
-    }
+    defaultProps = this.loadDefaultProps();
 
     new PropModal(
       this.app,
@@ -436,6 +419,25 @@ export default class MultiPropPlugin extends Plugin {
       result.push(obj);
     }
     return result;
+  }
+
+  loadDefaultProps() {
+    if (this.settings.defaultPropPath) {
+      try {
+        const file = this.app.vault.getAbstractFileByPath(
+          `${this.settings.defaultPropPath}.md`
+        );
+        let tmp = this.readYamlProperties(file as TFile);
+        if (tmp === undefined) throw Error("Undefined path.");
+        return tmp;
+      } catch (e) {
+        new Notice(
+          `${e}.  Check if you entered a valid path in the Default Props File setting.`,
+          10000
+        );
+      }
+    }
+    return [{ name: "", value: "" as any, type: "text" as PropertyTypes }];
   }
 
   addPropsCallback(props: any) {

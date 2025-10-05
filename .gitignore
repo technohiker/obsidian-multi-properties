@@ -22,6 +22,7 @@ yarn-error.log*
 # Obsidian-specific
 .obsidian/
 !/test-vault/.obsidian/plugins/multi-properties/
+data.json
 
 # Test vault
 /test-vault/
