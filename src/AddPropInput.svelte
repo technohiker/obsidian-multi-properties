@@ -26,6 +26,8 @@
 	const convertProps: Record<string, string> = {
 		text: "Text",
 		multitext: "Text",
+		tags: "Text",
+		aliases: "Text",
 		number: "Number",
 		checkbox: "Checkbox",
 		date: "Date",
@@ -38,6 +40,7 @@
 		inputEl.select();
 
 		optionVal = options[convertProps[typeVal]]  //Load default type.
+		if(typeVal !== "text") changeType(optionVal)
 
 	});
 

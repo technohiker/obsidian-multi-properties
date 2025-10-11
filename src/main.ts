@@ -3,7 +3,7 @@ import { PropModal } from "./AddPropModal";
 import { MultiPropSettings, SettingTab } from "./SettingTab";
 import { RemoveModal } from "./RemoveModal";
 import { addProperties, addPropToSet, removeProperties } from "./frontmatter";
-import { PropertyTypes } from "./types/custom";
+import { Property, PropertyTypes } from "./types/custom";
 
 const defaultSettings: MultiPropSettings = {
   overwrite: false,
@@ -229,11 +229,11 @@ export default class MultiPropPlugin extends Plugin {
     ).open();
   }
 
-  getAllUsedProperties(): string[] {
+  getAllUsedProperties(): Property[] {
     const allProps = this.app.metadataCache.getAllPropertyInfos();
-    return Object.keys(allProps).sort((a, b) =>
-      a.toLowerCase().localeCompare(b.toLowerCase())
-    );
+    return Object.values(allProps).sort((a, b) =>
+      a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+    ); //PropertyInfos type doesn't match what is actually being pulled.  Notify Obsidian devs.
   }
 
   /** Create modal for removing properties.
@@ -286,7 +286,7 @@ export default class MultiPropPlugin extends Plugin {
       const obj = {
         name: key,
         value: value,
-        type: allPropsWithType[keyLower].type,
+        type: allPropsWithType[keyLower].widget,
       };
 
       result.push(obj);

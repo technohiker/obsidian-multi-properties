@@ -29,7 +29,7 @@ export function addProperties(
 
       //Compare types to see if they can be appended.
       let type1 = value.type;
-      let type2 = propCache[key.toLowerCase()].type;
+      let type2 = propCache[key.toLowerCase()].widget;
 
       if (canBeAppended(type1, type2)) {
         if (frontmatter[key] === value.data) continue; //Leave identical values alone.
@@ -50,7 +50,6 @@ export function addProperties(
 export async function addPropToSet(app: App, set: Set<string>, file: TFile) {
   await app.fileManager.processFrontMatter(file, (frontmatter) => {
     for (const key in frontmatter) {
-      console.log({ key });
       set.add(key);
     }
   });

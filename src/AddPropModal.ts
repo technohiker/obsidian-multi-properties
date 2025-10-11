@@ -2,7 +2,7 @@ import { Modal, App } from "obsidian";
 import PropForm from "./AddPropForm.svelte";
 import { NewPropData } from "./main";
 import { AddConfirmModal } from "./AddConfirmModal";
-import { PropertyTypes } from "./types/custom";
+import { Property, PropertyTypes } from "./types/custom";
 
 /** Loads a modal and handles form submissions. */
 export class PropModal extends Modal {
@@ -10,10 +10,10 @@ export class PropModal extends Modal {
   props: Map<string, NewPropData>;
   overwrite: boolean;
   delimiter: string;
-  defaultProps: { name: string; value: any; type: PropertyTypes; }[];
+  defaultProps: { name: string; value: any; type: PropertyTypes }[];
   changeBool: (bool: boolean) => void;
   component: PropForm;
-  suggestedProps: string[]
+  suggestedProps: Property[];
 
   constructor(
     app: App,
@@ -22,7 +22,7 @@ export class PropModal extends Modal {
     delimiter: string,
     defaultProps: any,
     changeBool: (bool: boolean) => void,
-    suggestedProps: string[] = []
+    suggestedProps: Property[]
   ) {
     super(app);
     this.submission = submission;

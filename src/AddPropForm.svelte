@@ -3,7 +3,7 @@
   import PropInput from "./AddPropInput.svelte";
   import { NewPropData } from "./main";
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
-  import type { PropertyTypes } from "./types/custom";
+  import type {Property, PropertyTypes } from "./types/custom";
 
   export let submission: (props: Map<string, any>) => void;
   export let overwrite: boolean;
@@ -11,7 +11,7 @@
   export let defaultProps: { name: string; value: any; type: PropertyTypes }[] =
     [];
   export let changeBool: (bool: boolean) => void;
-  export let suggestedProps: string[] = [];
+  export let suggestedProps: Property[] 
   
   let countInputs = 0;
   let formEl: HTMLFormElement;
@@ -19,7 +19,7 @@
   let alertText = ".";
   let inputEls: {
     id: number;
-    isFirst: boolean;
+    //isFirst: boolean;
     totalInputs: number;
     typeDef: PropertyTypes;
     nameDef: string;
@@ -48,7 +48,7 @@
       countInputs++;
       arr.push({
         id: countInputs,
-        isFirst: countInputs === 1 ? true : false,
+        totalInputs: countInputs,
         typeDef: input.type,
         nameDef: input.name,
         valueDef: input.value,
@@ -69,9 +69,9 @@
     inputs[inputs.length - 2].focus();
   }
 
-  function addSuggested(propName: string) {
-    if (!inputEls.find(el => el.nameDef === propName)) {
-      addInputs([{ type: "text", name: propName, value: "" }]);
+  function addSuggested(prop: Property) {
+    if (!inputEls.find(el => el.nameDef === prop.name)) {
+      addInputs([{ type: prop.widget, name: prop.name, value: "" }]);
     }
   }
 
@@ -156,8 +156,6 @@
     //Input validation doesn't trigger unless this code is in.  Why?  I didn't need this before.
     if (obj.size < inputs.length) return;
 
-    console.log(obj);
-
     submission(obj);
   }
 </script>
@@ -170,9 +168,9 @@
 
   <p>Select from existing properties or create new ones:</p>
   <div class="suggested-props">
-    {#each suggestedProps as propName}
-      <button type="button" class="prop-chip" on:click={() => addSuggested(propName)}>
-        {propName}
+    {#each suggestedProps as prop}
+      <button type="button" class="prop-chip" on:click={() => addSuggested(prop)}>
+        {prop.name}
       </button>
     {/each}
   </div>
@@ -197,7 +195,6 @@
     <div class="modal-inputs-container">
       {#each inputEls as input (input.id)}
         <PropInput
-          isFirst={input.isFirst}
           id={input.id}
           totalInputs={inputEls.length}
           bind:typeVal={input.typeDef}
@@ -243,6 +240,10 @@
     margin-bottom: 10px;
     background-color: red;
     font-weight: bold;
+  }
+  .suggested-props {
+    overflow-y: scroll;
+    max-height: 100px;
   }
   .hidden {
     display: none;
