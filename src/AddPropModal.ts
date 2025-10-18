@@ -17,7 +17,7 @@ export class PropModal extends Modal {
 
   constructor(
     app: App,
-    submission: (customProps: Map<string, any>) => void,
+    submission: (customProps: Map<string, any>) => Promise<void>,
     overwrite: boolean,
     delimiter: string,
     defaultProps: any,
@@ -34,11 +34,9 @@ export class PropModal extends Modal {
   }
 
   //Run form submission if user clicks confirm.
-  onConfirm(bool: boolean) {
-    if (bool) {
-      this.submission(this.props);
-      this.close();
-    }
+  onConfirm() {
+    this.submission(this.props);
+    this.close();
   }
 
   updateBool(bool: boolean) {

@@ -3,14 +3,14 @@ import { NewPropData } from "./main";
 
 /** Add properties from a Map to a note.
  */
-export function addProperties(
+export async function addProperties(
   app: App,
   file: TFile,
   props: Map<string, NewPropData>,
   overwrite: boolean
 ) {
   let propCache = app.metadataCache.getAllPropertyInfos();
-  app.fileManager.processFrontMatter(file, (frontmatter) => {
+  await app.fileManager.processFrontMatter(file, (frontmatter) => {
     for (const [key, value] of props) {
       //Tags should always be a List, even if there is just one tag.
       if (
@@ -57,7 +57,7 @@ export async function addPropToSet(app: App, set: Set<string>, file: TFile) {
 }
 
 /** Remove properties from a note. */
-export function removeProperties(app: App, file: TFile, props: string[]) {
+export async function removeProperties(app: App, file: TFile, props: string[]) {
   app.fileManager.processFrontMatter(file, (frontmatter) => {
     for (const prop of props) {
       //delete frontmatter[prop];

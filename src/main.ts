@@ -153,15 +153,18 @@ export default class MultiPropPlugin extends Plugin {
   }
 
   /** Iterates through all files in a folder and runs callback on each file. */
-  searchFolders(folder: TFolder, callback: (file: TFile) => any) {
+  async searchFolders(
+    folder: TFolder,
+    callback: (file: TFile) => Promise<any>
+  ) {
     for (let obj of folder.children) {
       if (obj instanceof TFolder) {
         if (this.settings.recursive) {
-          this.searchFolders(obj, callback);
+          await this.searchFolders(obj, callback);
         }
       }
       if (obj instanceof TFile && obj.extension === "md") {
-        callback(obj);
+        await callback(obj);
       }
     }
   }
@@ -188,13 +191,22 @@ export default class MultiPropPlugin extends Plugin {
    * Will call a different function depending on whether files or a folder is used. */
   createPropModal(iterable: TAbstractFile[] | TFolder) {
     let iterateFunc;
-    this.app.vault.getAllLoadedFiles;
     if (iterable instanceof TFolder) {
-      iterateFunc = (props: Map<string, any>) =>
-        this.searchFolders(iterable, this.addPropsCallback(props));
+      const allFiles: TFile[] = [];
+      this.searchFolders(iterable, async (f) => allFiles.push(f));
+      iterateFunc = async (props: Map<string, any>) => {
+        console.log("Small delay.");
+        await this.searchFolders(
+          iterable,
+          await this.addPropsCallback(props, allFiles.length)
+        );
+      };
     } else {
-      iterateFunc = (props: Map<string, any>) =>
-        this.searchFiles(iterable, this.addPropsCallback(props));
+      iterateFunc = async (props: Map<string, any>) =>
+        this.searchFiles(
+          iterable,
+          await this.addPropsCallback(props, iterable.length)
+        );
     }
 
     let defaultProps: { name: string; value: any; type: PropertyTypes }[];
@@ -244,12 +256,20 @@ export default class MultiPropPlugin extends Plugin {
 
     if (iterable instanceof TFolder) {
       names = await this.getPropsFromFolder(iterable, new Set());
+      const allFiles: TFile[] = [];
+      this.searchFolders(iterable, async (f) => allFiles.push(f));
       iterateFunc = (props: string[]) =>
-        this.searchFolders(iterable, this.removePropsCallback(props));
+        this.searchFolders(
+          iterable,
+          this.removePropsCallback(props, allFiles.length)
+        );
     } else {
       names = await this.getPropsFromFiles(iterable, new Set());
       iterateFunc = (props: string[]) =>
-        this.searchFiles(iterable, this.removePropsCallback(props));
+        this.searchFiles(
+          iterable,
+          this.removePropsCallback(props, iterable.length)
+        );
     }
     if (names.length === 0) {
       new Notice("No properties to remove", 4000);
@@ -295,16 +315,45 @@ export default class MultiPropPlugin extends Plugin {
   }
 
   /** Callback function to run addProperties inside iterative functions.*/
-  addPropsCallback(props: any) {
-    return (file: TFile) => {
-      addProperties(this.app, file, props, this.settings.overwrite);
+  async addPropsCallback(props: any, totalFiles: number) {
+    const statusBarItem = this.addStatusBarItem();
+    let count = 0;
+
+    return async (file: TFile) => {
+      await addProperties(this.app, file, props, this.settings.overwrite);
+
+      count++;
+      console.log(count);
+      statusBarItem.setText(
+        "Added props to " + count + "/" + totalFiles + " files"
+      );
+
+      if (count === totalFiles) {
+        setTimeout(() => {
+          statusBarItem.remove();
+        }, 5000);
+      }
     };
   }
 
   /** Callback function to run removeProperties inside iterative functions. */
-  removePropsCallback(props: any) {
-    return (file: TFile) => {
-      removeProperties(this.app, file, props);
+  removePropsCallback(props: any, totalFiles: number) {
+    const statusBarItem = this.addStatusBarItem();
+    let count = 0;
+
+    return async (file: TFile) => {
+      await removeProperties(this.app, file, props);
+
+      count++;
+      statusBarItem.setText(
+        "Removed props from " + count + "/" + totalFiles + " files"
+      );
+
+      if (count === totalFiles) {
+        setTimeout(() => {
+          statusBarItem.remove();
+        }, 5000);
+      }
     };
   }
 }
