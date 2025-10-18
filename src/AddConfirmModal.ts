@@ -7,7 +7,7 @@ import { NewPropData } from "./main";
 /** Loads a modal and handles form submissions. */
 export class AddConfirmModal extends Modal {
   props: Map<string, NewPropData>;
-  submission: (bool: boolean) => void;
+  submission: () => Promise<void>;
   overwrite: boolean;
   component: AddConfirmForm;
 
@@ -15,7 +15,7 @@ export class AddConfirmModal extends Modal {
     app: App,
     props: Map<string, NewPropData>,
     overwrite: boolean,
-    submission: (bool: boolean) => void
+    submission: () => Promise<void>
   ) {
     super(app);
     this.props = props;
@@ -23,12 +23,12 @@ export class AddConfirmModal extends Modal {
     this.submission = submission;
   }
   onSubmit() {
-    this.submission(true);
+    this.submission();
+    console.log("Closing confirm form.");
     this.close();
   }
 
   onCancel() {
-    this.submission(false);
     this.close();
   }
 
