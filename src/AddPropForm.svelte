@@ -3,7 +3,7 @@
   import PropInput from "./AddPropInput.svelte";
   import { NewPropData } from "./main";
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
-  import type { PropertyTypes } from "./types/custom";
+  import type {Property, PropertyTypes } from "./types/custom";
 
   export let submission: (props: Map<string, any>) => void;
   export let overwrite: boolean;
@@ -11,15 +11,16 @@
   export let defaultProps: { name: string; value: any; type: PropertyTypes }[] =
     [];
   export let changeBool: (bool: boolean) => void;
-
-  let countInputs = 0; //Could replace with UUID.
+  export let suggestedProps: Property[] 
+  
+  let countInputs = 0;
   let formEl: HTMLFormElement;
   let errorEl: HTMLDivElement;
   let alertText = ".";
-
   let inputEls: {
     id: number;
-    isFirst: boolean;
+    //isFirst: boolean;
+    totalInputs: number;
     typeDef: PropertyTypes;
     nameDef: string;
     valueDef: any;
@@ -47,7 +48,7 @@
       countInputs++;
       arr.push({
         id: countInputs,
-        isFirst: countInputs === 1 ? true : false,
+        totalInputs: countInputs,
         typeDef: input.type,
         nameDef: input.name,
         valueDef: input.value,
@@ -66,6 +67,12 @@
     if (!inputs) return;
 
     inputs[inputs.length - 2].focus();
+  }
+
+  function addSuggested(prop: Property) {
+    if (!inputEls.find(el => el.nameDef === prop.name)) {
+      addInputs([{ type: prop.widget, name: prop.name, value: "" }]);
+    }
   }
 
   /** See if there are duplicate property names.*/
@@ -149,8 +156,6 @@
     //Input validation doesn't trigger unless this code is in.  Why?  I didn't need this before.
     if (obj.size < inputs.length) return;
 
-    console.log(obj);
-
     submission(obj);
   }
 </script>
@@ -160,6 +165,16 @@
     <div>ERROR</div>
     <div id="alert-text">{alertText}</div>
   </div>
+
+  <p>Select from existing properties or create new ones:</p>
+  <div class="suggested-props">
+    {#each suggestedProps as prop}
+      <button type="button" class="prop-chip" on:click={() => addSuggested(prop)}>
+        {prop.name}
+      </button>
+    {/each}
+  </div>
+
   <p>
     Type in a property name, then value. Use the dropbox to choose what type of
     data you wish to store.
@@ -180,8 +195,8 @@
     <div class="modal-inputs-container">
       {#each inputEls as input (input.id)}
         <PropInput
-          isFirst={input.isFirst}
           id={input.id}
+          totalInputs={inputEls.length}
           bind:typeVal={input.typeDef}
           bind:nameVal={input.nameDef}
           bind:valueVal={input.valueDef}
@@ -225,6 +240,10 @@
     margin-bottom: 10px;
     background-color: red;
     font-weight: bold;
+  }
+  .suggested-props {
+    overflow-y: scroll;
+    max-height: 100px;
   }
   .hidden {
     display: none;

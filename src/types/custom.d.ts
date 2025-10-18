@@ -4,44 +4,44 @@
 import {} from "obsidian";
 
 declare module "obsidian" {
-	interface Workspace {
-		on(
-			name: "files-menu",
-			callback: (
-				menu: Menu,
-				file: TAbstractFile[],
-				source: string,
-				leaf?: WorkspaceLeaf
-			) => any,
-			ctx?: any
-		): EventRef;
-		on(
-			name: "search:results-menu",
-			callback: (menu: Menu, leaf: any) => any,
-			ctx?: any
-		): EventRef;
-	}
-	interface MetadataCache {
-		getAllPropertyInfos(): PropertyInfos;
-	}
+  interface Workspace {
+    on(
+      name: "files-menu",
+      callback: (
+        menu: Menu,
+        file: TAbstractFile[],
+        source: string,
+        leaf?: WorkspaceLeaf
+      ) => any,
+      ctx?: any
+    ): EventRef;
+    on(
+      name: "search:results-menu",
+      callback: (menu: Menu, leaf: any) => any,
+      ctx?: any
+    ): EventRef;
+  }
+  interface MetadataCache {
+    getAllPropertyInfos(): PropertyInfos;
+  }
 }
 
 interface PropertyInfos {
-	[name: string]: Property;
+  [name: string]: Property;
 }
 
 interface Property {
-	name: string;
-	type: PropertyTypes;
-	count: number;
+  name: string;
+  widget: PropertyTypes;
+  occurrences: number;
 }
 
 type PropertyTypes =
-	| "aliases"
-	| "tags"
-	| "checkbox"
-	| "date"
-	| "datetime"
-	| "multitext"
-	| "number"
-	| "text";
+  | "aliases"
+  | "tags"
+  | "checkbox"
+  | "date"
+  | "datetime"
+  | "multitext"
+  | "number"
+  | "text";
