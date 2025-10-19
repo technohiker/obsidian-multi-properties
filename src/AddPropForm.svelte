@@ -3,7 +3,7 @@
   import PropInput from "./AddPropInput.svelte";
   import { NewPropData } from "./main";
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
-  import type {Property, PropertyTypes } from "./types/custom";
+  import type { Property, PropertyTypes } from "./types/custom";
 
   export let submission: (props: Map<string, any>) => void;
   export let overwrite: boolean;
@@ -11,15 +11,14 @@
   export let defaultProps: { name: string; value: any; type: PropertyTypes }[] =
     [];
   export let changeBool: (bool: boolean) => void;
-  export let suggestedProps: Property[] 
-  
+  export let suggestedProps: Property[];
+
   let countInputs = 0;
   let formEl: HTMLFormElement;
   let errorEl: HTMLDivElement;
   let alertText = ".";
   let inputEls: {
     id: number;
-    //isFirst: boolean;
     totalInputs: number;
     typeDef: PropertyTypes;
     nameDef: string;
@@ -70,7 +69,7 @@
   }
 
   function addSuggested(prop: Property) {
-    if (!inputEls.find(el => el.nameDef === prop.name)) {
+    if (!inputEls.find((el) => el.nameDef === prop.name)) {
       addInputs([{ type: prop.widget, name: prop.name, value: "" }]);
     }
   }
@@ -169,7 +168,11 @@
   <p>Select from existing properties or create new ones:</p>
   <div class="suggested-props">
     {#each suggestedProps as prop}
-      <button type="button" class="prop-chip" on:click={() => addSuggested(prop)}>
+      <button
+        type="button"
+        class="prop-chip"
+        on:click={() => addSuggested(prop)}
+      >
         {prop.name}
       </button>
     {/each}
