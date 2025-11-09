@@ -5,16 +5,26 @@
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
   import type { PropertyTypes } from "./types/custom";
 
-  export let submission: (props: Map<string, NewPropData>) => void;
-  export let overwrite: boolean;
-  export let delimiter: string;
-  export let defaultProps: { name: string; value: any; type: PropertyTypes }[];
-  export let changeBool: (bool: boolean) => void;
+  interface Props {
+    submission: (props: Map<string, NewPropData>) => void;
+    overwrite: boolean;
+    delimiter: string;
+    defaultProps: { name: string; value: any; type: PropertyTypes }[];
+    changeBool: (bool: boolean) => void;
+  }
+
+  let {
+    submission,
+    overwrite = $bindable(),
+    delimiter,
+    defaultProps,
+    changeBool,
+  }: Props = $props();
 
   let countInputs = 0; //Could replace with UUID.
-  let formEl: HTMLFormElement;
-  let errorEl: HTMLDivElement;
-  let alertText = ".";
+  let formEl: HTMLFormElement = $state(document.createElement("form"));
+  let errorEl: HTMLDivElement = $state(document.createElement("div"));
+  let alertText = $state(".");
 
   let inputEls: {
     id: number;
@@ -22,7 +32,7 @@
     typeDef: PropertyTypes;
     nameDef: string;
     valueDef: any;
-  }[] = [];
+  }[] = $state([]);
 
   function onCheckboxChange() {
     overwrite = !overwrite;
@@ -83,7 +93,8 @@
   }
 
   /** Search for all labels and values, add them to a map, then pass them back to modal.*/
-  function onSubmit() {
+  function onSubmit(e: SubmitEvent) {
+    e.preventDefault();
     //Make sure there are no duplicate names.
     if (checkDuplicateNames()) {
       runError("Duplicate property names are not allowed.");
@@ -177,12 +188,12 @@
     each value with a "{delimiter}".
   </p>
   <p>If you want to add Tags, use the name "tags".</p>
-  <form on:submit|preventDefault bind:this={formEl}>
+  <form onsubmit={onSubmit} bind:this={formEl}>
     <label
       ><input
         type="checkbox"
         checked={overwrite}
-        on:change={onCheckboxChange}
+        onchange={onCheckboxChange}
       />{"Overwrite existing properties"}</label
     >
     <div class="modal-inputs-container">
@@ -200,12 +211,12 @@
     <div class="modal-add-container">
       <button
         type="button"
-        on:click={() => addInputs([{ type: "text", name: "", value: "" }])}
+        onclick={() => addInputs([{ type: "text", name: "", value: "" }])}
         class="a-btn">Add</button
       >
     </div>
     <div class="modal-button-container">
-      <button on:click={onSubmit} class="btn-submit">Submit</button>
+      <button type="submit" class="btn-submit">Submit</button>
     </div>
   </form>
 </div>

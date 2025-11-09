@@ -33,6 +33,7 @@
     "builtin-modules": "3.3.0",
     "dotenv": "^16.0.0",
     "esbuild": "^0.25.10",
+    "esbuild-svelte": "^0.9.3",
     "eslint": "^8.57.1",
     "fs-extra": "^11.1.1",
     "jsdom": "^26.1.0",
@@ -46,8 +47,5 @@
     "vite": "^7.1.6",
     "vitest": "^3.2.4"
   },
-  "type": "module",
-  "dependencies": {
-    "esbuild-svelte": "^0.9.3"
-  }
+  "type": "module"
 }

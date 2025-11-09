@@ -39,7 +39,7 @@ export class AddConfirmModal extends Modal {
     this.component = mount(AddConfirmForm, {
       target: this.contentEl,
       props: {
-        props: this.props,
+        newProps: this.props,
         overwrite: this.overwrite,
         submission: this.onSubmit.bind(this),
         cancel: this.onCancel.bind(this),

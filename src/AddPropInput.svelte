@@ -1,18 +1,28 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
 
-  export let isFirst: boolean;
-  export let removeInput: (id: number) => void;
-  export let id: number;
+  interface Props {
+    isFirst: boolean;
+    removeInput: (id: number) => void;
+    id: number;
+    typeVal?: string;
+    nameVal?: string;
+    valueVal?: string;
+  }
 
-  export let typeVal: string = "text";
-  export let nameVal: string = "";
-  export let valueVal: string = "";
+  let {
+    isFirst,
+    removeInput,
+    id,
+    typeVal = $bindable("text"),
+    nameVal = $bindable(""),
+    valueVal = $bindable(""),
+  }: Props = $props();
 
-  let inputEl: HTMLInputElement;
-  let valueEl: HTMLInputElement;
+  let inputEl: HTMLInputElement = $state(document.createElement("input"));
+  let valueEl: HTMLInputElement = $state(document.createElement("input"));
 
-  let optionVal: string;
+  let optionVal: string = $state("");
   //Form names tied to input types.
   const options: Record<string, string> = {
     Text: "string",
@@ -48,7 +58,7 @@
   <button
     type="button"
     id="del-btn"
-    on:click={() => {
+    onclick={() => {
       if (!isFirst) {
         removeInput(id);
       }
@@ -60,7 +70,7 @@
     id="type-input"
     class="flex-obj"
     bind:value={optionVal}
-    on:change={() => changeType(optionVal)}
+    onchange={() => changeType(optionVal)}
   >
     {#each Object.keys(options) as key}
       <option value={options[key]}>{key}</option>
