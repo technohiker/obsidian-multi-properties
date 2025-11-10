@@ -85,7 +85,7 @@ export default class MultiPropPlugin extends Plugin {
     await this.loadSettings();
     this.addSettingTab(new SettingTab(this.app, this));
 
-    // All commands are restored here.
+    // All commands for single notes & folders.
     this.addCommand({
       id: "add-props-to-current-note",
       name: "Add props to current note",
@@ -98,6 +98,28 @@ export default class MultiPropPlugin extends Plugin {
         await this.createPropModal([file]);
       },
     });
+
+    this.registerEvent(
+      this.app.workspace.on("file-menu", (menu, node) => {
+        let title = "";
+        let obj: TFolder | TFile[];
+
+        if (node instanceof TFile) {
+          obj = [node];
+          title = "Add props to file.";
+        } else {
+          obj = node as TFolder;
+          title = "Add props to folder.";
+        }
+
+        menu.addItem((item) => {
+          item
+            .setIcon("archive")
+            .setTitle(title)
+            .onClick(() => this.createPropModal(obj));
+        });
+      })
+    );
 
     this.addCommand({
       id: "remove-props-from-current-note",
@@ -112,6 +134,29 @@ export default class MultiPropPlugin extends Plugin {
       },
     });
 
+    this.registerEvent(
+      this.app.workspace.on("file-menu", (menu, node) => {
+        let title = "";
+        let obj: TFolder | TFile[];
+
+        if (node instanceof TFile) {
+          obj = [node];
+          title = "Remove props from file.";
+        } else {
+          obj = node as TFolder;
+          title = "Remove props from folder.";
+        }
+
+        menu.addItem((item) => {
+          item
+            .setIcon("archive")
+            .setTitle(title)
+            .onClick(() => this.createRemoveModal(obj));
+        });
+      })
+    );
+
+    //All commands for affecting props in all tabs.
     this.addCommand({
       id: "add-props-to-tab-group",
       name: "Add props to tabs in active tab group",
@@ -128,11 +173,27 @@ export default class MultiPropPlugin extends Plugin {
       },
     });
 
+    this.registerEvent(
+      this.app.workspace.on("tab-group-menu", (menu) => {
+        const obj = this._getFilesFromTabGroup(
+          this.app.workspace.getLeaf(false)
+        );
+        menu.addItem((item) => {
+          item
+            .setIcon("archive")
+            .setTitle("Add props from all tabs")
+            .onClick(() => this.createPropModal(obj));
+        });
+      })
+    );
+
     this.addCommand({
       id: "remove-props-from-tab-group",
       name: "Remove props from tabs in active tab group",
       callback: async () => {
-        const files = this._getFilesFromTabGroup(this.app.workspace.activeLeaf);
+        const files = this._getFilesFromTabGroup(
+          this.app.workspace.getLeaf(false)
+        );
         if (!files || !files.length) {
           new Notice(
             "No open tabs in the active tab group to remove properties from.",
@@ -143,6 +204,83 @@ export default class MultiPropPlugin extends Plugin {
         await this.createRemoveModal(files);
       },
     });
+
+    this.registerEvent(
+      this.app.workspace.on("tab-group-menu", (menu) => {
+        const obj = this._getFilesFromTabGroup(
+          this.app.workspace.getLeaf(false)
+        );
+        menu.addItem((item) => {
+          item
+            .setIcon("archive")
+            .setTitle("Remove props from all tabs")
+            .onClick(() => this.createRemoveModal(obj));
+        });
+      })
+    );
+
+    /** Add menu item on multi-file right-click to add properties to all notes in selection.
+     * PropModal returns Props on submit, which is then passed to searchThroughFiles via callback.
+     */
+    this.registerEvent(
+      this.app.workspace.on("files-menu", (menu, nodes) => {
+        let obj = nodes as TFile[];
+        menu.addItem((item) => {
+          item
+            .setIcon("archive")
+            .setTitle("Add props to selected files")
+            .onClick(() => this.createPropModal(obj));
+        });
+      })
+    );
+
+    this.registerEvent(
+      this.app.workspace.on("files-menu", (menu, nodes) => {
+        let obj = nodes as TFile[];
+        menu.addItem((item) => {
+          item
+            .setIcon("archive")
+            .setTitle("Remove props from selected files")
+            .onClick(async () => this.createRemoveModal(obj));
+        });
+      })
+    );
+
+    this.registerEvent(
+      this.app.workspace.on("search:results-menu", (menu, leaf: any) => {
+        menu.addItem((item) => {
+          item
+            .setIcon("archive")
+            .setTitle("Add props to search results")
+            .onClick(() => {
+              let files = this.getFilesFromSearch(leaf);
+              if (!files.length) {
+                new Notice("No files to add properties to.", 4000);
+                return;
+              }
+              this.createPropModal(files);
+            });
+        });
+      })
+    );
+
+    this.registerEvent(
+      this.app.workspace.on("search:results-menu", (menu, leaf: any) => {
+        menu.addItem((item) => {
+          item
+            .setIcon("archive")
+            .setTitle("Remove props from search results")
+            .onClick(async () => {
+              let files = this.getFilesFromSearch(leaf);
+              if (!files.length) {
+                new Notice("No files to remove properties from.", 4000);
+                return;
+              }
+              this.createRemoveModal(files);
+            });
+        });
+      })
+    );
   }
 
   async getPropsFromFolder(folder: TFolder, names: Set<string>) {
@@ -218,24 +356,7 @@ export default class MultiPropPlugin extends Plugin {
     }
 
     let defaultProps: { name: string; value: any; type: PropertyTypes }[];
-    if (!this.settings.defaultPropPath) {
-      defaultProps = [{ name: "", value: "", type: "text" }];
-    } else {
-      try {
-        const file = this.app.vault.getAbstractFileByPath(
-          `${this.settings.defaultPropPath}.md`
-        );
-        let tmp = this.readYamlProperties(file as TFile);
-        if (tmp === undefined) throw Error("Undefined path.");
-        defaultProps = tmp;
-      } catch (e) {
-        new Notice(
-          `${e}.  Check if you entered a valid path in the Default Props File setting.`,
-          10000
-        );
-        defaultProps = [];
-      }
-    }
+    defaultProps = this.loadDefaultProps();
 
     new PropModal(
       this.app,
@@ -247,7 +368,7 @@ export default class MultiPropPlugin extends Plugin {
     ).open();
   }
 
-  async createRemoveModal(iterable: TAbstractFile[] | TFolder) {
+  async createRemoveModal(iterable: TFile[] | TFolder) {
     let names;
     let iterateFunc;
 
@@ -272,6 +393,9 @@ export default class MultiPropPlugin extends Plugin {
     new RemoveModal(this.app, sortedNames, iterateFunc).open();
   }
 
+  /** Read through a given file and get name/value of props.
+   *  Revised from https://forum.obsidian.md/t/how-to-programmatically-access-a-files-properties-types/77826/4.
+   */
   readYamlProperties(file: TFile) {
     const metadata = this.app.metadataCache.getFileCache(file);
     const frontmatter = metadata?.frontmatter;
@@ -296,6 +420,25 @@ export default class MultiPropPlugin extends Plugin {
       result.push(obj);
     }
     return result;
+  }
+
+  loadDefaultProps() {
+    if (this.settings.defaultPropPath) {
+      try {
+        const file = this.app.vault.getAbstractFileByPath(
+          `${this.settings.defaultPropPath}.md`
+        );
+        let tmp = this.readYamlProperties(file as TFile);
+        if (tmp === undefined) throw Error("Undefined path.");
+        return tmp;
+      } catch (e) {
+        new Notice(
+          `${e}.  Check if you entered a valid path in the Default Props File setting.`,
+          10000
+        );
+      }
+    }
+    return [{ name: "", value: "" as any, type: "text" as PropertyTypes }];
   }
 
   addPropsCallback(props: any) {

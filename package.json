@@ -1,6 +1,6 @@
 {
   "name": "obsidian-multi-properties",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs dev watch",
@@ -18,7 +18,7 @@
     "test": "vitest run"
   },
   "keywords": [],
-  "author": "notuntoward (fork from technohiker)",
+  "author": "technohiker",
   "license": "MIT",
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.2.0",

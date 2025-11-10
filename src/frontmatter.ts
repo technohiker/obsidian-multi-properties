@@ -17,10 +17,13 @@ export async function addProperties(
 ) {
   await fileProcessor(file, (frontmatter) => {
     for (const [key, value] of props) {
-      if (key === "tags") {
-        const existingTags = frontmatter[key] || [];
-        const newTags = Array.isArray(value.data) ? value.data : [value.data];
-        frontmatter[key] = [...new Set([...existingTags, ...newTags])];
+      //Tags should always be a List, even if there is just one tag.
+      if (
+        key === "tags" &&
+        !frontmatter.hasOwnProperty("tags") &&
+        !Array.isArray(value.data)
+      ) {
+        frontmatter[key] = [value.data];
         continue;
       }
 
@@ -47,7 +50,6 @@ export async function addProperties(
     }
   });
 }
-
 /** Iterate through all props in a list and add them to an existing set. */
 export async function addPropToSet(
   fileProcessor: FileProcessor,
