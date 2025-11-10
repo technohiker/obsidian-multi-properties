@@ -1,6 +1,7 @@
 /** Modal to hold form that lets user remove props from selection. */
 
 import { Modal, App, Notice } from "obsidian";
+import { mount } from "svelte";
 import RemovePropForm from "./RemovePropForm.svelte";
 import { RemoveConfirmModal } from "./RemoveConfirmModal";
 
@@ -8,13 +9,13 @@ import { RemoveConfirmModal } from "./RemoveConfirmModal";
 export class RemoveModal extends Modal {
   names: string[];
   props: string[];
-  submission: (customProps: string[]) => void;
-  component: RemovePropForm;
+  submission: (customProps: string[]) => Promise<void>;
+  component: any;
 
   constructor(
     app: App,
     names: string[],
-    submission: (customProps: string[]) => void
+    submission: (customProps: string[]) => Promise<void>
   ) {
     if (!names || names.length === 0) {
       new Notice("No properties to remove");
@@ -25,9 +26,9 @@ export class RemoveModal extends Modal {
     this.submission = submission;
   }
 
-  onConfirm(bool: boolean) {
+  async onConfirm(bool: boolean) {
     if (bool) {
-      this.submission(this.props);
+      await this.submission(this.props);
       this.close();
     }
   }
@@ -44,7 +45,7 @@ export class RemoveModal extends Modal {
   onOpen(): void {
     this.titleEl.createEl("h2", { text: "Remove Properties" });
 
-    this.component = new RemovePropForm({
+    this.component = mount(RemovePropForm, {
       target: this.contentEl,
       props: {
         names: this.names,

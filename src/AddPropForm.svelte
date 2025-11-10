@@ -1,29 +1,39 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
-  import PropInput from "./AddPropInput.svelte";
-  import { NewPropData } from "./main";
+  import AddPropInput from "./AddPropInput.svelte";
+  import type { NewPropData } from "./main";
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
   import type { Property, PropertyTypes } from "./types/custom";
 
-  export let submission: (props: Map<string, any>) => void;
-  export let overwrite: boolean;
-  export let delimiter: string = ",";
-  export let defaultProps: { name: string; value: any; type: PropertyTypes }[] =
-    [];
-  export let changeBool: (bool: boolean) => void;
-  export let suggestedProps: Property[];
+  interface Props {
+    submission: (props: Map<string, NewPropData>) => void;
+    overwrite: boolean;
+    delimiter: string;
+    defaultProps: { name: string; value: any; type: PropertyTypes }[];
+    changeBool: (bool: boolean) => void;
+  }
 
-  let countInputs = 0;
-  let formEl: HTMLFormElement;
-  let errorEl: HTMLDivElement;
-  let alertText = ".";
+  let {
+    submission,
+    overwrite = $bindable(),
+    delimiter,
+    defaultProps,
+    changeBool,
+    suggestedProps,
+  }: Props = $props();
+
+  let countInputs = 0; //Could replace with UUID.
+  let formEl: HTMLFormElement = $state(document.createElement("form"));
+  let errorEl: HTMLDivElement = $state(document.createElement("div"));
+  let alertText = $state(".");
+
   let inputEls: {
     id: number;
     totalInputs: number;
     typeDef: PropertyTypes;
     nameDef: string;
     valueDef: any;
-  }[] = [];
+  }[] = $state([]);
 
   function onCheckboxChange() {
     overwrite = !overwrite;
@@ -90,7 +100,8 @@
   }
 
   /** Search for all labels and values, add them to a map, then pass them back to modal.*/
-  function onSubmit() {
+  function onSubmit(e: SubmitEvent) {
+    e.preventDefault();
     //Make sure there are no duplicate names.
     if (checkDuplicateNames()) {
       runError("Duplicate property names are not allowed.");
@@ -121,6 +132,18 @@
         return;
       }
 
+      const selectEl = input.previousElementSibling as HTMLSelectElement;
+      const htmlType = selectEl.value;
+
+      const reverseOptions: Record<string, PropertyTypes> = {
+        string: "text",
+        number: "number",
+        checkbox: "checkbox",
+        date: "date",
+        "datetime-local": "datetime",
+      };
+      const obsidianType = reverseOptions[htmlType] ?? "text";
+
       let value: any = parseValue(
         input.nextElementSibling,
         input.nextElementSibling.type
@@ -130,19 +153,16 @@
         if (name === "tags") {
           value = cleanTags(value);
         }
-        if (value.contains(delimiter)) {
+        if (typeof value === "string" && value.includes(",")) {
           let str = removeExtraCommas(value);
           value = str.split(delimiter);
         }
       }
       if (value === "") value = null;
 
-      let inputType: string =
-        input.previousElementSibling.children[0].innerText.toLowerCase();
-
       //Store data into object.
       let propObj: NewPropData = {
-        type: inputType,
+        type: obsidianType,
         data: value,
         overwrite: false,
         delimiter: delimiter,
@@ -171,7 +191,7 @@
       <button
         type="button"
         class="prop-chip"
-        on:click={() => addSuggested(prop)}
+        onclick={() => addSuggested(prop)}
       >
         {prop.name}
       </button>
@@ -187,17 +207,17 @@
     each value with a "{delimiter}".
   </p>
   <p>If you want to add Tags, use the name "tags".</p>
-  <form on:submit|preventDefault bind:this={formEl}>
+  <form onsubmit={onSubmit} bind:this={formEl}>
     <label
       ><input
         type="checkbox"
         checked={overwrite}
-        on:change={onCheckboxChange}
+        onchange={onCheckboxChange}
       />{"Overwrite existing properties"}</label
     >
     <div class="modal-inputs-container">
       {#each inputEls as input (input.id)}
-        <PropInput
+        <AddPropInput
           id={input.id}
           totalInputs={inputEls.length}
           bind:typeVal={input.typeDef}
@@ -208,14 +228,14 @@
       {/each}
     </div>
     <div class="modal-add-container">
-      <a
-        on:click={() => addInputs([{ type: "text", name: "", value: "" }])}
-        class="a-btn"
-        href="href">Add</a
+      <button
+        type="button"
+        onclick={() => addInputs([{ type: "text", name: "", value: "" }])}
+        class="a-btn">Add</button
       >
     </div>
     <div class="modal-button-container">
-      <button on:click={onSubmit} class="btn-submit">Submit</button>
+      <button type="submit" class="btn-submit">Submit</button>
     </div>
   </form>
 </div>

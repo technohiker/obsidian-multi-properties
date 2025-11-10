@@ -1,19 +1,28 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
 
-  //export let isFirst: boolean;
-  export let removeInput: (id: number) => void;
-  export let id: number;
+  interface Props {
+    isFirst: boolean;
+    removeInput: (id: number) => void;
+    id: number;
+    typeVal?: string;
+    nameVal?: string;
+    valueVal?: string;
+  }
 
-  export let typeVal: string = "text";
-  export let nameVal: string = "";
-  export let valueVal: string = "";
-  export let totalInputs: number;
+  let {
+    totalInputs = $bindable(0),
+    removeInput,
+    id,
+    typeVal = $bindable("text"),
+    nameVal = $bindable(""),
+    valueVal = $bindable(""),
+  }: Props = $props();
 
-  let inputEl: HTMLInputElement;
-  let valueEl: HTMLInputElement;
+  let inputEl: HTMLInputElement = $state(document.createElement("input"));
+  let valueEl: HTMLInputElement = $state(document.createElement("input"));
 
-  let optionVal: string;
+  let optionVal: string = $state("");
   //Form names tied to input types.
   const options: Record<string, string> = {
     Text: "string",
@@ -50,7 +59,7 @@
 <div class="modal-input-container">
   <a
     id="del-btn"
-    on:click={() => {
+    onclick={() => {
       // Only disable removal if there is exactly 1 input
       if (totalInputs <= 1) return;
       removeInput(id);
@@ -63,7 +72,7 @@
     id="type-input"
     class="flex-obj"
     bind:value={optionVal}
-    on:change={() => changeType(optionVal)}
+    onchange={() => changeType(optionVal)}
   >
     {#each Object.keys(options) as key}
       <option value={options[key]}>{key}</option>
@@ -95,11 +104,22 @@
     max-height: 25px;
     overflow-x: auto;
   }
+  input {
+    max-height: 25px;
+    overflow-x: auto;
+  }
 
   select {
     height: 21px;
   }
+  select {
+    height: 21px;
+  }
 
+  #name-input {
+    flex-grow: 0;
+    width: auto;
+  }
   #name-input {
     flex-grow: 0;
     width: auto;
@@ -113,7 +133,20 @@
     gap: 10px;
     margin-top: 10px;
   }
+  .modal-input-container {
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
 
+  .btn-inactive {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.7;
+  }
   .btn-inactive {
     cursor: not-allowed;
     pointer-events: none;

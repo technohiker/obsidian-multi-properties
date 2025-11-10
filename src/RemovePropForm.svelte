@@ -1,18 +1,24 @@
 <script lang="ts">
-  export let names: string[] = [];
-  export let submission: (props: string[]) => void;
+  interface Props {
+    names?: string[];
+    submission: (props: string[]) => void;
+  }
 
-  let errorEl: HTMLDivElement;
-  let alertText = ".";
+  let { names = [], submission }: Props = $props();
+
+  let errorEl: HTMLDivElement = $state(document.createElement("div"));
+  let alertText = $state(".");
   //let propNames: string[] = [];
 
-  let checkCount = 0;
-  $: isMaxChecked = checkCount >= names.length;
-  $: console.log(isMaxChecked);
+  let checkCount = $state(0);
+  let isMaxChecked = $derived(checkCount >= names.length);
 
-  let inputs: { name: string; isChecked: boolean }[] = [];
+  let inputs: { name: string; isChecked: boolean }[] = $state([]);
+  function addInput(input: { name: string; isChecked: boolean }) {
+    inputs.push(input);
+  }
   for (let name of names) {
-    inputs.push({ name, isChecked: false });
+    addInput({ name, isChecked: false });
   }
 
   names.sort();
@@ -41,7 +47,9 @@
     }
   }
 
-  function onSubmit() {
+  function onSubmit(e: SubmitEvent) {
+    e.preventDefault();
+
     if (checkCount === 0) {
       alertText = "Please select at least one property to remove.";
       errorEl.classList.remove("hidden");
@@ -60,23 +68,22 @@
     <div id="alert-text">{alertText}</div>
   </div>
   <p>Select the properties you wish to remove from the file selection.</p>
-  <form on:submit|preventDefault>
+  <form onsubmit={onSubmit}>
     <div class="name-container">
       {#each inputs as input}
         <label>
           <input
             type="checkbox"
-            bind:value={input.name}
             bind:checked={input.isChecked}
-            on:change={(event) => onCheckboxChange(event)}
+            onchange={(event) => onCheckboxChange(event)}
           />
           {input.name}
         </label>
       {/each}
     </div>
     <div class="button-container">
-      <button on:click={onSubmit} type="submit">Confirm</button>
-      <button on:click={toggleAll}
+      <button type="submit">Confirm</button>
+      <button type="button" onclick={toggleAll}
         >{isMaxChecked ? "Uncheck All" : "Check All"}</button
       >
     </div>

@@ -1,18 +1,19 @@
 import { Modal, App } from "obsidian";
+import { mount } from "svelte";
 import PropForm from "./AddPropForm.svelte";
-import { NewPropData } from "./main";
+import type { NewPropData } from "./main";
 import { AddConfirmModal } from "./AddConfirmModal";
-import { Property, PropertyTypes } from "./types/custom";
+import type { Property, PropertyTypes } from "./types/custom";
 
 /** Loads a modal and handles form submissions. */
 export class PropModal extends Modal {
-  submission: (customProps: Map<string, any>) => void;
+  submission: (customProps: Map<string, any>) => Promise<void>;
   props: Map<string, NewPropData>;
   overwrite: boolean;
   delimiter: string;
   defaultProps: { name: string; value: any; type: PropertyTypes }[];
   changeBool: (bool: boolean) => void;
-  component: PropForm;
+  component: any;
   suggestedProps: Property[];
 
   constructor(
@@ -58,7 +59,7 @@ export class PropModal extends Modal {
   onOpen(): void {
     this.titleEl.createEl("h2", { text: "Add Properties" });
 
-    this.component = new PropForm({
+    this.component = mount(PropForm, {
       target: this.contentEl,
       props: {
         submission: this.onSubmit.bind(this),

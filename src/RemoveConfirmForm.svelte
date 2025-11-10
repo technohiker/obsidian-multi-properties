@@ -1,13 +1,21 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  export let names: string[] = ["test", "test2"];
-  export let submission: () => void;
-  export let cancel: () => void;
+  interface Props {
+    names?: string[];
+    submission: () => void;
+    cancel: () => void;
+  }
 
-  let btnCancel: HTMLButtonElement;
+  let { names = ["test", "test2"], submission, cancel }: Props = $props();
+
+  let btnCancel: HTMLButtonElement = $state(document.createElement("button"));
 
   const word = names.length > 1 ? "properties" : "property";
+
+  function onSubmit(e: SubmitEvent) {
+    submission();
+  }
 
   //Focus on cancel to make sure user does not easily submit changes.
   onMount(() => {
@@ -16,7 +24,7 @@
 </script>
 
 <div>
-  <form on:submit|preventDefault={submission}>
+  <form onsubmit={onSubmit}>
     <p>The following {word} will be removed:</p>
     <ul>
       {#each names as name}
@@ -27,6 +35,6 @@
     </ul>
     <p>Are you sure you wish to proceed?</p>
     <button class="mod-warning" type="submit">Delete</button>
-    <button on:click={cancel} bind:this={btnCancel}>Cancel</button>
+    <button type="button" onclick={cancel} bind:this={btnCancel}>Cancel</button>
   </form>
 </div>

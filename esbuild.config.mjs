@@ -1,6 +1,6 @@
 import esbuild from "esbuild";
 import esbuildsvelte from "esbuild-svelte";
-import sveltepreprocess from "svelte-preprocess";
+import { sveltepreprocess } from "svelte-preprocess";
 import process from "process";
 import builtins from "builtin-modules";
 
@@ -11,50 +11,54 @@ if you want to view the source, please visit the github repository of this plugi
 `;
 
 const prod = process.argv[2] === "production";
+const watch = process.argv[3] === "watch";
 
 const context = await esbuild.context({
-	banner: {
-		js: banner,
-	},
-	entryPoints: ["src/main.ts"],
-	bundle: true,
-	external: [
-		"obsidian",
-		"electron",
-		"@codemirror/autocomplete",
-		"@codemirror/collab",
-		"@codemirror/commands",
-		"@codemirror/language",
-		"@codemirror/lint",
-		"@codemirror/search",
-		"@codemirror/state",
-		"@codemirror/view",
-		"@lezer/common",
-		"@lezer/highlight",
-		"@lezer/lr",
-		...builtins,
-	],
-	format: "cjs",
-	target: "es2018",
-	logLevel: "info",
-	plugins: [
-		esbuildsvelte({
-			compilerOptions: {
-				css: "injected",
-			},
-			preprocess: sveltepreprocess({
-				postcss: true,
-			}),
-		}),
-	],
-	sourcemap: prod ? false : "inline",
-	treeShaking: true,
-	outfile: "main.js",
+  banner: {
+    js: banner,
+  },
+  entryPoints: ["src/main.ts"],
+  bundle: true,
+  external: [
+    "obsidian",
+    "electron",
+    "@codemirror/autocomplete",
+    "@codemirror/collab",
+    "@codemirror/commands",
+    "@codemirror/language",
+    "@codemirror/lint",
+    "@codemirror/search",
+    "@codemirror/state",
+    "@codemirror/view",
+    "@lezer/common",
+    "@lezer/highlight",
+    "@lezer/lr",
+    ...builtins,
+  ],
+  format: "cjs",
+  target: "es2022",
+  logLevel: "info",
+  plugins: [
+    esbuildsvelte({
+      compilerOptions: {
+        css: "injected",
+      },
+      preprocess: sveltepreprocess({
+        postcss: true,
+      }),
+    }),
+  ],
+  sourcemap: prod ? false : "inline",
+  treeShaking: true,
+  outfile: "main.js",
+  define: {
+    "process.env.DEV_BUILD": prod ? "false" : "true",
+  },
 });
 
-if (prod) {
-	await context.rebuild();
-	process.exit(0);
+if (watch) {
+  await context.watch();
 } else {
-	await context.watch();
+  await context.rebuild();
+  process.exit(0);
 }

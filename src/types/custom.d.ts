@@ -6,18 +6,13 @@ import {} from "obsidian";
 declare module "obsidian" {
   interface Workspace {
     on(
-      name: "files-menu",
-      callback: (
-        menu: Menu,
-        file: TAbstractFile[],
-        source: string,
-        leaf?: WorkspaceLeaf
-      ) => any,
-      ctx?: any
-    ): EventRef;
-    on(
       name: "search:results-menu",
       callback: (menu: Menu, leaf: any) => any,
+      ctx?: any
+    ): EventRef;
+    on( //Probably not 100% accurate, but only need the name and callback.
+      name: "tab-group-menu",
+      callback: (menu: Menu) => any,
       ctx?: any
     ): EventRef;
   }
