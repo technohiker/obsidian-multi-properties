@@ -3,31 +3,26 @@
 import { Modal, App, Notice } from "obsidian";
 import { mount } from "svelte";
 import RemoveConfirmForm from "./RemoveConfirmForm.svelte";
-import MultiPropPlugin from "./main";
 
 /** Loads a modal and handles form submissions. */
 export class RemoveConfirmModal extends Modal {
   names: string[];
-  submission: (bool: boolean) => Promise<void>;
+  submission: () => Promise<void>;
   component: any;
 
-  constructor(
-    app: App,
-    names: string[],
-    submission: (bool: boolean) => Promise<void>
-  ) {
+  constructor(app: App, names: string[], submission: () => Promise<void>) {
     super(app);
     this.names = names;
     this.submission = submission;
   }
 
-  async onSubmit() {
-    await this.submission(true);
+  onSubmit() {
+    this.submission();
+    console.log("Submitting, closing confirm form.");
     this.close();
   }
 
   onCancel() {
-    this.submission(false);
     this.close();
   }
 

@@ -2,7 +2,7 @@
   import { onMount, tick } from "svelte";
 
   interface Props {
-    isFirst: boolean;
+    totalInputs: number;
     removeInput: (id: number) => void;
     id: number;
     typeVal?: string;

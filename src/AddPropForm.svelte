@@ -11,6 +11,7 @@
     delimiter: string;
     defaultProps: { name: string; value: any; type: PropertyTypes }[];
     changeBool: (bool: boolean) => void;
+    suggestedProps: Property[];
   }
 
   let {

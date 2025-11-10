@@ -26,11 +26,9 @@ export class RemoveModal extends Modal {
     this.submission = submission;
   }
 
-  async onConfirm(bool: boolean) {
-    if (bool) {
-      await this.submission(this.props);
-      this.close();
-    }
+  onConfirm() {
+    this.submission(this.props);
+    this.close();
   }
 
   onSubmit(props: string[]) {

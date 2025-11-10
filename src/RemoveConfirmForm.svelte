@@ -14,6 +14,8 @@
   const word = names.length > 1 ? "properties" : "property";
 
   function onSubmit(e: SubmitEvent) {
+    console.log("Submit");
+    e.preventDefault();
     submission();
   }
 
