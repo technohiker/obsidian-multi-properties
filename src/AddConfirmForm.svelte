@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { NewPropData } from "./main";
+  import type { NewPropData } from "./main";
 
   interface Props {
     newProps: Map<string, NewPropData>;

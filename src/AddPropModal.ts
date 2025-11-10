@@ -2,9 +2,9 @@ import { Modal, App } from "obsidian";
 import { mount } from "svelte";
 import PropForm from "./AddPropForm.svelte";
 import AddPropInput from "./AddPropInput.svelte";
-import { NewPropData } from "./main";
+import type { NewPropData } from "./main";
 import { AddConfirmModal } from "./AddConfirmModal";
-import { PropertyTypes } from "./types/custom";
+import type { PropertyTypes } from "./types/custom";
 
 /** Loads a modal and handles form submissions. */
 export class PropModal extends Modal {

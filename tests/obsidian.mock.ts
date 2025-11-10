@@ -1,9 +1,9 @@
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 class MockTFile {
-  constructor(public path: string, public extension: string = 'md') {}
+  constructor(public path: string, public extension: string = "md") {}
   get name() {
-    return this.path.split('/').pop() || '';
+    return this.path.split("/").pop() || "";
   }
 }
 
@@ -13,7 +13,7 @@ class MockTFolder {
     this.children = children;
   }
   get name() {
-    return this.path.split('/').pop() || '';
+    return this.path.split("/").pop() || "";
   }
 }
 
@@ -25,27 +25,27 @@ class MockWorkspaceLeaf {
   getRoot = vi.fn(() => this.root);
   root: any = null;
   setParent(parent: any) {
-      this.parent = parent;
+    this.parent = parent;
   }
   setRoot(root: any) {
-      this.root = root;
+    this.root = root;
   }
 }
 
 class MockWorkspaceTabs {
   children: any[] = [];
-  containerEl = { id: 'mock-tabs' };
+  containerEl = { id: "mock-tabs" };
   constructor() {}
 }
 
 class MockWorkspace {
   activeLeaf: MockWorkspaceLeaf | null = null;
   iterateAllLeaves = vi.fn((callback) => {
-      this.leaves.forEach(callback);
+    this.leaves.forEach(callback);
   });
   leaves: MockWorkspaceLeaf[] = [];
   addLeaf(leaf: MockWorkspaceLeaf) {
-      this.leaves.push(leaf);
+    this.leaves.push(leaf);
   }
 }
 
@@ -55,11 +55,11 @@ class MockApp {
     processFrontMatter: vi.fn(),
   };
   vault = {
-      getAbstractFileByPath: vi.fn()
-  }
+    getAbstractFileByPath: vi.fn(),
+  };
   commands: any[] = [];
   addCommand = vi.fn((cmd) => {
-      this.commands.push(cmd);
+    this.commands.push(cmd);
   });
 }
 
@@ -72,29 +72,38 @@ export const TFolder = MockTFolder;
 export const FileView = class {};
 export const Notice = vi.fn();
 export const Plugin = class {
-    app: any;
-    constructor(app: any, manifest: any) {
-        this.app = app;
-    }
-    async loadData() { return {}; }
-    addSettingTab() {}
-    addCommand(command: any) {
-        this.app.commands.push(command);
-    }
+  app: any;
+  constructor(app: any, manifest: any) {
+    this.app = app;
+  }
+  async loadData() {
+    return {};
+  }
+  addSettingTab() {}
+  addCommand(command: any) {
+    this.app.commands.push(command);
+  }
 };
 export const Modal = class {
-    constructor(app: any) {}
-    open() {}
-    close() {}
+  constructor(app: any) {}
+  open() {}
+  close() {}
 };
 export const PluginSettingTab = class {
-    constructor(app: any, plugin: any) {}
-    display() {}
+  constructor(app: any, plugin: any) {}
+  display() {}
 };
 export const Setting = class {
-    setName() { return this; }
-    setDesc() { return this; }
-    addText() { return this; }
-    addToggle() { return this; }
+  setName() {
+    return this;
+  }
+  setDesc() {
+    return this;
+  }
+  addText() {
+    return this;
+  }
+  addToggle() {
+    return this;
+  }
 };
-

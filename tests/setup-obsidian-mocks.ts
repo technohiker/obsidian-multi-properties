@@ -1,11 +1,11 @@
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 // Create a comprehensive mock factory
 export const createObsidianMocks = () => {
   class MockTFile {
-    constructor(public path: string, public extension: string = 'md') {}
+    constructor(public path: string, public extension: string = "md") {}
     get name() {
-      return this.path.split('/').pop() || '';
+      return this.path.split("/").pop() || "";
     }
   }
 
@@ -15,7 +15,7 @@ export const createObsidianMocks = () => {
       this.children = children;
     }
     get name() {
-      return this.path.split('/').pop() || '';
+      return this.path.split("/").pop() || "";
     }
   }
 
@@ -27,27 +27,27 @@ export const createObsidianMocks = () => {
     getRoot = vi.fn(() => this.root);
     root: any = null;
     setParent(parent: any) {
-        this.parent = parent;
+      this.parent = parent;
     }
     setRoot(root: any) {
-        this.root = root;
+      this.root = root;
     }
   }
 
   class MockWorkspaceTabs {
     children: any[] = [];
-    containerEl = { id: 'mock-tabs' };
+    containerEl = { id: "mock-tabs" };
     constructor() {}
   }
 
   class MockWorkspace {
     activeLeaf: MockWorkspaceLeaf | null = null;
     iterateAllLeaves = vi.fn((callback) => {
-        this.leaves.forEach(callback);
+      this.leaves.forEach(callback);
     });
     leaves: MockWorkspaceLeaf[] = [];
     addLeaf(leaf: MockWorkspaceLeaf) {
-        this.leaves.push(leaf);
+      this.leaves.push(leaf);
     }
   }
 
@@ -57,11 +57,11 @@ export const createObsidianMocks = () => {
       processFrontMatter: vi.fn(),
     };
     vault = {
-        getAbstractFileByPath: vi.fn()
-    }
+      getAbstractFileByPath: vi.fn(),
+    };
     commands: any[] = [];
     addCommand = vi.fn((cmd) => {
-        this.commands.push(cmd);
+      this.commands.push(cmd);
     });
   }
 
@@ -75,7 +75,7 @@ export const createObsidianMocks = () => {
     FileView: class {},
     Notice: vi.fn(),
     Plugin: class {
-        constructor(app: any, manifest: any) {}
+      constructor(app: any, manifest: any) {}
     },
     Modal: class {},
   };

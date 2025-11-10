@@ -1,7 +1,10 @@
 import { TFile } from "obsidian";
-import { NewPropData } from "./main";
+import type { NewPropData } from "./main";
 
-type FileProcessor = (file: TFile, callback: (frontmatter: any) => void) => Promise<void> | void;
+type FileProcessor = (
+  file: TFile,
+  callback: (frontmatter: any) => void
+) => Promise<void> | void;
 
 /** Add properties from a Map to a note.
  */
@@ -46,7 +49,11 @@ export async function addProperties(
 }
 
 /** Iterate through all props in a list and add them to an existing set. */
-export async function addPropToSet(fileProcessor: FileProcessor, set: Set<string>, file: TFile) {
+export async function addPropToSet(
+  fileProcessor: FileProcessor,
+  set: Set<string>,
+  file: TFile
+) {
   await fileProcessor(file, (frontmatter) => {
     for (const key in frontmatter) {
       console.log({ key });
@@ -57,7 +64,11 @@ export async function addPropToSet(fileProcessor: FileProcessor, set: Set<string
 }
 
 /** Remove properties from a note. */
-export async function removeProperties(fileProcessor: FileProcessor, file: TFile, props: string[]) {
+export async function removeProperties(
+  fileProcessor: FileProcessor,
+  file: TFile,
+  props: string[]
+) {
   await fileProcessor(file, (frontmatter) => {
     for (const prop of props) {
       //delete frontmatter[prop];

@@ -1,9 +1,18 @@
-import { Menu, Notice, Plugin, TAbstractFile, TFile, TFolder, FileView, WorkspaceLeaf, WorkspaceTabs } from "obsidian";
+import {
+  Notice,
+  Plugin,
+  TAbstractFile,
+  TFile,
+  TFolder,
+  FileView,
+  WorkspaceLeaf,
+  WorkspaceTabs,
+} from "obsidian";
 import { PropModal } from "./AddPropModal";
-import { MultiPropSettings, SettingTab } from "./SettingTab";
+import { type MultiPropSettings, SettingTab } from "./SettingTab";
 import { RemoveModal } from "./RemoveModal";
 import { addProperties, addPropToSet, removeProperties } from "./frontmatter";
-import { PropertyTypes } from "./types/custom";
+import type { PropertyTypes } from "./types/custom";
 
 declare const process: any;
 
@@ -109,7 +118,10 @@ export default class MultiPropPlugin extends Plugin {
       callback: async () => {
         const files = this._getFilesFromTabGroup(this.app.workspace.activeLeaf);
         if (!files || !files.length) {
-          new Notice("No open tabs in the active tab group to add properties to.", 4000);
+          new Notice(
+            "No open tabs in the active tab group to add properties to.",
+            4000
+          );
           return;
         }
         await this.createPropModal(files);
@@ -122,7 +134,10 @@ export default class MultiPropPlugin extends Plugin {
       callback: async () => {
         const files = this._getFilesFromTabGroup(this.app.workspace.activeLeaf);
         if (!files || !files.length) {
-          new Notice("No open tabs in the active tab group to remove properties from.", 4000);
+          new Notice(
+            "No open tabs in the active tab group to remove properties from.",
+            4000
+          );
           return;
         }
         await this.createRemoveModal(files);
@@ -133,7 +148,11 @@ export default class MultiPropPlugin extends Plugin {
   async getPropsFromFolder(folder: TFolder, names: Set<string>) {
     for (let obj of folder.children) {
       if (obj instanceof TFile && obj.extension === "md") {
-        names = await addPropToSet(this.app.fileManager.processFrontMatter.bind(this.app.fileManager), names, obj);
+        names = await addPropToSet(
+          this.app.fileManager.processFrontMatter.bind(this.app.fileManager),
+          names,
+          obj
+        );
       }
       if (obj instanceof TFolder) {
         if (this.settings.recursive) {
@@ -147,7 +166,11 @@ export default class MultiPropPlugin extends Plugin {
   async getPropsFromFiles(files: TAbstractFile[], names: Set<string>) {
     for (let file of files) {
       if (file instanceof TFile && file.extension === "md") {
-        names = await addPropToSet(this.app.fileManager.processFrontMatter.bind(this.app.fileManager), names, file);
+        names = await addPropToSet(
+          this.app.fileManager.processFrontMatter.bind(this.app.fileManager),
+          names,
+          file
+        );
       }
     }
     return [...names];
@@ -277,13 +300,23 @@ export default class MultiPropPlugin extends Plugin {
 
   addPropsCallback(props: any) {
     return async (file: TFile) => {
-      await addProperties(this.app.fileManager.processFrontMatter.bind(this.app.fileManager), file, props, this.settings.overwrite, this.app.metadataCache.getAllPropertyInfos());
+      await addProperties(
+        this.app.fileManager.processFrontMatter.bind(this.app.fileManager),
+        file,
+        props,
+        this.settings.overwrite,
+        this.app.metadataCache.getAllPropertyInfos()
+      );
     };
   }
 
   removePropsCallback(props: any) {
     return async (file: TFile) => {
-      await removeProperties(this.app.fileManager.processFrontMatter.bind(this.app.fileManager), file, props);
+      await removeProperties(
+        this.app.fileManager.processFrontMatter.bind(this.app.fileManager),
+        file,
+        props
+      );
     };
   }
 }

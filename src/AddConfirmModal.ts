@@ -3,7 +3,7 @@
 import { Modal, App, Notice } from "obsidian";
 import { mount } from "svelte";
 import AddConfirmForm from "./AddConfirmForm.svelte";
-import { NewPropData } from "./main";
+import type { NewPropData } from "./main";
 
 /** Loads a modal and handles form submissions. */
 export class AddConfirmModal extends Modal {

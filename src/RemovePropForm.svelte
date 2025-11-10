@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Filler from "./Filler.svelte";
   interface Props {
     names?: string[];
     submission: (props: string[]) => void;
@@ -82,7 +81,6 @@
         </label>
       {/each}
     </div>
-    <Filler />
     <div class="button-container">
       <button type="submit">Confirm</button>
       <button type="button" onclick={toggleAll}

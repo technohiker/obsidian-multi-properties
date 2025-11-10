@@ -1,11 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
-import { SettingTab } from '../src/SettingTab';
-import { App, PluginSettingTab, Setting } from 'obsidian';
-import MultiPropPlugin from '../src/main';
+import { describe, it, expect, vi } from "vitest";
+import { SettingTab } from "../src/SettingTab";
+import { App, PluginSettingTab, Setting } from "obsidian";
+import MultiPropPlugin from "../src/main";
 
 // Mock the Obsidian API
-vi.mock('obsidian', () => {
-  const original = vi.importActual('obsidian');
+vi.mock("obsidian", () => {
+  const original = vi.importActual("obsidian");
   return {
     ...original,
     PluginSettingTab: vi.fn(),
@@ -18,15 +18,15 @@ vi.mock('obsidian', () => {
   };
 });
 
-describe('SettingTab', () => {
-  it('should create the settings UI', () => {
+describe("SettingTab", () => {
+  it("should create the settings UI", () => {
     const app = {} as App;
     const plugin = {
       settings: {
         overwrite: false,
         recursive: false,
-        delimiter: ',',
-        defaultPropPath: '',
+        delimiter: ",",
+        defaultPropPath: "",
       },
       saveSettings: vi.fn(),
     } as unknown as MultiPropPlugin;

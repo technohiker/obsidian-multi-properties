@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
   import AddPropInput from "./AddPropInput.svelte";
-  import { NewPropData } from "./main";
+  import type { NewPropData } from "./main";
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
   import type { PropertyTypes } from "./types/custom";
 
