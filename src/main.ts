@@ -351,7 +351,6 @@ export default class MultiPropPlugin extends Plugin {
       const allFiles: TFile[] = [];
       this.searchFolders(iterable, async (f) => allFiles.push(f));
       iterateFunc = async (props: Map<string, any>) => {
-        console.log("Small delay.");
         await this.searchFolders(
           iterable,
           await this.addPropsCallback(props, allFiles.length)

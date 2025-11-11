@@ -18,7 +18,6 @@ export class RemoveConfirmModal extends Modal {
 
   onSubmit() {
     this.submission();
-    console.log("Submitting, closing confirm form.");
     this.close();
   }
 

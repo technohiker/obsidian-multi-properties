@@ -1,5 +1,6 @@
 import { TFile } from "obsidian";
 import type { NewPropData } from "./main";
+import type { PropertyInfos } from "./types/custom";
 
 type FileProcessor = (
   file: TFile,
@@ -13,7 +14,7 @@ export async function addProperties(
   file: TFile,
   props: Map<string, NewPropData>,
   overwrite: boolean,
-  propCache: any
+  propCache: PropertyInfos
 ) {
   await fileProcessor(file, (frontmatter) => {
     for (const [key, value] of props) {

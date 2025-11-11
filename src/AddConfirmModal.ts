@@ -25,7 +25,6 @@ export class AddConfirmModal extends Modal {
   }
   onSubmit() {
     this.submission();
-    console.log("Closing confirm form.");
     this.close();
   }
 

@@ -23,15 +23,6 @@
 
   names.sort();
 
-  // function handleCheckboxChange(event: any, string: string) {
-  // 	const isChecked = event.target.checked;
-  // 	if (isChecked) {
-  // 		propNames = [...propNames, string];
-  // 	} else {
-  // 		propNames = propNames.filter((selected) => selected !== string);
-  // 	}
-  // }
-
   function onCheckboxChange(event: any) {
     let checked = event.target.checked;
     checked ? checkCount++ : checkCount--;
