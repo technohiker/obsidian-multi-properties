@@ -1,5 +1,7 @@
 import { vi, expect, test, beforeEach, describe } from "vitest";
 
+import {App} from './obsidian.mock'
+
 const mocks = vi.hoisted(async () => {
   return await import("./obsidian.mock");
 });
@@ -7,10 +9,9 @@ const mocks = vi.hoisted(async () => {
 vi.mock("obsidian", () => mocks);
 
 import MultiPropPlugin from "../src/main";
-import { TFile, TFolder } from "obsidian";
 
 describe("MultiPropPlugin Tests", () => {
-  let app: any;
+  let app: InstanceType<typeof App>
   let plugin: MultiPropPlugin;
 
   beforeEach(async () => {
