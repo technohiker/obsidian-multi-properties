@@ -11,11 +11,11 @@
 
   let { newProps, overwrite = true, submission, cancel }: Props = $props();
 
-  let btnCancel: HTMLButtonElement = $state(document.createElement("button"));
+  let btnCancel: HTMLButtonElement | null = $state(null);
 
-  const msg = overwrite
+  let msg = $derived(overwrite
     ? "Any pre-existing text props will have their values overwritten."
-    : "Any pre-existing text props will have their values be appended to.";
+    : "Any pre-existing text props will have their values be appended to.");
 
   function onSubmit(e: SubmitEvent) {
     e.preventDefault();
@@ -24,7 +24,7 @@
 
   //Focus on cancel to make sure user does not easily submit changes.
   onMount(() => {
-    btnCancel.focus();
+    btnCancel?.focus();
   });
 </script>
 

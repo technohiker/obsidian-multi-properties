@@ -6,22 +6,20 @@
 
   let { names = [], submission }: Props = $props();
 
-  let errorEl: HTMLDivElement = $state(document.createElement("div"));
+  let errorEl: HTMLDivElement | null = $state(null);
   let alertText = $state(".");
-  //let propNames: string[] = [];
 
   let checkCount = $state(0);
-  let isMaxChecked = $derived(checkCount >= names.length);
 
   let inputs: { name: string; isChecked: boolean }[] = $state([]);
-  function addInput(input: { name: string; isChecked: boolean }) {
-    inputs.push(input);
-  }
-  for (let name of names) {
-    addInput({ name, isChecked: false });
-  }
 
-  names.sort();
+  $effect(() => {
+    const sortedNames = [...names].sort();
+    inputs = sortedNames.map((name) => ({ name, isChecked: false }));
+    checkCount = 0;
+  });
+
+  let isMaxChecked = $derived(inputs.length > 0 && checkCount >= inputs.length);
 
   function onCheckboxChange(event: any) {
     let checked = event.target.checked;
@@ -29,13 +27,9 @@
   }
 
   function toggleAll() {
-    if (isMaxChecked) {
-      inputs = inputs.map((input) => ({ ...input, isChecked: false }));
-      checkCount = 0;
-    } else {
-      inputs = inputs.map((input) => ({ ...input, isChecked: true }));
-      checkCount = names.length;
-    }
+    const shouldCheckAll = !isMaxChecked;
+    inputs = inputs.map((input) => ({ ...input, isChecked: shouldCheckAll }));
+    checkCount = shouldCheckAll ? inputs.length : 0;
   }
 
   function onSubmit(e: SubmitEvent) {
@@ -43,7 +37,7 @@
 
     if (checkCount === 0) {
       alertText = "Please select at least one property to remove.";
-      errorEl.classList.remove("hidden");
+      errorEl?.classList.remove("hidden");
       return;
     }
     let propNames = inputs
@@ -61,7 +55,7 @@
   <p>Select the properties you wish to remove from the file selection.</p>
   <form onsubmit={onSubmit}>
     <div class="name-container">
-      {#each inputs as input}
+      {#each inputs as input (input.name)}
         <label>
           <input
             type="checkbox"
