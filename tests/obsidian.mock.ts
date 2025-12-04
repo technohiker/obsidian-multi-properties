@@ -54,7 +54,7 @@ class MockWorkspace {
 
 class MockMetadataCache {
   constructor() {}
-  getallPropertyInfos() {
+  getAllPropertyInfos() {
     return [{name: "test", widget: "text",occurences: 1}]
   }
 }
