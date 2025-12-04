@@ -10,6 +10,6 @@ describe("AddPropInput.svelte", () => {
     // Check for default values
     expect(getByPlaceholderText("name")).toHaveValue("");
     expect(getByPlaceholderText("value")).toHaveValue("");
-    expect(getByRole("combobox")).toHaveValue("text");
+    expect(getByRole("combobox")).toHaveValue("string");
   });
 });

@@ -22,7 +22,6 @@
   let inputEl: HTMLInputElement = $state(document.createElement("input"));
   let valueEl: HTMLInputElement = $state(document.createElement("input"));
 
-  let optionVal: string = $state("");
   //Form names tied to input types.
   const options: Record<string, string> = {
     Text: "string",
@@ -42,6 +41,9 @@
     date: "Date",
     datetime: "Datetime",
   };
+
+  // Initialize here instead of in onMount so <select has a value when the test checks it.
+  let optionVal: string = $state(options[convertProps[typeVal]]);
 
   onMount(async () => {
     await tick(); //Focus won't work right without tick().

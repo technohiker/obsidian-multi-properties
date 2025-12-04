@@ -98,7 +98,7 @@ If you prefer to run the steps individually, you can use the following scripts. 
     npm run initialize-test-vault
     ```
 
-4.  **Run Tests:** Execute the automated test suite.
+4.  **Run Tests:** Execute the automated test suite.  On Windows, it's best to run this is a PowerShell terminal.
     ```bash
     npm test
     ```
@@ -153,7 +153,7 @@ These commands operate on all the files open in the current tab group.
 
 #### 3. Context Menu Operations
 
-These actions are performed by right-clicking in the File Explorer or Search panes.
+These actions are performed by right-clicking in the File Explorer or Search panes.  Before running these tests, create a `test-notes` folder and copy to them a few test files in the test vault root.
 
 ##### Scenarios to test:
 
