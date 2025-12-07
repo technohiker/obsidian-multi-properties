@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent, screen } from "@testing-library/svelte";
 import AddPropForm from "../src/AddPropForm.svelte";
 
-describe.skip("AddPropForm.svelte", () => {
+describe("AddPropForm.svelte", () => {
   it('should submit the form data when "Submit" is clicked', async () => {
     const submissionMock = vi.fn();
     const changeBoolMock = vi.fn();
@@ -14,6 +14,7 @@ describe.skip("AddPropForm.svelte", () => {
         delimiter: ",",
         defaultProps: [],
         changeBool: changeBoolMock,
+        suggestedProps: [],
       },
     });
 
