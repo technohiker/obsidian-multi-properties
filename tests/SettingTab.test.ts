@@ -8,6 +8,25 @@ vi.mock("obsidian", () => {
   const original = vi.importActual("obsidian");
   return {
     ...original,
+    Plugin: class {
+      app: any;
+      constructor(app: any, manifest: any) {
+        this.app = app;
+      }
+      async loadData() {
+        return {};
+      }
+      addSettingTab() { }
+      addCommand(command: any) {
+        this.app.commands.push(command);
+      }
+      registerEvent(eventRef: any){}
+    },
+    Modal: class {
+        constructor(app: any) { }
+        open() { }
+        close() { }
+    },
     PluginSettingTab: vi.fn(),
     Setting: vi.fn(() => ({
       setName: vi.fn().mockReturnThis(),

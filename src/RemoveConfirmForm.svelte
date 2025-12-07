@@ -9,9 +9,9 @@
 
   let { names = ["test", "test2"], submission, cancel }: Props = $props();
 
-  let btnCancel: HTMLButtonElement = $state(document.createElement("button"));
+  let btnCancel: HTMLButtonElement | null = $state(null);
 
-  const word = names.length > 1 ? "properties" : "property";
+  let word = $derived(names.length > 1 ? "properties" : "property");
 
   function onSubmit(e: SubmitEvent) {
     e.preventDefault();
@@ -20,7 +20,7 @@
 
   //Focus on cancel to make sure user does not easily submit changes.
   onMount(() => {
-    btnCancel.focus();
+    btnCancel?.focus();
   });
 </script>
 

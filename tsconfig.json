@@ -8,10 +8,10 @@
     "target": "ES6",
     "allowJs": true,
     "noImplicitAny": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "isolatedModules": true,
-    "types": ["node", "svelte", "jest"],
+    "types": ["node", "svelte", "vitest/globals"],
     "strictNullChecks": true,
     "verbatimModuleSyntax": true,
     "lib": ["DOM", "ES5", "ES6", "ES7", "ES2021"]

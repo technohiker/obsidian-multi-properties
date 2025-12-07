@@ -22,7 +22,6 @@
   let inputEl: HTMLInputElement = $state(document.createElement("input"));
   let valueEl: HTMLInputElement = $state(document.createElement("input"));
 
-  let optionVal: string = $state("");
   //Form names tied to input types.
   const options: Record<string, string> = {
     Text: "string",
@@ -42,6 +41,9 @@
     date: "Date",
     datetime: "Datetime",
   };
+
+  // Initialize here instead of in onMount so <select has a value when the test checks it.
+  let optionVal: string = $state(options[convertProps[typeVal]]);
 
   onMount(async () => {
     await tick(); //Focus won't work right without tick().
@@ -104,22 +106,11 @@
     max-height: 25px;
     overflow-x: auto;
   }
-  input {
-    max-height: 25px;
-    overflow-x: auto;
-  }
 
   select {
     height: 21px;
   }
-  select {
-    height: 21px;
-  }
 
-  #name-input {
-    flex-grow: 0;
-    width: auto;
-  }
   #name-input {
     flex-grow: 0;
     width: auto;
@@ -133,20 +124,7 @@
     gap: 10px;
     margin-top: 10px;
   }
-  .modal-input-container {
-    width: 95%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-  }
 
-  .btn-inactive {
-    cursor: not-allowed;
-    pointer-events: none;
-    opacity: 0.7;
-  }
   .btn-inactive {
     cursor: not-allowed;
     pointer-events: none;
