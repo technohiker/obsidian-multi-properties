@@ -15,6 +15,7 @@ import { addProperties, addPropToSet, removeProperties } from "./frontmatter";
 import type { Property, PropertyTypes } from "./types/custom";
 
 const defaultSettings: MultiPropSettings = {
+  alterProp: "ignore",
   overwrite: false,
   recursive: true,
   delimiter: ",",
@@ -38,8 +39,8 @@ export default class MultiPropPlugin extends Plugin {
     await this.saveData(this.settings);
   }
 
-  async changeOverwrite(bool: boolean) {
-    this.settings.overwrite = bool;
+  async changeAlterProp(value: MultiPropSettings["alterProp"]) {
+    this.settings.alterProp = value;
     await this.saveSettings();
   }
 
@@ -371,10 +372,10 @@ export default class MultiPropPlugin extends Plugin {
     new PropModal(
       this.app,
       iterateFunc,
-      this.settings.overwrite,
+      this.settings.alterProp,
       this.settings.delimiter,
       defaultProps,
-      this.changeOverwrite.bind(this),
+      this.changeAlterProp.bind(this),
       allProps
     ).open();
   }
@@ -387,7 +388,7 @@ export default class MultiPropPlugin extends Plugin {
   }
 
   /** Create modal for removing properties.
-   * Will call a different function depending on whether files or a folder is used. */
+   * Will create a different callback function depending on whether files or a folder is used. */
   async createRemoveModal(iterable: TAbstractFile[] | TFolder) {
     let names;
     let iterateFunc;
@@ -478,7 +479,7 @@ export default class MultiPropPlugin extends Plugin {
         this.app.fileManager.processFrontMatter.bind(this.app.fileManager),
         file,
         props,
-        this.settings.overwrite,
+        this.settings.alterProp,
         this.app.metadataCache.getAllPropertyInfos()
       );
 

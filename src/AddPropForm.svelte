@@ -4,22 +4,27 @@
   import type { NewPropData } from "./main";
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
   import type { Property, PropertyTypes } from "./types/custom";
+  import type { MultiPropSettings } from "./SettingTab";
 
   interface Props {
     submission: (props: Map<string, NewPropData>) => void;
     overwrite: boolean;
+    alterProp: MultiPropSettings["alterProp"];
     delimiter: string;
     defaultProps: { name: string; value: any; type: PropertyTypes }[];
     changeBool: (bool: boolean) => void;
+    changeSetting: (setting: MultiPropSettings["alterProp"]) => void;
     suggestedProps: Property[];
   }
 
   let {
     submission,
     overwrite = $bindable(),
+    alterProp = $bindable(),
     delimiter,
     defaultProps,
     changeBool,
+    changeSetting,
     suggestedProps,
   }: Props = $props();
 
@@ -39,6 +44,10 @@
   function onCheckboxChange() {
     overwrite = !overwrite;
     changeBool(overwrite);
+  }
+
+  function onDropdownChange(newSetting: any) {
+    changeSetting(newSetting);
   }
 
   onMount(() => {
@@ -209,13 +218,17 @@
   </p>
   <p>If you want to add Tags, use the name "tags".</p>
   <form onsubmit={onSubmit} bind:this={formEl}>
-    <label
-      ><input
-        type="checkbox"
-        checked={overwrite}
-        onchange={onCheckboxChange}
-      />{"Overwrite existing properties"}</label
-    >
+    <label>
+      {"How to alter props that already exist on notes."}
+      <select
+        bind:value={alterProp}
+        onchange={() => onDropdownChange(alterProp)}
+      >
+        <option value="ignore">Ignore the prop entirely.</option>
+        <option value="overwrite">Overwrite new value over prop.</option>
+        <option value="append">Append new value to prop.</option>
+      </select>
+    </label>
     <div class="modal-inputs-container">
       {#each inputEls as input (input.id)}
         <AddPropInput

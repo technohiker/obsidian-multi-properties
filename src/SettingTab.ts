@@ -41,13 +41,43 @@ export class SettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
+      .setName("Ignore existing props.")
+      .setDesc(
+        "When toggled on, while looping through all files in a folder, you will also loop through any sub-folders."
+      )
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.settings.recursive);
+        toggle.onChange(async (value) => {
+          this.plugin.settings.recursive = value;
+          await this.plugin.saveSettings();
+        });
+      });
+
+    new Setting(containerEl)
+      .setName("How to alter existing properties.")
+      .setDesc(
+        "Determine what to do when a property with the same name already exists in a file.  Note that incompatible types cannot be appended.(adding a number to a date)"
+      )
+      .addDropdown((dropdown) => {
+        dropdown
+          .addOption("overwrite", "Overwrite prop")
+          .addOption("append", "Append to prop")
+          .addOption("ignore", "Ignore prop")
+          .setValue(this.plugin.settings.alterProp)
+          .onChange(async (value: "overwrite" | "append" | "ignore") => {
+            this.plugin.settings.alterProp = value;
+            await this.plugin.saveSettings();
+          });
+      });
+
+    new Setting(containerEl)
       .setName("List Delimiter")
       .setDesc(
         "Set delimiter to use when creating a list.  Commas(,) are used by default."
       )
       .addText((text) => {
         text.setValue(this.plugin.settings.delimiter);
-        text.onChange(async (value) => {
+        text.onChange(async (value: MultiPropSettings["alterProp"]) => {
           if (value.length > 1) {
             text.setValue(value[0]);
             new Notice("Delimiter must be a single character.");
@@ -75,6 +105,7 @@ export class SettingTab extends PluginSettingTab {
 
 export interface MultiPropSettings {
   overwrite: boolean;
+  alterProp: "overwrite" | "append" | "ignore";
   recursive: boolean;
   delimiter: string;
   defaultPropPath: string;

@@ -45,7 +45,7 @@ describe("Frontmatter Utilities", () => {
         fileManager.processFrontMatter,
         file,
         props,
-        false,
+        "append",
         {}
       );
       expect(file.frontmatter.newProp).toBe("new value");

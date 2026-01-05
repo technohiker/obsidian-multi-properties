@@ -13,11 +13,14 @@ export async function addProperties(
   fileProcessor: FileProcessor,
   file: TFile,
   props: Map<string, NewPropData>,
-  overwrite: boolean,
+  alterProp: "overwrite" | "append" | "ignore",
   propCache: PropertyInfos
 ) {
   await fileProcessor(file, (frontmatter) => {
     for (const [key, value] of props) {
+      if (alterProp === "ignore" && frontmatter[key]) {
+        continue;
+      }
       //Tags should always be a List, even if there is just one tag.
       if (
         key === "tags" &&
@@ -28,7 +31,7 @@ export async function addProperties(
         continue;
       }
 
-      if (!frontmatter[key] || overwrite) {
+      if (!frontmatter[key] || alterProp === "overwrite") {
         frontmatter[key] = value.data;
         continue;
       }
