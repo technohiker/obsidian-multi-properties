@@ -53,6 +53,7 @@ export class PropModal extends Modal {
       this.app,
       this.props,
       this.alterProp === "overwrite",
+      this.alterProp,
       this.onConfirm.bind(this)
     ).open();
   }
