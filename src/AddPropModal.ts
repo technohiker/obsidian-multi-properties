@@ -52,7 +52,6 @@ export class PropModal extends Modal {
     new AddConfirmModal(
       this.app,
       this.props,
-      this.alterProp === "overwrite",
       this.alterProp,
       this.onConfirm.bind(this)
     ).open();
@@ -65,11 +64,9 @@ export class PropModal extends Modal {
       target: this.contentEl,
       props: {
         submission: this.onSubmit.bind(this),
-        overwrite: true,
         alterProp: this.alterProp,
         delimiter: this.delimiter,
         defaultProps: this.defaultProps,
-        changeBool: this.updateSetting.bind(this),
         changeSetting: this.updateSetting.bind(this),
         suggestedProps: this.suggestedProps,
       },

@@ -5,15 +5,15 @@ import AddPropForm from "../src/AddPropForm.svelte";
 describe("AddPropForm.svelte", () => {
   it('should submit the form data when "Submit" is clicked', async () => {
     const submissionMock = vi.fn();
-    const changeBoolMock = vi.fn();
+    const changeSettingMock = vi.fn();
 
     render(AddPropForm, {
       props: {
         submission: submissionMock,
-        overwrite: false,
+        alterProp: "ignore",
         delimiter: ",",
         defaultProps: [],
-        changeBool: changeBoolMock,
+        changeSetting: changeSettingMock,
         suggestedProps: [],
       },
     });

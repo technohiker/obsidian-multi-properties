@@ -5,19 +5,12 @@
 
   interface Props {
     newProps: Map<string, NewPropData>;
-    overwrite?: boolean;
     alterProp: MultiPropSettings["alterProp"];
     submission: () => void;
     cancel: () => void;
   }
 
-  let {
-    newProps,
-    overwrite = true,
-    alterProp = "ignore",
-    submission,
-    cancel,
-  }: Props = $props();
+  let { newProps, alterProp, submission, cancel }: Props = $props();
 
   let btnCancel: HTMLButtonElement | null = $state(null);
 

@@ -16,7 +16,6 @@ import type { Property, PropertyTypes } from "./types/custom";
 
 const defaultSettings: MultiPropSettings = {
   alterProp: "ignore",
-  overwrite: false,
   recursive: true,
   delimiter: ",",
   defaultPropPath: "",
@@ -25,7 +24,7 @@ const defaultSettings: MultiPropSettings = {
 export interface NewPropData {
   type: string;
   data: string | string[] | null;
-  overwrite: boolean;
+  alterProp: MultiPropSettings["alterProp"];
   delimiter: string;
 }
 

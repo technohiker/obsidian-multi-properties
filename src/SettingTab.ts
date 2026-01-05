@@ -15,45 +15,6 @@ export class SettingTab extends PluginSettingTab {
     containerEl.empty();
 
     new Setting(containerEl)
-      .setName("Overwrite existing text")
-      .setDesc(
-        "When adding a property with a name that already exists, the text will overwrite the prop's existing value.  If left disabled, the new value will be appended to the old as a List."
-      )
-      .addToggle((toggle) => {
-        toggle.setValue(this.plugin.settings.overwrite);
-        toggle.onChange(async (value) => {
-          this.plugin.settings.overwrite = value;
-          await this.plugin.saveSettings();
-        });
-      });
-
-    new Setting(containerEl)
-      .setName("Recursive Iteration")
-      .setDesc(
-        "When toggled on, while looping through all files in a folder, you will also loop through any sub-folders."
-      )
-      .addToggle((toggle) => {
-        toggle.setValue(this.plugin.settings.recursive);
-        toggle.onChange(async (value) => {
-          this.plugin.settings.recursive = value;
-          await this.plugin.saveSettings();
-        });
-      });
-
-    new Setting(containerEl)
-      .setName("Ignore existing props.")
-      .setDesc(
-        "When toggled on, while looping through all files in a folder, you will also loop through any sub-folders."
-      )
-      .addToggle((toggle) => {
-        toggle.setValue(this.plugin.settings.recursive);
-        toggle.onChange(async (value) => {
-          this.plugin.settings.recursive = value;
-          await this.plugin.saveSettings();
-        });
-      });
-
-    new Setting(containerEl)
       .setName("How to alter existing properties.")
       .setDesc(
         "Determine what to do when a property with the same name already exists in a file.  Note that incompatible types cannot be appended.(adding a number to a date)"
@@ -68,6 +29,19 @@ export class SettingTab extends PluginSettingTab {
             this.plugin.settings.alterProp = value;
             await this.plugin.saveSettings();
           });
+      });
+
+    new Setting(containerEl)
+      .setName("Recursive Iteration")
+      .setDesc(
+        "When toggled on, while looping through all files in a folder, you will also loop through any sub-folders."
+      )
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.settings.recursive);
+        toggle.onChange(async (value) => {
+          this.plugin.settings.recursive = value;
+          await this.plugin.saveSettings();
+        });
       });
 
     new Setting(containerEl)
@@ -104,7 +78,6 @@ export class SettingTab extends PluginSettingTab {
 }
 
 export interface MultiPropSettings {
-  overwrite: boolean;
   alterProp: "overwrite" | "append" | "ignore";
   recursive: boolean;
   delimiter: string;

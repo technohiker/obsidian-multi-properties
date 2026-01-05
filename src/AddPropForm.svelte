@@ -8,22 +8,18 @@
 
   interface Props {
     submission: (props: Map<string, NewPropData>) => void;
-    overwrite: boolean;
     alterProp: MultiPropSettings["alterProp"];
     delimiter: string;
     defaultProps: { name: string; value: any; type: PropertyTypes }[];
-    changeBool: (bool: boolean) => void;
     changeSetting: (setting: MultiPropSettings["alterProp"]) => void;
     suggestedProps: Property[];
   }
 
   let {
     submission,
-    overwrite = $bindable(),
     alterProp = $bindable(),
     delimiter,
     defaultProps,
-    changeBool,
     changeSetting,
     suggestedProps,
   }: Props = $props();
@@ -40,11 +36,6 @@
     nameDef: string;
     valueDef: any;
   }[] = $state([]);
-
-  function onCheckboxChange() {
-    overwrite = !overwrite;
-    changeBool(overwrite);
-  }
 
   function onDropdownChange(newSetting: any) {
     changeSetting(newSetting);
@@ -174,7 +165,7 @@
       let propObj: NewPropData = {
         type: obsidianType,
         data: value,
-        overwrite: false,
+        alterProp: alterProp,
         delimiter: delimiter,
       };
 
