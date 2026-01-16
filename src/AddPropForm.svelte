@@ -191,7 +191,7 @@
     {#each suggestedProps as prop}
       <button
         type="button"
-        class="prop-chip"
+        class="suggested-prop"
         onclick={() => addSuggested(prop)}
       >
         {prop.name}
@@ -212,6 +212,7 @@
     <label>
       {"How to alter props that already exist on notes."}
       <select
+        id="alter-prop-select"
         bind:value={alterProp}
         onchange={() => onDropdownChange(alterProp)}
       >

@@ -281,8 +281,13 @@ export default class MultiPropPlugin extends Plugin {
     );
   }
 
-  async getPropsFromFolder(folder: TFolder, names: Set<string>) {
-    for (let obj of folder.children) {
+  async getPropsFromFolder(
+    iterable: TFolder | TAbstractFile[],
+    names: Set<string>
+  ) {
+    let objs: TAbstractFile[] =
+      iterable instanceof TFolder ? iterable.children : iterable;
+    for (let obj of objs) {
       if (obj instanceof TFile && obj.extension === "md") {
         names = await addPropToSet(
           this.app.fileManager.processFrontMatter.bind(this.app.fileManager),
@@ -314,10 +319,13 @@ export default class MultiPropPlugin extends Plugin {
 
   /** Iterates through all files in a folder and runs callback on each file. */
   async searchFolders(
-    folder: TFolder,
+    iterable: TFolder | TAbstractFile[],
     callback: (file: TFile) => Promise<any>
   ) {
-    for (let obj of folder.children) {
+    let objs: TAbstractFile[] =
+      iterable instanceof TFolder ? iterable.children : iterable;
+
+    for (let obj of objs) {
       if (obj instanceof TFolder) {
         if (this.settings.recursive) {
           await this.searchFolders(obj, callback);
@@ -347,22 +355,30 @@ export default class MultiPropPlugin extends Plugin {
 
   async createPropModal(iterable: TFile[] | TFolder) {
     let iterateFunc;
-    if (iterable instanceof TFolder) {
-      const allFiles: TFile[] = [];
-      this.searchFolders(iterable, async (f) => allFiles.push(f));
-      iterateFunc = async (props: Map<string, any>) => {
-        await this.searchFolders(
-          iterable,
-          await this.addPropsCallback(props, allFiles.length)
-        );
-      };
-    } else {
-      iterateFunc = async (props: Map<string, any>) =>
-        this.searchFiles(
-          iterable,
-          await this.addPropsCallback(props, iterable.length)
-        );
-    }
+    // if (iterable instanceof TFolder) {
+    //   const allFiles: TFile[] = [];
+    //   this.searchFolders(iterable, async (f) => allFiles.push(f));
+    //   iterateFunc = async (props: Map<string, any>) => {
+    //     await this.searchFolders(
+    //       iterable,
+    //       await this.addPropsCallback(props, allFiles.length)
+    //     );
+    //   };
+    // } else {
+    //   iterateFunc = async (props: Map<string, any>) =>
+    //     this.searchFiles(
+    //       iterable,
+    //       await this.addPropsCallback(props, iterable.length)
+    //     );
+    // }
+
+    const allFiles: TFile[] = [];
+    this.searchFolders(iterable, async (f) => allFiles.push(f));
+    iterateFunc = async (props: Map<string, any>) =>
+      this.searchFolders(
+        iterable,
+        await this.addPropsCallback(props, allFiles.length)
+      );
 
     let defaultProps: { name: string; value: any; type: PropertyTypes }[];
     defaultProps = this.loadDefaultProps();
@@ -392,23 +408,33 @@ export default class MultiPropPlugin extends Plugin {
     let names;
     let iterateFunc;
 
-    if (iterable instanceof TFolder) {
-      names = await this.getPropsFromFolder(iterable, new Set());
-      const allFiles: TFile[] = [];
-      this.searchFolders(iterable, async (f) => allFiles.push(f));
-      iterateFunc = (props: string[]) =>
-        this.searchFolders(
-          iterable,
-          this.removePropsCallback(props, allFiles.length)
-        );
-    } else {
-      names = await this.getPropsFromFiles(iterable, new Set());
-      iterateFunc = (props: string[]) =>
-        this.searchFiles(
-          iterable,
-          this.removePropsCallback(props, iterable.length)
-        );
-    }
+    // if (iterable instanceof TFolder) {
+    //   names = await this.getPropsFromFolder(iterable, new Set());
+    //   const allFiles: TFile[] = [];
+    //   this.searchFolders(iterable, async (f) => allFiles.push(f));
+    //   iterateFunc = (props: string[]) =>
+    //     this.searchFolders(
+    //       iterable,
+    //       this.removePropsCallback(props, allFiles.length)
+    //     );
+    // } else {
+    //   names = await this.getPropsFromFiles(iterable, new Set());
+    //   iterateFunc = (props: string[]) =>
+    //     this.searchFiles(
+    //       iterable,
+    //       this.removePropsCallback(props, iterable.length)
+    //     );
+    // }
+
+    names = await this.getPropsFromFolder(iterable, new Set());
+    const allFiles: TFile[] = [];
+    this.searchFolders(iterable, async (f) => allFiles.push(f));
+    iterateFunc = (props: string[]) =>
+      this.searchFolders(
+        iterable,
+        this.removePropsCallback(props, allFiles.length)
+      );
+
     if (names.length === 0) {
       new Notice("No properties to remove", 4000);
       return;
