@@ -1,6 +1,6 @@
 import { vi, expect, test, beforeEach, describe } from "vitest";
 
-import {App} from './obsidian.mock'
+import { App } from "./obsidian.mock";
 
 const mocks = vi.hoisted(async () => {
   return await import("./obsidian.mock");
@@ -11,7 +11,7 @@ vi.mock("obsidian", () => mocks);
 import MultiPropPlugin from "../src/main";
 
 describe("MultiPropPlugin Tests", () => {
-  let app: InstanceType<typeof App>
+  let app: InstanceType<typeof App>;
   let plugin: MultiPropPlugin;
 
   beforeEach(async () => {
@@ -46,7 +46,7 @@ describe("MultiPropPlugin Tests", () => {
       ];
       const callback = vi.fn();
       // @ts-ignore
-      await plugin.searchFiles(files, callback);
+      await plugin.searchFolders(files, callback);
       expect(callback).toHaveBeenCalledTimes(2);
     });
 

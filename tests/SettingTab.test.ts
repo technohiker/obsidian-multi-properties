@@ -16,21 +16,22 @@ vi.mock("obsidian", () => {
       async loadData() {
         return {};
       }
-      addSettingTab() { }
+      addSettingTab() {}
       addCommand(command: any) {
         this.app.commands.push(command);
       }
-      registerEvent(eventRef: any){}
+      registerEvent(eventRef: any) {}
     },
     Modal: class {
-        constructor(app: any) { }
-        open() { }
-        close() { }
+      constructor(app: any) {}
+      open() {}
+      close() {}
     },
     PluginSettingTab: vi.fn(),
     Setting: vi.fn(() => ({
       setName: vi.fn().mockReturnThis(),
       setDesc: vi.fn().mockReturnThis(),
+      addDropdown: vi.fn().mockReturnThis(),
       addToggle: vi.fn().mockReturnThis(),
       addText: vi.fn().mockReturnThis(),
     })),
