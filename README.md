@@ -244,3 +244,9 @@ If you wish to install it outside of Obsidian's Community Plugins menu, follow t
 
 1. Download the latest release from https://github.com/technohiker/obsidian-multi-properties/.
 2. Extract the folder within the zip file in the current release, and add it to `<yourVault>/.obsidian/plugins/`.
+
+## Support
+If Multi Properties helped you out and you're feeling generous, a tip would be greatly appreciated!  I take donations at https://ko-fi.com/technohiker.
+
+<a href="https://ko-fi.com/technohiker"><img width="300" height="100" alt="ko-fi" src="https://github.com/user-attachments/assets/50b9622c-e2b1-441d-b918-cdf65aa6df9c" /></a>
+
