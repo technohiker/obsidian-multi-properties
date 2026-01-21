@@ -495,7 +495,7 @@ export default class MultiPropPlugin extends Plugin {
     return [{ name: "", value: "" as any, type: "text" as PropertyTypes }];
   }
 
-  async addPropsCallback(props: any, totalFiles: number) {
+  async addPropsCallback(props: Map<string, NewPropData>, totalFiles: number) {
     const statusBarItem = this.addStatusBarItem();
     let count = 0;
 
@@ -521,7 +521,7 @@ export default class MultiPropPlugin extends Plugin {
     };
   }
 
-  removePropsCallback(props: any, totalFiles: number) {
+  removePropsCallback(props: string[], totalFiles: number) {
     const statusBarItem = this.addStatusBarItem();
     let count = 0;
 

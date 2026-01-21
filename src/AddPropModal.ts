@@ -22,7 +22,7 @@ export class PropModal extends Modal {
     submission: (customProps: Map<string, any>) => Promise<void>,
     alterProp: MultiPropSettings["alterProp"],
     delimiter: string,
-    defaultProps: any,
+    defaultProps: { name: string; value: any; type: PropertyTypes }[],
     changeSetting: (value: MultiPropSettings["alterProp"]) => void,
     suggestedProps: Property[]
   ) {
