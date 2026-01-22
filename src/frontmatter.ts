@@ -1,6 +1,7 @@
 import { TFile } from "obsidian";
 import type { NewPropData } from "./main";
 import type { PropertyInfos } from "./types/custom";
+import type { MultiPropSettings } from "./SettingTab";
 
 type FileProcessor = (
   file: TFile,
@@ -13,11 +14,14 @@ export async function addProperties(
   fileProcessor: FileProcessor,
   file: TFile,
   props: Map<string, NewPropData>,
-  overwrite: boolean,
+  alterProp: MultiPropSettings["alterProp"],
   propCache: PropertyInfos
 ) {
   await fileProcessor(file, (frontmatter) => {
     for (const [key, value] of props) {
+      if (alterProp === "ignore" && frontmatter[key]) {
+        continue;
+      }
       //Tags should always be a List, even if there is just one tag.
       if (
         key === "tags" &&
@@ -28,7 +32,7 @@ export async function addProperties(
         continue;
       }
 
-      if (!frontmatter[key] || overwrite) {
+      if (!frontmatter[key] || alterProp === "overwrite") {
         frontmatter[key] = value.data;
         continue;
       }
@@ -45,7 +49,6 @@ export async function addProperties(
         frontmatter[key] = arr;
         continue;
       } else {
-        frontmatter[key] = value.data;
         continue;
       }
     }

@@ -15,7 +15,7 @@ import { addProperties, addPropToSet, removeProperties } from "./frontmatter";
 import type { Property, PropertyTypes } from "./types/custom";
 
 const defaultSettings: MultiPropSettings = {
-  overwrite: false,
+  alterProp: "ignore",
   recursive: true,
   delimiter: ",",
   defaultPropPath: "",
@@ -24,7 +24,7 @@ const defaultSettings: MultiPropSettings = {
 export interface NewPropData {
   type: string;
   data: string | string[] | null;
-  overwrite: boolean;
+  alterProp: MultiPropSettings["alterProp"];
   delimiter: string;
 }
 
@@ -38,8 +38,8 @@ export default class MultiPropPlugin extends Plugin {
     await this.saveData(this.settings);
   }
 
-  async changeOverwrite(bool: boolean) {
-    this.settings.overwrite = bool;
+  async changeAlterProp(value: MultiPropSettings["alterProp"]) {
+    this.settings.alterProp = value;
     await this.saveSettings();
   }
 
@@ -281,8 +281,13 @@ export default class MultiPropPlugin extends Plugin {
     );
   }
 
-  async getPropsFromFolder(folder: TFolder, names: Set<string>) {
-    for (let obj of folder.children) {
+  async getPropsFromFolder(
+    iterable: TFolder | TAbstractFile[],
+    names: Set<string>
+  ) {
+    let objs: TAbstractFile[] =
+      iterable instanceof TFolder ? iterable.children : iterable;
+    for (let obj of objs) {
       if (obj instanceof TFile && obj.extension === "md") {
         names = await addPropToSet(
           this.app.fileManager.processFrontMatter.bind(this.app.fileManager),
@@ -314,10 +319,13 @@ export default class MultiPropPlugin extends Plugin {
 
   /** Iterates through all files in a folder and runs callback on each file. */
   async searchFolders(
-    folder: TFolder,
+    iterable: TFolder | TAbstractFile[],
     callback: (file: TFile) => Promise<any>
   ) {
-    for (let obj of folder.children) {
+    let objs: TAbstractFile[] =
+      iterable instanceof TFolder ? iterable.children : iterable;
+
+    for (let obj of objs) {
       if (obj instanceof TFolder) {
         if (this.settings.recursive) {
           await this.searchFolders(obj, callback);
@@ -347,22 +355,13 @@ export default class MultiPropPlugin extends Plugin {
 
   async createPropModal(iterable: TFile[] | TFolder) {
     let iterateFunc;
-    if (iterable instanceof TFolder) {
-      const allFiles: TFile[] = [];
-      this.searchFolders(iterable, async (f) => allFiles.push(f));
-      iterateFunc = async (props: Map<string, any>) => {
-        await this.searchFolders(
-          iterable,
-          await this.addPropsCallback(props, allFiles.length)
-        );
-      };
-    } else {
-      iterateFunc = async (props: Map<string, any>) =>
-        this.searchFiles(
-          iterable,
-          await this.addPropsCallback(props, iterable.length)
-        );
-    }
+    const allFiles: TFile[] = [];
+    this.searchFolders(iterable, async (f) => allFiles.push(f));
+    iterateFunc = async (props: Map<string, any>) =>
+      this.searchFolders(
+        iterable,
+        await this.addPropsCallback(props, allFiles.length)
+      );
 
     let defaultProps: { name: string; value: any; type: PropertyTypes }[];
     defaultProps = this.loadDefaultProps();
@@ -371,10 +370,10 @@ export default class MultiPropPlugin extends Plugin {
     new PropModal(
       this.app,
       iterateFunc,
-      this.settings.overwrite,
+      this.settings.alterProp,
       this.settings.delimiter,
       defaultProps,
-      this.changeOverwrite.bind(this),
+      this.changeAlterProp.bind(this),
       allProps
     ).open();
   }
@@ -387,28 +386,20 @@ export default class MultiPropPlugin extends Plugin {
   }
 
   /** Create modal for removing properties.
-   * Will call a different function depending on whether files or a folder is used. */
+   * Will create a different callback function depending on whether files or a folder is used. */
   async createRemoveModal(iterable: TAbstractFile[] | TFolder) {
     let names;
     let iterateFunc;
 
-    if (iterable instanceof TFolder) {
-      names = await this.getPropsFromFolder(iterable, new Set());
-      const allFiles: TFile[] = [];
-      this.searchFolders(iterable, async (f) => allFiles.push(f));
-      iterateFunc = (props: string[]) =>
-        this.searchFolders(
-          iterable,
-          this.removePropsCallback(props, allFiles.length)
-        );
-    } else {
-      names = await this.getPropsFromFiles(iterable, new Set());
-      iterateFunc = (props: string[]) =>
-        this.searchFiles(
-          iterable,
-          this.removePropsCallback(props, iterable.length)
-        );
-    }
+    names = await this.getPropsFromFolder(iterable, new Set());
+    const allFiles: TFile[] = [];
+    this.searchFolders(iterable, async (f) => allFiles.push(f));
+    iterateFunc = (props: string[]) =>
+      this.searchFolders(
+        iterable,
+        this.removePropsCallback(props, allFiles.length)
+      );
+
     if (names.length === 0) {
       new Notice("No properties to remove", 4000);
       return;
@@ -469,7 +460,7 @@ export default class MultiPropPlugin extends Plugin {
     return [{ name: "", value: "" as any, type: "text" as PropertyTypes }];
   }
 
-  async addPropsCallback(props: any, totalFiles: number) {
+  async addPropsCallback(props: Map<string, NewPropData>, totalFiles: number) {
     const statusBarItem = this.addStatusBarItem();
     let count = 0;
 
@@ -478,7 +469,7 @@ export default class MultiPropPlugin extends Plugin {
         this.app.fileManager.processFrontMatter.bind(this.app.fileManager),
         file,
         props,
-        this.settings.overwrite,
+        this.settings.alterProp,
         this.app.metadataCache.getAllPropertyInfos()
       );
 
@@ -495,7 +486,7 @@ export default class MultiPropPlugin extends Plugin {
     };
   }
 
-  removePropsCallback(props: any, totalFiles: number) {
+  removePropsCallback(props: string[], totalFiles: number) {
     const statusBarItem = this.addStatusBarItem();
     let count = 0;
 

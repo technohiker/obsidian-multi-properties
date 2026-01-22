@@ -1,21 +1,31 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { NewPropData } from "./main";
+  import type { MultiPropSettings } from "./SettingTab";
 
   interface Props {
     newProps: Map<string, NewPropData>;
-    overwrite?: boolean;
+    alterProp: MultiPropSettings["alterProp"];
     submission: () => void;
     cancel: () => void;
   }
 
-  let { newProps, overwrite = true, submission, cancel }: Props = $props();
+  let { newProps, alterProp, submission, cancel }: Props = $props();
 
   let btnCancel: HTMLButtonElement | null = $state(null);
 
-  let msg = $derived(overwrite
-    ? "Any pre-existing text props will have their values overwritten."
-    : "Any pre-existing text props will have their values be appended to.");
+  let msg = $derived(createPropMsg(alterProp));
+
+  function createPropMsg(value: MultiPropSettings["alterProp"]) {
+    switch (value) {
+      case "ignore":
+        return "Any of these text props on existing notes will not be affected.";
+      case "append":
+        return "NOTE: Any pre-existing text props will have their values be appended to.";
+      case "overwrite":
+        return "WARNING: Any pre-existing text props will have their values overwritten.";
+    }
+  }
 
   function onSubmit(e: SubmitEvent) {
     e.preventDefault();

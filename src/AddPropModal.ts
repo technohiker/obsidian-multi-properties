@@ -4,33 +4,34 @@ import PropForm from "./AddPropForm.svelte";
 import type { NewPropData } from "./main";
 import { AddConfirmModal } from "./AddConfirmModal";
 import type { Property, PropertyTypes } from "./types/custom";
+import type { MultiPropSettings } from "./SettingTab";
 
 /** Loads a modal and handles form submissions. */
 export class PropModal extends Modal {
   submission: (customProps: Map<string, any>) => Promise<void>;
   props: Map<string, NewPropData>;
-  overwrite: boolean;
+  alterProp: MultiPropSettings["alterProp"];
   delimiter: string;
   defaultProps: { name: string; value: any; type: PropertyTypes }[];
-  changeBool: (bool: boolean) => void;
+  changeSetting: (value: MultiPropSettings["alterProp"]) => void;
   component: any;
   suggestedProps: Property[];
 
   constructor(
     app: App,
     submission: (customProps: Map<string, any>) => Promise<void>,
-    overwrite: boolean,
+    alterProp: MultiPropSettings["alterProp"],
     delimiter: string,
-    defaultProps: any,
-    changeBool: (bool: boolean) => void,
+    defaultProps: { name: string; value: any; type: PropertyTypes }[],
+    changeSetting: (value: MultiPropSettings["alterProp"]) => void,
     suggestedProps: Property[]
   ) {
     super(app);
     this.submission = submission;
-    this.overwrite = overwrite;
+    this.alterProp = alterProp;
     this.delimiter = delimiter;
     this.defaultProps = defaultProps;
-    this.changeBool = changeBool;
+    this.changeSetting = changeSetting;
     this.suggestedProps = suggestedProps;
   }
 
@@ -40,9 +41,9 @@ export class PropModal extends Modal {
     this.close();
   }
 
-  updateBool(bool: boolean) {
-    this.overwrite = bool;
-    this.changeBool(bool);
+  updateSetting(value: MultiPropSettings["alterProp"]) {
+    this.alterProp = value;
+    this.changeSetting(value);
   }
 
   //Pull up confirmation form when user submits base form.
@@ -51,7 +52,7 @@ export class PropModal extends Modal {
     new AddConfirmModal(
       this.app,
       this.props,
-      this.overwrite,
+      this.alterProp,
       this.onConfirm.bind(this)
     ).open();
   }
@@ -63,10 +64,10 @@ export class PropModal extends Modal {
       target: this.contentEl,
       props: {
         submission: this.onSubmit.bind(this),
-        overwrite: this.overwrite,
+        alterProp: this.alterProp,
         delimiter: this.delimiter,
         defaultProps: this.defaultProps,
-        changeBool: this.updateBool.bind(this),
+        changeSetting: this.updateSetting.bind(this),
         suggestedProps: this.suggestedProps,
       },
     });

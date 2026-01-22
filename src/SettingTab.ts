@@ -15,16 +15,20 @@ export class SettingTab extends PluginSettingTab {
     containerEl.empty();
 
     new Setting(containerEl)
-      .setName("Overwrite existing text")
+      .setName("How to alter existing properties.")
       .setDesc(
-        "When adding a property with a name that already exists, the text will overwrite the prop's existing value.  If left disabled, the new value will be appended to the old as a List."
+        "Determine what to do when a property with the same name already exists in a file.  Note that incompatible types cannot be appended.(adding a number to a date)"
       )
-      .addToggle((toggle) => {
-        toggle.setValue(this.plugin.settings.overwrite);
-        toggle.onChange(async (value) => {
-          this.plugin.settings.overwrite = value;
-          await this.plugin.saveSettings();
-        });
+      .addDropdown((dropdown) => {
+        dropdown
+          .addOption("overwrite", "Overwrite prop")
+          .addOption("append", "Append to prop")
+          .addOption("ignore", "Ignore prop")
+          .setValue(this.plugin.settings.alterProp)
+          .onChange(async (value: "overwrite" | "append" | "ignore") => {
+            this.plugin.settings.alterProp = value;
+            await this.plugin.saveSettings();
+          });
       });
 
     new Setting(containerEl)
@@ -47,7 +51,7 @@ export class SettingTab extends PluginSettingTab {
       )
       .addText((text) => {
         text.setValue(this.plugin.settings.delimiter);
-        text.onChange(async (value) => {
+        text.onChange(async (value: MultiPropSettings["alterProp"]) => {
           if (value.length > 1) {
             text.setValue(value[0]);
             new Notice("Delimiter must be a single character.");
@@ -74,7 +78,7 @@ export class SettingTab extends PluginSettingTab {
 }
 
 export interface MultiPropSettings {
-  overwrite: boolean;
+  alterProp: "overwrite" | "append" | "ignore";
   recursive: boolean;
   delimiter: string;
   defaultPropPath: string;

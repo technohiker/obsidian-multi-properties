@@ -1,6 +1,6 @@
 import { vi, expect, test, beforeEach, describe } from "vitest";
 
-import {App} from './obsidian.mock'
+import { App } from "./obsidian.mock";
 
 const mocks = vi.hoisted(async () => {
   return await import("./obsidian.mock");
@@ -11,7 +11,7 @@ vi.mock("obsidian", () => mocks);
 import MultiPropPlugin from "../src/main";
 
 describe("MultiPropPlugin Tests", () => {
-  let app: InstanceType<typeof App>
+  let app: InstanceType<typeof App>;
   let plugin: MultiPropPlugin;
 
   beforeEach(async () => {
@@ -21,6 +21,20 @@ describe("MultiPropPlugin Tests", () => {
     // @ts-ignore
     plugin = new MultiPropPlugin(app, {});
     await plugin.onload();
+  });
+
+  test('should register "Add props to current note" command', () => {
+    const command = app.commands.find(
+      (cmd: any) => cmd.id === "add-props-to-current-note"
+    );
+    expect(command).toBeDefined();
+  });
+
+  test('should register "Remove props from current note" command', () => {
+    const command = app.commands.find(
+      (cmd: any) => cmd.id === "remove-props-from-current-note"
+    );
+    expect(command).toBeDefined();
   });
 
   test('should register "Add props to tabs in active tab group" command', () => {
@@ -46,7 +60,7 @@ describe("MultiPropPlugin Tests", () => {
       ];
       const callback = vi.fn();
       // @ts-ignore
-      await plugin.searchFiles(files, callback);
+      await plugin.searchFolders(files, callback);
       expect(callback).toHaveBeenCalledTimes(2);
     });
 

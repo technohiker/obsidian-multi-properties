@@ -21,9 +21,9 @@
 
   let isMaxChecked = $derived(inputs.length > 0 && checkCount >= inputs.length);
 
-  function onCheckboxChange(event: any) {
-    let checked = event.target.checked;
-    checked ? checkCount++ : checkCount--;
+  function onCheckboxChange(event: Event) {
+    const target = event.currentTarget as HTMLInputElement
+    target.checked ? checkCount++ : checkCount--;
   }
 
   function toggleAll() {
