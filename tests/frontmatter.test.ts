@@ -5,12 +5,14 @@ import {
   addPropToSet,
 } from "../src/frontmatter";
 import type { PropertyInfos } from "src/types/custom";
-import { TFile } from "./obsidian.mock";
 
 const mocks = vi.hoisted(() => {
   class MockTFile {
     frontmatter: any;
-    constructor(public path: string, frontmatter = {}) {
+    constructor(
+      public path: string,
+      frontmatter = {},
+    ) {
       this.frontmatter = frontmatter;
     }
     get name() {
@@ -79,16 +81,38 @@ describe("Frontmatter Utilities", () => {
 
   describe("addProperties", () => {
     it("should add new properties to the frontmatter", async () => {
-      const props = new Map<string, any>([["newProp", { data: "new value" }]]);
+      const props = new Map<string, any>([
+        ["newText", { data: "new value" }],
+        ["newList", {data: ["item1", "item2"] }],
+        ["newNumber", { data: 5 }],
+        ["newBoolean", { data: true }],
+        ["newDate", { data: "01/01/2021" }],
+        ["newDateTime", { data: "2021-01-01T12:00:00Z" }],
+      ]);
       await addProperties(
         fileManager.processFrontMatter,
         file,
         props,
         "append",
-        propertyInfo
+        propertyInfo,
       );
-      expect(file.frontmatter.newProp).toBe("new value");
+      //Make sure old properties are unaffected.
+      expect(file.frontmatter.existingProp).toBe("initial value");
+      expect(file.frontmatter.tags).toStrictEqual(["tag1", "tag2"]);
+      expect(file.frontmatter.numeric).toBe(69);
+      expect(file.frontmatter.ISREAL).toBe(false);
+      expect(file.frontmatter.dateTest).toBe("05/05/2020");
+      expect(file.frontmatter.datetimeTest).toBe("2015-03-25T12:00:00Z");
+
+      //Check new properties.
+      expect(file.frontmatter.newText).toBe("new value");
+      expect(file.frontmatter.newList).toStrictEqual(["item1", "item2"]);
+      expect(file.frontmatter.newNumber).toBe(5);
+      expect(file.frontmatter.newBoolean).toBe(true);
+      expect(file.frontmatter.newDate).toBe("01/01/2021");
+      expect(file.frontmatter.newDateTime).toBe("2021-01-01T12:00:00Z");
     });
+
     it("should append to existing properties if specified", async () => {
       const props = new Map<string, any>([
         ["existingProp", { data: "new value" }],
@@ -98,7 +122,7 @@ describe("Frontmatter Utilities", () => {
         file,
         props,
         "append",
-        propertyInfo
+        propertyInfo,
       );
       expect(file.frontmatter.existingProp).toStrictEqual([
         "initial value",
@@ -114,7 +138,7 @@ describe("Frontmatter Utilities", () => {
         file,
         props,
         "overwrite",
-        propertyInfo
+        propertyInfo,
       );
       expect(file.frontmatter.existingProp).toBe("new value");
     });
@@ -128,7 +152,7 @@ describe("Frontmatter Utilities", () => {
         file,
         props,
         "ignore",
-        propertyInfo
+        propertyInfo,
       );
       expect(file.frontmatter.newProp).toBe("new value");
       expect(file.frontmatter.existingProp).toBe("initial value");

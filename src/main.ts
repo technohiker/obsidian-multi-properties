@@ -355,23 +355,6 @@ export default class MultiPropPlugin extends Plugin {
 
   async createPropModal(iterable: TFile[] | TFolder) {
     let iterateFunc;
-    // if (iterable instanceof TFolder) {
-    //   const allFiles: TFile[] = [];
-    //   this.searchFolders(iterable, async (f) => allFiles.push(f));
-    //   iterateFunc = async (props: Map<string, any>) => {
-    //     await this.searchFolders(
-    //       iterable,
-    //       await this.addPropsCallback(props, allFiles.length)
-    //     );
-    //   };
-    // } else {
-    //   iterateFunc = async (props: Map<string, any>) =>
-    //     this.searchFiles(
-    //       iterable,
-    //       await this.addPropsCallback(props, iterable.length)
-    //     );
-    // }
-
     const allFiles: TFile[] = [];
     this.searchFolders(iterable, async (f) => allFiles.push(f));
     iterateFunc = async (props: Map<string, any>) =>
@@ -407,24 +390,6 @@ export default class MultiPropPlugin extends Plugin {
   async createRemoveModal(iterable: TAbstractFile[] | TFolder) {
     let names;
     let iterateFunc;
-
-    // if (iterable instanceof TFolder) {
-    //   names = await this.getPropsFromFolder(iterable, new Set());
-    //   const allFiles: TFile[] = [];
-    //   this.searchFolders(iterable, async (f) => allFiles.push(f));
-    //   iterateFunc = (props: string[]) =>
-    //     this.searchFolders(
-    //       iterable,
-    //       this.removePropsCallback(props, allFiles.length)
-    //     );
-    // } else {
-    //   names = await this.getPropsFromFiles(iterable, new Set());
-    //   iterateFunc = (props: string[]) =>
-    //     this.searchFiles(
-    //       iterable,
-    //       this.removePropsCallback(props, iterable.length)
-    //     );
-    // }
 
     names = await this.getPropsFromFolder(iterable, new Set());
     const allFiles: TFile[] = [];
