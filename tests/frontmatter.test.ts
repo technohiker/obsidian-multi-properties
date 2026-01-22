@@ -27,7 +27,7 @@ vi.mock("obsidian", () => mocks);
 describe("Frontmatter Utilities", () => {
   let fileManager: any;
   let file: any;
-  let propertyInfo: PropertyInfos
+  let propertyInfo: PropertyInfos;
 
   beforeEach(() => {
     fileManager = {
@@ -41,40 +41,40 @@ describe("Frontmatter Utilities", () => {
       numeric: 69,
       ISREAL: false,
       dateTest: "05/05/2020",
-      datetimeTest: "2015-03-25T12:00:00Z"
+      datetimeTest: "2015-03-25T12:00:00Z",
     });
     propertyInfo = {
-      existingProp: {
+      existingprop: {
         name: "existingProp",
         occurrences: 1,
-        widget: "text"
+        widget: "text",
       },
       tags: {
         name: "tags",
         occurrences: 1,
-        widget: "tags"
+        widget: "tags",
       },
       numeric: {
         name: "numeric",
         occurrences: 1,
-        widget: "number"
+        widget: "number",
       },
-      ISREAL: {
+      isreal: {
         name: "ISREAL",
         occurrences: 1,
-        widget: "checkbox"
+        widget: "checkbox",
       },
-      dateTest: {
+      datetest: {
         name: "dateTest",
         occurrences: 1,
-        widget: "date"
+        widget: "date",
       },
-      datetimeTest: {
+      datetimetest: {
         name: "datetimeTest",
         occurrences: 1,
-        widget: "datetime"
-      }
-    }
+        widget: "datetime",
+      },
+    };
   });
 
   describe("addProperties", () => {
@@ -90,7 +90,9 @@ describe("Frontmatter Utilities", () => {
       expect(file.frontmatter.newProp).toBe("new value");
     });
     it("should append to existing properties if specified", async () => {
-      const props = new Map<string, any>([["existingProp", { data: "new value" }]]);
+      const props = new Map<string, any>([
+        ["existingProp", { data: "new value" }],
+      ]);
       await addProperties(
         fileManager.processFrontMatter,
         file,
@@ -98,10 +100,15 @@ describe("Frontmatter Utilities", () => {
         "append",
         propertyInfo
       );
-      expect(file.frontmatter.existingProp).toStrictEqual(["initial value","new value"]);
+      expect(file.frontmatter.existingProp).toStrictEqual([
+        "initial value",
+        "new value",
+      ]);
     });
     it("should overwrite new properties if specified", async () => {
-        const props = new Map<string, any>([["existingProp", { data: "new value" }]]);
+      const props = new Map<string, any>([
+        ["existingProp", { data: "new value" }],
+      ]);
       await addProperties(
         fileManager.processFrontMatter,
         file,
@@ -110,9 +117,12 @@ describe("Frontmatter Utilities", () => {
         propertyInfo
       );
       expect(file.frontmatter.existingProp).toBe("new value");
-    })
+    });
     it("should ignore existing properties if specified", async () => {
-        const props = new Map<string, any>([["newProp", { data: "new value" }],["initialProp", {data: "newValue"}]]);
+      const props = new Map<string, any>([
+        ["newProp", { data: "new value" }],
+        ["initialProp", { data: "newValue" }],
+      ]);
       await addProperties(
         fileManager.processFrontMatter,
         file,
@@ -122,8 +132,7 @@ describe("Frontmatter Utilities", () => {
       );
       expect(file.frontmatter.newProp).toBe("new value");
       expect(file.frontmatter.existingProp).toBe("initial value");
-      
-    })
+    });
   });
 
   describe("removeProperties", () => {
@@ -135,9 +144,7 @@ describe("Frontmatter Utilities", () => {
       expect(file.frontmatter.tags).toBeDefined();
     });
     it("should not do anything if there is no value", async () => {
-      await removeProperties(fileManager.processFrontMatter, file, [
-        "",
-      ]);
+      await removeProperties(fileManager.processFrontMatter, file, [""]);
       expect(file.frontmatter.existingProp).toBeDefined();
       expect(file.frontmatter.tags).toBeDefined();
     });
