@@ -23,6 +23,20 @@ describe("MultiPropPlugin Tests", () => {
     await plugin.onload();
   });
 
+  test('should register "Add props to current note" command', () => {
+    const command = app.commands.find(
+      (cmd: any) => cmd.id === "add-props-to-current-note"
+    );
+    expect(command).toBeDefined();
+  });
+
+  test('should register "Remove props from current note" command', () => {
+    const command = app.commands.find(
+      (cmd: any) => cmd.id === "remove-props-from-current-note"
+    );
+    expect(command).toBeDefined();
+  });
+
   test('should register "Add props to tabs in active tab group" command', () => {
     const command = app.commands.find(
       (cmd: any) => cmd.id === "add-props-to-tab-group"
