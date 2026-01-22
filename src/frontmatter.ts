@@ -19,6 +19,8 @@ export async function addProperties(
 ) {
   await fileProcessor(file, (frontmatter) => {
     for (const [key, value] of props) {
+      console.log({frontmatter})
+      console.log({propCache})
       if (alterProp === "ignore" && frontmatter[key]) {
         continue;
       }
@@ -39,7 +41,7 @@ export async function addProperties(
 
       //Compare types to see if they can be appended.
       let type1 = value.type;
-      let type2 = propCache[key.toLowerCase()].widget;
+      let type2 = propCache[key].widget;
 
       if (canBeAppended(type1, type2)) {
         if (frontmatter[key] === value.data) continue; //Leave identical values alone.
