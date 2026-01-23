@@ -2,6 +2,13 @@
 
 This plugin allows you to add, edit, or remove frontmatter properties from multiple notes at once, streamlining your workflow when managing metadata across your vault.
 
+## Table of Contents
+- [Demo](#demo)
+- [Features](#features)
+- [Installation](#installation)
+- [Development Guide](#development-guide)
+- [Support](#support)
+
 ## Demo
 
 ![Multi Properties Demo 1 0 0](https://github.com/fez-github/obsidian-multi-properties/assets/75589254/8483e98d-cc4f-4770-a0bf-7a5da2cab93d)
@@ -23,12 +30,21 @@ You can act on multiple notes at once in several ways:
 
 ### Settings
 
--   **Overwrite Existing Properties:** Toggle whether to replace or append to existing property values.
+-   **Alter Existing Properties:** Choose whether to overwrite existing properties, append to them(text/list objects only), or ignore them entirely.
 -   **Recursive Folder Operations:** Choose whether actions on folders should apply to notes in sub-folders.
--   **List Delimiter:** Set a custom delimiter for list-type properties.
+-   **List Delimiter:** Set a custom delimiter for list-type properties.(`,` by default)
 -   **Default Properties File:** Specify a note to load a default set of properties from when adding new ones.
 
 ---
+
+## Installation
+
+This project is available as an Obsidian community plugin that can be installed directly in the app. Go to Settings->Community Plugins->Browser, and search the name `Multi Properties`.
+
+If you wish to install it outside of Obsidian's Community Plugins menu, follow these steps.
+
+1. Download the latest release from https://github.com/technohiker/obsidian-multi-properties/.
+2. Extract the folder within the zip file in the current release, and add it to `<yourVault>/.obsidian/plugins/`.
 
 ## Development Guide
 
@@ -59,7 +75,7 @@ Follow these instructions to set up a local development environment. This projec
 Clone the repository and install the necessary Node.js dependencies.
 
 ```bash
-git clone https://github.com/notuntoward/obsidian-multi-properties.git
+git clone https://github.com/technohiker/obsidian-multi-properties.git
 cd obsidian-multi-properties
 npm install
 ```
@@ -235,15 +251,6 @@ Here is a comprehensive list of all scripts available in `package.json`:
     *   Builds the plugin and installs it into a personal vault.
 *   `npm run open-personal-vault`
     *   Opens the personal Obsidian vault.
-
-## Installation
-
-This project is available as an Obsidian community plugin that can be installed directly in the app. Go to Settings->Community Plugins->Browser, and search the name `Multi Properties`.
-
-If you wish to install it outside of Obsidian's Community Plugins menu, follow these steps.
-
-1. Download the latest release from https://github.com/technohiker/obsidian-multi-properties/.
-2. Extract the folder within the zip file in the current release, and add it to `<yourVault>/.obsidian/plugins/`.
 
 ## Support
 If Multi Properties helped you out and you're feeling generous, a tip would be greatly appreciated!  I take donations at https://ko-fi.com/technohiker.
