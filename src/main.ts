@@ -159,7 +159,9 @@ export default class MultiPropPlugin extends Plugin {
       id: "add-props-to-tab-group",
       name: "Add props to tabs in active tab group",
       callback: async () => {
-        const files = this._getFilesFromTabGroup(this.app.workspace.activeLeaf);
+        const files = this._getFilesFromTabGroup(
+          this.app.workspace.getMostRecentLeaf()
+        );
         if (!files || !files.length) {
           new Notice(
             "No open tabs in the active tab group to add properties to.",
@@ -174,7 +176,7 @@ export default class MultiPropPlugin extends Plugin {
     this.registerEvent(
       this.app.workspace.on("tab-group-menu", (menu) => {
         const obj = this._getFilesFromTabGroup(
-          this.app.workspace.getLeaf(false)
+          this.app.workspace.getMostRecentLeaf()
         );
         menu.addItem((item) => {
           item
@@ -190,7 +192,7 @@ export default class MultiPropPlugin extends Plugin {
       name: "Remove props from tabs in active tab group",
       callback: async () => {
         const files = this._getFilesFromTabGroup(
-          this.app.workspace.getLeaf(false)
+          this.app.workspace.getMostRecentLeaf()
         );
         if (!files || !files.length) {
           new Notice(
@@ -206,7 +208,7 @@ export default class MultiPropPlugin extends Plugin {
     this.registerEvent(
       this.app.workspace.on("tab-group-menu", (menu) => {
         const obj = this._getFilesFromTabGroup(
-          this.app.workspace.getLeaf(false)
+          this.app.workspace.getMostRecentLeaf()
         );
         menu.addItem((item) => {
           item
