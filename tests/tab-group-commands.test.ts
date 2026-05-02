@@ -68,5 +68,6 @@ describe("Tab Group-specific Commands", () => {
     expect(createPropModalSpy).toHaveBeenCalledTimes(1);
     // @ts-ignore
     expect(createPropModalSpy).toHaveBeenCalledWith([file1, file2]);
+    expect(createPropModalSpy).not.toHaveBeenCalledWith([file3]);
   });
 });

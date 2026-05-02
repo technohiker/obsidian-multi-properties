@@ -49,6 +49,12 @@ export const createObsidianMocks = () => {
     addLeaf(leaf: MockWorkspaceLeaf) {
       this.leaves.push(leaf);
     }
+    getMostRecentLeaf() {
+      if (this.leaves.length === 0) {
+        return null;
+      }
+      return this.leaves[this.leaves.length - 1];
+    }
   }
 
   class MockApp {
