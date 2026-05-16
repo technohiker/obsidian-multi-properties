@@ -2,15 +2,17 @@
   import { onMount } from "svelte";
   import type { NewPropData } from "./main";
   import type { MultiPropSettings } from "./SettingTab";
+  import type en from "./i18n/en";
 
   interface Props {
     newProps: Map<string, NewPropData>;
     alterProp: MultiPropSettings["alterProp"];
     submission: () => void;
     cancel: () => void;
+    t: typeof en;
   }
 
-  let { newProps, alterProp, submission, cancel }: Props = $props();
+  let { newProps, alterProp, submission, cancel, t }: Props = $props();
 
   let btnCancel: HTMLButtonElement | null = $state(null);
 
@@ -19,11 +21,11 @@
   function createPropMsg(value: MultiPropSettings["alterProp"]) {
     switch (value) {
       case "ignore":
-        return "Any of these text props on existing notes will not be affected.";
+        return t.ignoreMsg;
       case "append":
-        return "NOTE: Any pre-existing text props will have their values be appended to.";
+        return t.appendMsg;
       case "overwrite":
-        return "WARNING: Any pre-existing text props will have their values overwritten.";
+        return t.overwriteMsg;
     }
   }
 
@@ -41,7 +43,7 @@
 <div>
   <form onsubmit={onSubmit}>
     <p class="msg">{msg}</p>
-    <p>The following props will be added:</p>
+    <p>{t.followingPropsWillBeAdded}</p>
     <ul>
       {#each [...newProps] as [propName, prop]}
         <li>
@@ -49,9 +51,9 @@
         </li>
       {/each}
     </ul>
-    <p>Are you sure you wish to proceed?</p>
-    <button class="mod-warning" type="submit">Confirm</button>
-    <button type="button" onclick={cancel} bind:this={btnCancel}>Cancel</button>
+    <p>{t.areYouSure}</p>
+    <button class="mod-warning" type="submit">{t.confirmButton}</button>
+    <button type="button" onclick={cancel} bind:this={btnCancel}>{t.cancelButton}</button>
   </form>
 </div>
 

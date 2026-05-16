@@ -1,13 +1,16 @@
 import { PluginSettingTab, App, Setting, Notice } from "obsidian";
 
 import MultiPropPlugin from "./main";
+import type en from "./i18n/en";
 
 export class SettingTab extends PluginSettingTab {
   plugin: MultiPropPlugin;
+  t: typeof en;
 
   constructor(app: App, plugin: MultiPropPlugin) {
     super(app, plugin);
     this.plugin = plugin;
+    this.t = plugin.t;
   }
 
   display() {
@@ -15,15 +18,13 @@ export class SettingTab extends PluginSettingTab {
     containerEl.empty();
 
     new Setting(containerEl)
-      .setName("How to alter existing properties.")
-      .setDesc(
-        "Determine what to do when a property with the same name already exists in a file.  Note that incompatible types cannot be appended.(adding a number to a date)"
-      )
+      .setName(this.t.alterPropName)
+      .setDesc(this.t.alterPropDesc)
       .addDropdown((dropdown) => {
         dropdown
-          .addOption("overwrite", "Overwrite prop")
-          .addOption("append", "Append to prop")
-          .addOption("ignore", "Ignore prop")
+          .addOption("overwrite", this.t.overwriteProp)
+          .addOption("append", this.t.appendToProp)
+          .addOption("ignore", this.t.ignoreProp)
           .setValue(this.plugin.settings.alterProp)
           .onChange(async (value: "overwrite" | "append" | "ignore") => {
             this.plugin.settings.alterProp = value;
@@ -32,10 +33,8 @@ export class SettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("Recursive Iteration")
-      .setDesc(
-        "When toggled on, while looping through all files in a folder, you will also loop through any sub-folders."
-      )
+      .setName(this.t.recursiveName)
+      .setDesc(this.t.recursiveDesc)
       .addToggle((toggle) => {
         toggle.setValue(this.plugin.settings.recursive);
         toggle.onChange(async (value) => {
@@ -45,16 +44,14 @@ export class SettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("List Delimiter")
-      .setDesc(
-        "Set delimiter to use when creating a list.  Commas(,) are used by default."
-      )
+      .setName(this.t.listDelimiterName)
+      .setDesc(this.t.listDelimiterDesc)
       .addText((text) => {
         text.setValue(this.plugin.settings.delimiter);
         text.onChange(async (value: MultiPropSettings["alterProp"]) => {
           if (value.length > 1) {
             text.setValue(value[0]);
-            new Notice("Delimiter must be a single character.");
+            new Notice(this.t.delimiterMustBeSingleChar);
             return;
           }
           this.plugin.settings.delimiter = value;
@@ -63,10 +60,8 @@ export class SettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("Default Props File")
-      .setDesc(
-        "Select a file with properties that you want to load into the Multi Properties form by default.  Type in the full path of the desired file.(ex. Templates/PropFile 1)"
-      )
+      .setName(this.t.defaultPropsFileName)
+      .setDesc(this.t.defaultPropsFileDesc)
       .addText((text) => {
         text.setValue(this.plugin.settings.defaultPropPath);
         text.onChange(async (value) => {

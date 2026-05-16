@@ -1,10 +1,13 @@
 <script lang="ts">
+  import type en from "./i18n/en";
+
   interface Props {
     names?: string[];
     submission: (props: string[]) => void;
+    t: typeof en;
   }
 
-  let { names = [], submission }: Props = $props();
+  let { names = [], submission, t }: Props = $props();
 
   let errorEl: HTMLDivElement | null = $state(null);
   let alertText = $state(".");
@@ -36,7 +39,7 @@
     e.preventDefault();
 
     if (checkCount === 0) {
-      alertText = "Please select at least one property to remove.";
+      alertText = t.selectAtLeastOneError;
       errorEl?.classList.remove("hidden");
       return;
     }
@@ -49,10 +52,10 @@
 
 <div>
   <div id="alert-container" class="alert-container hidden" bind:this={errorEl}>
-    <div>ERROR</div>
+    <div>{t.errorLabel}</div>
     <div id="alert-text">{alertText}</div>
   </div>
-  <p>Select the properties you wish to remove from the file selection.</p>
+  <p>{t.selectPropertiesToRemove}</p>
   <form onsubmit={onSubmit}>
     <div class="name-container">
       {#each inputs as input (input.name)}
@@ -67,9 +70,9 @@
       {/each}
     </div>
     <div class="button-container">
-      <button type="submit">Confirm</button>
+      <button type="submit">{t.confirmButton}</button>
       <button type="button" onclick={toggleAll}
-        >{isMaxChecked ? "Uncheck All" : "Check All"}</button
+        >{isMaxChecked ? t.uncheckAllButton : t.checkAllButton}</button
       >
     </div>
   </form>

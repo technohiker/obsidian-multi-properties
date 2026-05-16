@@ -5,6 +5,8 @@
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
   import type { Property, PropertyTypes } from "./types/custom";
   import type { MultiPropSettings } from "./SettingTab";
+  import type en from "./i18n/en";
+  import { format } from "./i18n";
 
   interface Props {
     submission: (props: Map<string, NewPropData>) => void;
@@ -13,6 +15,7 @@
     defaultProps: { name: string; value: any; type: PropertyTypes }[];
     changeSetting: (setting: MultiPropSettings["alterProp"]) => void;
     suggestedProps: Property[];
+    t: typeof en;
   }
 
   let {
@@ -22,6 +25,7 @@
     defaultProps,
     changeSetting,
     suggestedProps,
+    t,
   }: Props = $props();
 
   let countInputs = 0; //Could replace with UUID.
@@ -105,7 +109,7 @@
     e.preventDefault();
     //Make sure there are no duplicate names.
     if (checkDuplicateNames()) {
-      runError("Duplicate property names are not allowed.");
+      runError(t.duplicateNamesError);
       return;
     }
 
@@ -182,11 +186,11 @@
 
 <div id="multi-properties-modal" class="modal-content">
   <div id="alert-container" class="alert-container hidden" bind:this={errorEl}>
-    <div>ERROR</div>
+    <div>{t.errorLabel}</div>
     <div id="alert-text">{alertText}</div>
   </div>
 
-  <p>Select from existing properties or create new ones:</p>
+  <p>{t.selectFromExistingOrCreate}</p>
   <div class="suggested-props">
     {#each suggestedProps as prop}
       <button
@@ -200,25 +204,23 @@
   </div>
 
   <p>
-    Type in a property name, then value. Use the dropbox to choose what type of
-    data you wish to store.
+    {t.typePropertyNameAndValue}
   </p>
   <p>
-    If you want to make a List property, use the Text data type and separate
-    each value with a "{delimiter}".
+    {format(t.makeListPropertyNote, { delimiter })}
   </p>
-  <p>If you want to add Tags, use the name "tags".</p>
+  <p>{t.addTagsNote}</p>
   <form onsubmit={onSubmit} bind:this={formEl}>
     <label>
-      {"How to alter props that already exist on notes."}
+      {t.howToAlterPropsLabel}
       <select
         id="alter-prop-select"
         bind:value={alterProp}
         onchange={() => onDropdownChange(alterProp)}
       >
-        <option value="ignore">Ignore the prop entirely.</option>
-        <option value="overwrite">Overwrite new value over prop.</option>
-        <option value="append">Append new value to prop.</option>
+        <option value="ignore">{t.ignoreOption}</option>
+        <option value="overwrite">{t.overwriteOption}</option>
+        <option value="append">{t.appendOption}</option>
       </select>
     </label>
     <div class="modal-inputs-container">
@@ -237,11 +239,11 @@
       <button
         type="button"
         onclick={() => addInputs([{ type: "text", name: "", value: "" }])}
-        class="a-btn">Add</button
+        class="a-btn">{t.addButton}</button
       >
     </div>
     <div class="modal-button-container">
-      <button type="submit" class="btn-submit">Submit</button>
+      <button type="submit" class="btn-submit">{t.submitButton}</button>
     </div>
   </form>
 </div>

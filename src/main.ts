@@ -13,6 +13,8 @@ import { type MultiPropSettings, SettingTab } from "./SettingTab";
 import { RemoveModal } from "./RemoveModal";
 import { addProperties, addPropToSet, removeProperties } from "./frontmatter";
 import type { Property, PropertyTypes } from "./types/custom";
+import { getTranslation, detectLocale, getStoredLocale, format } from "./i18n";
+import type en from "./i18n/en";
 
 const defaultSettings: MultiPropSettings = {
   alterProp: "ignore",
@@ -30,6 +32,9 @@ export interface NewPropData {
 
 export default class MultiPropPlugin extends Plugin {
   settings: MultiPropSettings;
+  t: typeof en;
+  currentLocale: string;
+
   async loadSettings() {
     this.settings = Object.assign({}, defaultSettings, await this.loadData());
   }
@@ -41,6 +46,12 @@ export default class MultiPropPlugin extends Plugin {
   async changeAlterProp(value: MultiPropSettings["alterProp"]) {
     this.settings.alterProp = value;
     await this.saveSettings();
+  }
+
+  initI18n() {
+    const storedLocale = getStoredLocale();
+    this.currentLocale = storedLocale || detectLocale();
+    this.t = getTranslation(this.currentLocale);
   }
 
   private _getFilesFromTabGroup(leaf: WorkspaceLeaf | null): TFile[] {
@@ -81,16 +92,17 @@ export default class MultiPropPlugin extends Plugin {
 
   async onload() {
     await this.loadSettings();
+    this.initI18n();
     this.addSettingTab(new SettingTab(this.app, this));
 
     // All commands for single notes & folders.
     this.addCommand({
       id: "add-props-to-current-note",
-      name: "Add props to current note",
+      name: this.t.addPropsToCurrentNote,
       callback: async () => {
         const file = this.app.workspace.getActiveFile();
         if (!file) {
-          new Notice("No active file to add properties to.", 4000);
+          new Notice(this.t.noActiveFileToAdd, 4000);
           return;
         }
         await this.createPropModal([file]);
@@ -104,10 +116,10 @@ export default class MultiPropPlugin extends Plugin {
 
         if (node instanceof TFile) {
           obj = [node];
-          title = "Add props to file.";
+          title = this.t.addPropsToFile;
         } else {
           obj = node as TFolder;
-          title = "Add props to folder.";
+          title = this.t.addPropsToFolder;
         }
 
         menu.addItem((item) => {
@@ -121,11 +133,11 @@ export default class MultiPropPlugin extends Plugin {
 
     this.addCommand({
       id: "remove-props-from-current-note",
-      name: "Remove props from current note",
+      name: this.t.removePropsFromCurrentNote,
       callback: async () => {
         const file = this.app.workspace.getActiveFile();
         if (!file) {
-          new Notice("No active file to remove properties from.", 4000);
+          new Notice(this.t.noActiveFileToRemove, 4000);
           return;
         }
         await this.createRemoveModal([file]);
@@ -139,10 +151,10 @@ export default class MultiPropPlugin extends Plugin {
 
         if (node instanceof TFile) {
           obj = [node];
-          title = "Remove props from file.";
+          title = this.t.removePropsFromFile;
         } else {
           obj = node as TFolder;
-          title = "Remove props from folder.";
+          title = this.t.removePropsFromFolder;
         }
 
         menu.addItem((item) => {
@@ -157,14 +169,14 @@ export default class MultiPropPlugin extends Plugin {
     //All commands for affecting props in all tabs.
     this.addCommand({
       id: "add-props-to-tab-group",
-      name: "Add props to tabs in active tab group",
+      name: this.t.addPropsToTabGroup,
       callback: async () => {
         const files = this._getFilesFromTabGroup(
           this.app.workspace.getMostRecentLeaf()
         );
         if (!files || !files.length) {
           new Notice(
-            "No open tabs in the active tab group to add properties to.",
+            this.t.noOpenTabsToAdd,
             4000
           );
           return;
@@ -181,7 +193,7 @@ export default class MultiPropPlugin extends Plugin {
         menu.addItem((item) => {
           item
             .setIcon("archive")
-            .setTitle("Add props from all tabs")
+            .setTitle(this.t.addPropsFromAllTabs)
             .onClick(() => this.createPropModal(obj));
         });
       })
@@ -189,14 +201,14 @@ export default class MultiPropPlugin extends Plugin {
 
     this.addCommand({
       id: "remove-props-from-tab-group",
-      name: "Remove props from tabs in active tab group",
+      name: this.t.removePropsFromTabGroup,
       callback: async () => {
         const files = this._getFilesFromTabGroup(
           this.app.workspace.getMostRecentLeaf()
         );
         if (!files || !files.length) {
           new Notice(
-            "No open tabs in the active tab group to remove properties from.",
+            this.t.noOpenTabsToRemove,
             4000
           );
           return;
@@ -213,7 +225,7 @@ export default class MultiPropPlugin extends Plugin {
         menu.addItem((item) => {
           item
             .setIcon("archive")
-            .setTitle("Remove props from all tabs")
+            .setTitle(this.t.removePropsFromAllTabs)
             .onClick(() => this.createRemoveModal(obj));
         });
       })
@@ -228,7 +240,7 @@ export default class MultiPropPlugin extends Plugin {
         menu.addItem((item) => {
           item
             .setIcon("archive")
-            .setTitle("Add props to selected files")
+            .setTitle(this.t.addPropsToSelectedFiles)
             .onClick(() => this.createPropModal(obj));
         });
       })
@@ -240,7 +252,7 @@ export default class MultiPropPlugin extends Plugin {
         menu.addItem((item) => {
           item
             .setIcon("archive")
-            .setTitle("Remove props from selected files")
+            .setTitle(this.t.removePropsFromSelectedFiles)
             .onClick(async () => this.createRemoveModal(obj));
         });
       })
@@ -251,11 +263,11 @@ export default class MultiPropPlugin extends Plugin {
         menu.addItem((item) => {
           item
             .setIcon("archive")
-            .setTitle("Add props to search results")
+            .setTitle(this.t.addPropsToSearchResults)
             .onClick(() => {
               let files = this.getFilesFromSearch(leaf);
               if (!files.length) {
-                new Notice("No files to add properties to.", 4000);
+                new Notice(this.t.noFilesToAdd, 4000);
                 return;
               }
               this.createPropModal(files);
@@ -269,11 +281,11 @@ export default class MultiPropPlugin extends Plugin {
         menu.addItem((item) => {
           item
             .setIcon("archive")
-            .setTitle("Remove props from search results")
+            .setTitle(this.t.removePropsFromSearchResults)
             .onClick(async () => {
               let files = this.getFilesFromSearch(leaf);
               if (!files.length) {
-                new Notice("No files to remove properties from.", 4000);
+                new Notice(this.t.noFilesToRemove, 4000);
                 return;
               }
               this.createRemoveModal(files);
@@ -376,7 +388,8 @@ export default class MultiPropPlugin extends Plugin {
       this.settings.delimiter,
       defaultProps,
       this.changeAlterProp.bind(this),
-      allProps
+      allProps,
+      this.t
     ).open();
   }
 
@@ -403,7 +416,7 @@ export default class MultiPropPlugin extends Plugin {
       );
 
     if (names.length === 0) {
-      new Notice("No properties to remove", 4000);
+      new Notice(this.t.noPropertiesToRemove, 4000);
       return;
     }
 
@@ -411,7 +424,7 @@ export default class MultiPropPlugin extends Plugin {
       a.toLowerCase() > b.toLowerCase() ? 1 : -1
     );
 
-    new RemoveModal(this.app, sortedNames, iterateFunc).open();
+    new RemoveModal(this.app, sortedNames, iterateFunc, this.t).open();
   }
 
   /** Read through a given file and get name/value of props.
@@ -422,7 +435,7 @@ export default class MultiPropPlugin extends Plugin {
     const frontmatter = metadata?.frontmatter;
 
     if (!frontmatter) {
-      new Notice("Not a valid Props template.", 4000);
+      new Notice(this.t.notValidPropsTemplate, 4000);
       return;
     }
 
@@ -454,7 +467,7 @@ export default class MultiPropPlugin extends Plugin {
         return tmp;
       } catch (e) {
         new Notice(
-          `${e}.  Check if you entered a valid path in the Default Props File setting.`,
+          `${e}.  ${this.t.checkDefaultPropsPath}`,
           10000
         );
       }
@@ -477,7 +490,7 @@ export default class MultiPropPlugin extends Plugin {
 
       count++;
       statusBarItem.setText(
-        "Added props to " + count + "/" + totalFiles + " files"
+        format(this.t.addedPropsTo, { count, total: totalFiles })
       );
 
       if (count === totalFiles) {
@@ -501,7 +514,7 @@ export default class MultiPropPlugin extends Plugin {
 
       count++;
       statusBarItem.setText(
-        "Removed props from " + count + "/" + totalFiles + " files"
+        format(this.t.removedPropsFrom, { count, total: totalFiles })
       );
 
       if (count === totalFiles) {

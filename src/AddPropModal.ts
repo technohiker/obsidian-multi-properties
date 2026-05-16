@@ -5,6 +5,7 @@ import type { NewPropData } from "./main";
 import { AddConfirmModal } from "./AddConfirmModal";
 import type { Property, PropertyTypes } from "./types/custom";
 import type { MultiPropSettings } from "./SettingTab";
+import type en from "./i18n/en";
 
 /** Loads a modal and handles form submissions. */
 export class PropModal extends Modal {
@@ -16,6 +17,7 @@ export class PropModal extends Modal {
   changeSetting: (value: MultiPropSettings["alterProp"]) => void;
   component: any;
   suggestedProps: Property[];
+  t: typeof en;
 
   constructor(
     app: App,
@@ -24,7 +26,8 @@ export class PropModal extends Modal {
     delimiter: string,
     defaultProps: { name: string; value: any; type: PropertyTypes }[],
     changeSetting: (value: MultiPropSettings["alterProp"]) => void,
-    suggestedProps: Property[]
+    suggestedProps: Property[],
+    t: typeof en
   ) {
     super(app);
     this.submission = submission;
@@ -33,6 +36,7 @@ export class PropModal extends Modal {
     this.defaultProps = defaultProps;
     this.changeSetting = changeSetting;
     this.suggestedProps = suggestedProps;
+    this.t = t;
   }
 
   //Run form submission if user clicks confirm.
@@ -53,12 +57,13 @@ export class PropModal extends Modal {
       this.app,
       this.props,
       this.alterProp,
-      this.onConfirm.bind(this)
+      this.onConfirm.bind(this),
+      this.t
     ).open();
   }
 
   onOpen(): void {
-    this.titleEl.createEl("h2", { text: "Add Properties" });
+    this.titleEl.createEl("h2", { text: this.t.addPropertiesTitle });
 
     this.component = mount(PropForm, {
       target: this.contentEl,
@@ -69,6 +74,7 @@ export class PropModal extends Modal {
         defaultProps: this.defaultProps,
         changeSetting: this.updateSetting.bind(this),
         suggestedProps: this.suggestedProps,
+        t: this.t,
       },
     });
   }
