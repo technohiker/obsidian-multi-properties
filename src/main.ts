@@ -104,10 +104,10 @@ export default class MultiPropPlugin extends Plugin {
 
         if (node instanceof TFile) {
           obj = [node];
-          title = "Add props to file.";
+          title = "Add props to file";
         } else {
           obj = node as TFolder;
-          title = "Add props to folder.";
+          title = "Add props to folder";
         }
 
         menu.addItem((item) => {
