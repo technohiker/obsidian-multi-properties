@@ -1,6 +1,6 @@
 {
   "name": "obsidian-multi-properties",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs dev watch",
