@@ -102,6 +102,10 @@ export default class MultiPropPlugin extends Plugin {
         let title = "";
         let obj: TFolder | TFile[];
 
+        if (node instanceof TFile && node.extension !== "md") {
+          return;
+        }
+
         if (node instanceof TFile) {
           obj = [node];
           title = "Add props to file.";
@@ -136,6 +140,10 @@ export default class MultiPropPlugin extends Plugin {
       this.app.workspace.on("file-menu", (menu, node) => {
         let title = "";
         let obj: TFolder | TFile[];
+
+        if (node instanceof TFile && node.extension !== "md") {
+          return;
+        }
 
         if (node instanceof TFile) {
           obj = [node];
