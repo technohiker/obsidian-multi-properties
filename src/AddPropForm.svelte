@@ -25,6 +25,9 @@
   }: Props = $props();
 
   let countInputs = 0; //Could replace with UUID.
+  let datalistEl: HTMLDataListElement = $state(
+    document.createElement("datalist")
+  );
   let formEl: HTMLFormElement = $state(document.createElement("form"));
   let errorEl: HTMLDivElement = $state(document.createElement("div"));
   let alertText = $state(".");
@@ -185,6 +188,11 @@
     <div>ERROR</div>
     <div id="alert-text">{alertText}</div>
   </div>
+  <datalist bind:this={datalistEl} id="suggested-props">
+    {#each suggestedProps as prop}
+      <option value={prop.name}></option>
+    {/each}
+  </datalist>
 
   <p>Select from existing properties or create new ones:</p>
   <div class="suggested-props">
@@ -226,6 +234,7 @@
         <AddPropInput
           id={input.id}
           totalInputs={inputEls.length}
+          {datalistEl}
           bind:typeVal={input.typeDef}
           bind:nameVal={input.nameDef}
           bind:valueVal={input.valueDef}

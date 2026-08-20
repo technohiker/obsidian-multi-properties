@@ -1,8 +1,10 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
+  import type { Property } from "./types/custom";
 
   interface Props {
     totalInputs: number;
+    datalistEl: HTMLDataListElement;
     removeInput: (id: number) => void;
     id: number;
     typeVal?: string;
@@ -12,6 +14,7 @@
 
   let {
     totalInputs = $bindable(0),
+    datalistEl,
     removeInput,
     id,
     typeVal = $bindable("text"),
@@ -84,6 +87,7 @@
     id="name-input"
     bind:this={inputEl}
     class="name-input flex-obj"
+    list="suggested-props"
     type="text"
     name="name[]"
     placeholder="name"
