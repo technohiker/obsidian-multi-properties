@@ -149,8 +149,10 @@
         input.nextElementSibling,
         input.nextElementSibling.type
       );
-      //Check for tags.  Clean them of any invalid characters, then split by comma.
+      //Clean value, then check for tags.  Clean them of any invalid characters, then split by comma.
       if (typeof value === "string") {
+        value = value.trim();
+
         if (name === "tags") {
           value = cleanTags(value);
         }
