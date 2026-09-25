@@ -1,12 +1,11 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
-  import type { Property } from "./types/custom";
 
   interface Props {
     totalInputs: number;
-    datalistEl: HTMLDataListElement;
     removeInput: (id: number) => void;
     id: number;
+    autocomplete: boolean;
     typeVal?: string;
     nameVal?: string;
     valueVal?: string;
@@ -14,9 +13,9 @@
 
   let {
     totalInputs = $bindable(0),
-    datalistEl,
     removeInput,
     id,
+    autocomplete,
     typeVal = $bindable("text"),
     nameVal = $bindable(""),
     valueVal = $bindable(""),
@@ -24,6 +23,7 @@
 
   let inputEl: HTMLInputElement = $state(document.createElement("input"));
   let valueEl: HTMLInputElement = $state(document.createElement("input"));
+  let listEl: HTMLOListElement = $state(document.createElement("ol"));
 
   //Form names tied to input types.
   const options: Record<string, string> = {
@@ -83,17 +83,24 @@
       <option value={options[key]}>{key}</option>
     {/each}
   </select>
-  <input
-    id="name-input"
-    bind:this={inputEl}
-    class="name-input flex-obj"
-    list="suggested-props"
-    type="text"
-    name="name[]"
-    placeholder="name"
-    bind:value={nameVal}
-    required
-  />
+  <div class="flex-input">
+    <div id="name-input-container">
+      <input
+        id="name-input"
+        bind:this={inputEl}
+        class="name-input flex-obj"
+        type="text"
+        name="name[]"
+        placeholder="name"
+        bind:value={nameVal}
+        required
+      />
+      <ol class="suggestion-list" bind:this={listEl}>
+        <button>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</button>
+        <button>Test Item 2</button>
+      </ol>
+    </div>
+  </div>
   <input
     bind:this={valueEl}
     id="value-input"
@@ -119,6 +126,9 @@
     flex-grow: 0;
     width: auto;
   }
+  #name-input-container {
+    position: relative;
+  }
 
   .modal-input-container {
     width: 95%;
@@ -127,6 +137,15 @@
     align-items: center;
     gap: 10px;
     margin-top: 10px;
+  }
+
+  .suggestion-list {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 0px;
   }
 
   .btn-inactive {

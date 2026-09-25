@@ -12,6 +12,7 @@ export class PropModal extends Modal {
   props: Map<string, NewPropData>;
   alterProp: MultiPropSettings["alterProp"];
   delimiter: string;
+  autocomplete: MultiPropSettings["autocomplete"];
   defaultProps: { name: string; value: string; type: PropertyTypes }[];
   changeSetting: (value: MultiPropSettings["alterProp"]) => void;
   component: ReturnType<typeof mount>;
@@ -22,6 +23,7 @@ export class PropModal extends Modal {
     submission: (customProps: Map<string, NewPropData>) => Promise<void>,
     alterProp: MultiPropSettings["alterProp"],
     delimiter: string,
+    autocomplete: MultiPropSettings["autocomplete"],
     defaultProps: { name: string; value: string; type: PropertyTypes }[],
     changeSetting: (value: MultiPropSettings["alterProp"]) => void,
     suggestedProps: Property[]
@@ -30,6 +32,7 @@ export class PropModal extends Modal {
     this.submission = submission;
     this.alterProp = alterProp;
     this.delimiter = delimiter;
+    this.autocomplete = autocomplete;
     this.defaultProps = defaultProps;
     this.changeSetting = changeSetting;
     this.suggestedProps = suggestedProps;
@@ -66,6 +69,7 @@ export class PropModal extends Modal {
         submission: this.onSubmit.bind(this),
         alterProp: this.alterProp,
         delimiter: this.delimiter,
+        autocomplete: this.autocomplete,
         defaultProps: this.defaultProps,
         changeSetting: this.updateSetting.bind(this),
         suggestedProps: this.suggestedProps,

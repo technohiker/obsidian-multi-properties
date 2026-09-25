@@ -15,6 +15,12 @@ export function removeExtraCommas(str: string): string {
   return str.replace(/^,*(.*?),*$/g, "$1").replace(/,{2,}/g, ",");
 }
 
+export function fuzzySearch(str: string, arr: string[], idx: number): string {
+  return (
+    arr.find((s, idx) => s.toLowerCase().includes(str.toLowerCase())) || ""
+  );
+}
+
 /** Remove any invalid tag characters from string.*/
 export function cleanTags(str: string) {
   //Taken from https://github.com/Gorkycreator/obsidian-quick-tagger/

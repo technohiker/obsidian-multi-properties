@@ -37,7 +37,7 @@ const context = await esbuild.context({
   ],
   format: "cjs",
   target: "es2022",
-  logLevel: "info",
+  logLevel: "debug",
   plugins: [
     esbuildsvelte({
       compilerOptions: {

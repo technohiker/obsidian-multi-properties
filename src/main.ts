@@ -19,6 +19,7 @@ const defaultSettings: MultiPropSettings = {
   recursive: true,
   delimiter: ",",
   defaultPropPath: "",
+  autocomplete: false,
 };
 
 export interface NewPropData {
@@ -382,6 +383,7 @@ export default class MultiPropPlugin extends Plugin {
       iterateFunc,
       this.settings.alterProp,
       this.settings.delimiter,
+      this.settings.autocomplete,
       defaultProps,
       this.changeAlterProp.bind(this),
       allProps

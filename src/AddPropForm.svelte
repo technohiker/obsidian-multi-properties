@@ -10,6 +10,7 @@
     submission: (props: Map<string, NewPropData>) => void;
     alterProp: MultiPropSettings["alterProp"];
     delimiter: string;
+    autocomplete: MultiPropSettings["autocomplete"];
     defaultProps: { name: string; value: string; type: PropertyTypes }[];
     changeSetting: (setting: MultiPropSettings["alterProp"]) => void;
     suggestedProps: Property[];
@@ -19,6 +20,7 @@
     submission,
     alterProp = $bindable(),
     delimiter,
+    autocomplete,
     defaultProps,
     changeSetting,
     suggestedProps,
@@ -86,6 +88,10 @@
     if (!inputEls.find((el) => el.nameDef === prop.name)) {
       addInputs([{ type: prop.widget, name: prop.name, value: "" }]);
     }
+  }
+  function returnPropType(str: string) {
+    let prop = suggestedProps.find((prop) => prop.name === str);
+    return prop ? prop.widget : "text";
   }
 
   /** See if there are duplicate property names.*/
@@ -188,11 +194,6 @@
     <div>ERROR</div>
     <div id="alert-text">{alertText}</div>
   </div>
-  <datalist bind:this={datalistEl} id="suggested-props">
-    {#each suggestedProps as prop}
-      <option value={prop.name}></option>
-    {/each}
-  </datalist>
 
   <p>Select from existing properties or create new ones:</p>
   <div class="suggested-props">
@@ -234,7 +235,7 @@
         <AddPropInput
           id={input.id}
           totalInputs={inputEls.length}
-          {datalistEl}
+          {autocomplete}
           bind:typeVal={input.typeDef}
           bind:nameVal={input.nameDef}
           bind:valueVal={input.valueDef}
