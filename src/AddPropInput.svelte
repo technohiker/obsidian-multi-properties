@@ -1,11 +1,12 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
+  import type { Property } from "./types/custom";
 
   interface Props {
     totalInputs: number;
     removeInput: (id: number) => void;
     id: number;
-    autocomplete: boolean;
+    suggestedProps: Property[];
     typeVal?: string;
     nameVal?: string;
     valueVal?: string;
@@ -15,7 +16,7 @@
     totalInputs = $bindable(0),
     removeInput,
     id,
-    autocomplete,
+    suggestedProps,
     typeVal = $bindable("text"),
     nameVal = $bindable(""),
     valueVal = $bindable(""),
@@ -23,7 +24,8 @@
 
   let inputEl: HTMLInputElement = $state(document.createElement("input"));
   let valueEl: HTMLInputElement = $state(document.createElement("input"));
-  let listEl: HTMLOListElement = $state(document.createElement("ol"));
+  let listEl: HTMLDivElement = $state(document.createElement("div"));
+  let suggestedList: Property[] = [];
 
   //Form names tied to input types.
   const options: Record<string, string> = {
@@ -58,6 +60,17 @@
 
   function changeType(type: string) {
     valueEl.type = type;
+  }
+
+  function addSuggested(prop: Property) {
+    console.log("Fired!");
+    nameVal = prop.name;
+    optionVal = options[convertProps[prop.widget]];
+    changeType(optionVal);
+  }
+
+  function matchProp(str: string) {
+    suggestedProps.find((el) => str === el.name.substring(0, str.length - 1));
   }
 </script>
 
@@ -95,10 +108,23 @@
         bind:value={nameVal}
         required
       />
-      <ol class="suggestion-list" bind:this={listEl}>
-        <button>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</button>
-        <button>Test Item 2</button>
-      </ol>
+      <div class="suggestion-list" bind:this={listEl}>
+        {#each suggestedProps as prop}
+          <a href="href" onclick={() => addSuggested(prop)}>{prop.name}</a>
+        {/each}
+        <a
+          href="href"
+          onclick={() =>
+            addSuggested({ name: "tags", widget: "text", occurrences: 1 })}
+          >AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</a
+        >
+        <a
+          href="Href"
+          onclick={() =>
+            addSuggested({ name: "rank", widget: "number", occurrences: 1 })}
+          >Rank</a
+        >
+      </div>
     </div>
   </div>
   <input
@@ -134,12 +160,13 @@
     width: 95%;
     display: flex;
     flex-direction: row;
-    align-items: center;
     gap: 10px;
     margin-top: 10px;
   }
 
   .suggestion-list {
+    width: 100%;
+    overflow-x: clip;
     display: flex;
     flex-direction: column;
     position: absolute;

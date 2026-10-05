@@ -235,7 +235,7 @@
         <AddPropInput
           id={input.id}
           totalInputs={inputEls.length}
-          {autocomplete}
+          {suggestedProps}
           bind:typeVal={input.typeDef}
           bind:nameVal={input.nameDef}
           bind:valueVal={input.valueDef}
