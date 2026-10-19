@@ -27,9 +27,6 @@
   }: Props = $props();
 
   let countInputs = 0; //Could replace with UUID.
-  let datalistEl: HTMLDataListElement = $state(
-    document.createElement("datalist")
-  );
   let formEl: HTMLFormElement = $state(document.createElement("form"));
   let errorEl: HTMLDivElement = $state(document.createElement("div"));
   let alertText = $state(".");
@@ -89,10 +86,6 @@
       addInputs([{ type: prop.widget, name: prop.name, value: "" }]);
     }
   }
-  function returnPropType(str: string) {
-    let prop = suggestedProps.find((prop) => prop.name === str);
-    return prop ? prop.widget : "text";
-  }
 
   /** See if there are duplicate property names.*/
   function checkDuplicateNames() {
@@ -103,7 +96,9 @@
     else return false;
   }
 
-  /** Display an error message. */
+  /** Display an error message.
+   * I'd like this to be a notice from Obsidian, but not sure how to do that.
+   */
   function runError(errorText: string) {
     alertText = errorText;
     errorEl.classList.remove("hidden"); //Should I have this error message fade away?
@@ -134,7 +129,6 @@
         return;
       //TODO: Implement error handling if inputs are inaccurate?
       //The entire form is dependent on this structure, though.
-
       //Get name, value and type from inputs.
       let name = input.value;
       if (name === "") {

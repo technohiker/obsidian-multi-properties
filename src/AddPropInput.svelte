@@ -24,8 +24,6 @@
 
   let inputEl: HTMLInputElement = $state(document.createElement("input"));
   let valueEl: HTMLInputElement = $state(document.createElement("input"));
-  let listEl: HTMLDivElement = $state(document.createElement("div"));
-  let suggestedList: Property[] = [];
 
   //Form names tied to input types.
   const options: Record<string, string> = {
@@ -37,10 +35,11 @@
   };
   //Match Obsidian data types to form names.
   const convertProps: Record<string, string> = {
+    tags: "Text",
+    cssclasses: "Text",
+    aliases: "Text",
     text: "Text",
     multitext: "Text",
-    tags: "Text",
-    aliases: "Text",
     number: "Number",
     checkbox: "Checkbox",
     date: "Date",
@@ -61,20 +60,41 @@
   function changeType(type: string) {
     valueEl.type = type;
   }
+  function getSuggestions(str: string, defProps: Property[], max: number) {
+    let arr = defProps;
+    let suggestions: Array<Property> = [];
 
-  function addSuggested(prop: Property) {
-    console.log("Fired!");
-    nameVal = prop.name;
-    optionVal = options[convertProps[prop.widget]];
-    changeType(optionVal);
+    while (arr && suggestions.length < max) {
+      let result = arr.find((el) => el.name.includes(str));
+      if (!result) return suggestions;
+
+      suggestions.push(result);
+      arr = arr.slice(arr.indexOf(result) + 1, arr.length);
+    }
+    return suggestions;
   }
 
-  function matchProp(str: string) {
-    suggestedProps.find((el) => str === el.name.substring(0, str.length - 1));
+  function inputChangeEvent(e: Event) {
+    if (e instanceof InputEvent) return;
+    let target = e.target;
+    if (target instanceof HTMLInputElement) {
+      let prop = suggestedProps.find((el) => el.name === target.value);
+      if (prop === undefined) {
+        console.log("Property not found.");
+        return;
+      }
+      optionVal = options[convertProps[prop.widget]];
+      changeType(optionVal);
+    }
   }
 </script>
 
 <div class="modal-input-container">
+  <datalist id="suggestion-list">
+    {#each suggestedProps as prop}
+      <option value={prop.name}></option>
+    {/each}
+  </datalist>
   <a
     id="del-btn"
     onclick={() => {
@@ -96,37 +116,18 @@
       <option value={options[key]}>{key}</option>
     {/each}
   </select>
-  <div class="flex-input">
-    <div id="name-input-container">
-      <input
-        id="name-input"
-        bind:this={inputEl}
-        class="name-input flex-obj"
-        type="text"
-        name="name[]"
-        placeholder="name"
-        bind:value={nameVal}
-        required
-      />
-      <div class="suggestion-list" bind:this={listEl}>
-        {#each suggestedProps as prop}
-          <a href="href" onclick={() => addSuggested(prop)}>{prop.name}</a>
-        {/each}
-        <a
-          href="href"
-          onclick={() =>
-            addSuggested({ name: "tags", widget: "text", occurrences: 1 })}
-          >AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</a
-        >
-        <a
-          href="Href"
-          onclick={() =>
-            addSuggested({ name: "rank", widget: "number", occurrences: 1 })}
-          >Rank</a
-        >
-      </div>
-    </div>
-  </div>
+  <input
+    list="suggestion-list"
+    id="name-input"
+    class="name-input flex-obj"
+    type="text"
+    name="name[]"
+    placeholder="name"
+    bind:this={inputEl}
+    bind:value={nameVal}
+    oninput={(e) => inputChangeEvent(e)}
+    required
+  />
   <input
     bind:this={valueEl}
     id="value-input"
@@ -152,9 +153,6 @@
     flex-grow: 0;
     width: auto;
   }
-  #name-input-container {
-    position: relative;
-  }
 
   .modal-input-container {
     width: 95%;
@@ -162,17 +160,6 @@
     flex-direction: row;
     gap: 10px;
     margin-top: 10px;
-  }
-
-  .suggestion-list {
-    width: 100%;
-    overflow-x: clip;
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    padding-left: 0px;
   }
 
   .btn-inactive {
