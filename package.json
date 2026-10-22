@@ -29,7 +29,7 @@
     "@types/node": "^24.5.2",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
-    "@vitest/ui": "^3.2.4",
+    "@vitest/ui": "^4.1.11",
     "esbuild": "^0.25.10",
     "esbuild-svelte": "^0.9.3",
     "eslint": "^8.57.1",
@@ -42,7 +42,7 @@
     "tslib": "2.4.0",
     "typescript": "latest",
     "vite": "^7.1.6",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.11"
   },
   "type": "module"
 }
