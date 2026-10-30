@@ -4,8 +4,8 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import MultiPropPlugin from "../src/main";
 
 // Mock the Obsidian API
-vi.mock("obsidian", () => {
-  const original = vi.importActual("obsidian");
+vi.mock("obsidian", async () => {
+  const original = await vi.importActual("obsidian");
   return {
     ...original,
     Plugin: class {
@@ -28,13 +28,15 @@ vi.mock("obsidian", () => {
       close() {}
     },
     PluginSettingTab: vi.fn(),
-    Setting: vi.fn(() => ({
-      setName: vi.fn().mockReturnThis(),
-      setDesc: vi.fn().mockReturnThis(),
-      addDropdown: vi.fn().mockReturnThis(),
-      addToggle: vi.fn().mockReturnThis(),
-      addText: vi.fn().mockReturnThis(),
-    })),
+    Setting: vi.fn(function () {
+      return {
+        setName: vi.fn().mockReturnThis(),
+        setDesc: vi.fn().mockReturnThis(),
+        addDropdown: vi.fn().mockReturnThis(),
+        addToggle: vi.fn().mockReturnThis(),
+        addText: vi.fn().mockReturnThis(),
+      };
+    }),
   };
 });
 
@@ -47,6 +49,7 @@ describe("SettingTab", () => {
         recursive: false,
         delimiter: ",",
         defaultPropPath: "",
+        autocomplete: true,
       },
       saveSettings: vi.fn(),
     } as unknown as MultiPropPlugin;
@@ -56,6 +59,6 @@ describe("SettingTab", () => {
     settingTab.display();
 
     expect(settingTab.containerEl.empty).toHaveBeenCalledOnce();
-    expect(Setting).toHaveBeenCalledTimes(4);
+    expect(Setting).toHaveBeenCalledTimes(5);
   });
 });

@@ -25,11 +25,11 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/svelte": "^5.2.8",
     "@tsconfig/svelte": "^5.0.2",
-    "@types/jest": "^29.5.5",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.5.2",
-    "@typescript-eslint/eslint-plugin": "^5.29.0",
-    "@typescript-eslint/parser": "^5.29.0",
-    "@vitest/ui": "^4.1.11",
+    "@typescript-eslint/eslint-plugin": "^8.72.0",
+    "@typescript-eslint/parser": "^8.72.0",
+    "@vitest/ui": "^5.0.5",
     "esbuild": "^0.25.10",
     "esbuild-svelte": "^0.9.3",
     "eslint": "^8.57.1",
@@ -42,7 +42,7 @@
     "tslib": "2.4.0",
     "typescript": "latest",
     "vite": "^7.1.6",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.5"
   },
   "type": "module"
 }

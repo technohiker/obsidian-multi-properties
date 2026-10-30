@@ -1,14 +1,7 @@
 import { vi, expect, test, beforeEach, describe } from "vitest";
-
-import { App } from "./obsidian.mock";
-
-const mocks = vi.hoisted(async () => {
-  return await import("./obsidian.mock");
-});
-
-vi.mock("obsidian", () => mocks);
-
+import { App, TFile, TFolder } from "./obsidian.mock";
 import MultiPropPlugin from "../src/main";
+//vi.mock("obsidian", () => mocks);
 
 describe("MultiPropPlugin Tests", () => {
   let app: InstanceType<typeof App>;
@@ -16,8 +9,7 @@ describe("MultiPropPlugin Tests", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    const resolvedMocks = await mocks;
-    app = new resolvedMocks.App();
+    app = new App();
     // @ts-ignore
     plugin = new MultiPropPlugin(app, {});
     await plugin.onload();
@@ -53,11 +45,7 @@ describe("MultiPropPlugin Tests", () => {
 
   describe("File Iteration", () => {
     test("searchFiles should iterate over a list of files", async () => {
-      const resolvedMocks = await mocks;
-      const files = [
-        new resolvedMocks.TFile("file1.md"),
-        new resolvedMocks.TFile("file2.md"),
-      ];
+      const files = [new TFile("file1.md"), new TFile("file2.md")];
       const callback = vi.fn();
       // @ts-ignore
       await plugin.searchFolders(files, callback);
@@ -65,11 +53,10 @@ describe("MultiPropPlugin Tests", () => {
     });
 
     test("searchFolders should iterate recursively through folders", async () => {
-      const resolvedMocks = await mocks;
-      const file1 = new resolvedMocks.TFile("file1.md");
-      const file2 = new resolvedMocks.TFile("file2.md");
-      const subFolder = new resolvedMocks.TFolder("sub", [file2]);
-      const rootFolder = new resolvedMocks.TFolder("root", [file1, subFolder]);
+      const file1 = new TFile("file1.md");
+      const file2 = new TFile("file2.md");
+      const subFolder = new TFolder("sub", [file2]);
+      const rootFolder = new TFolder("root", [file1, subFolder]);
       const callback = vi.fn();
       plugin.settings.recursive = true;
       // @ts-ignore

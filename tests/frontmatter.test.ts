@@ -9,10 +9,7 @@ import type { PropertyInfos } from "src/types/custom";
 const mocks = vi.hoisted(() => {
   class MockTFile {
     frontmatter: any;
-    constructor(
-      public path: string,
-      frontmatter = {},
-    ) {
+    constructor(public path: string, frontmatter = {}) {
       this.frontmatter = frontmatter;
     }
     get name() {
@@ -83,7 +80,7 @@ describe("Frontmatter Utilities", () => {
     it("should add new properties to the frontmatter", async () => {
       const props = new Map<string, any>([
         ["newText", { data: "new value" }],
-        ["newList", {data: ["item1", "item2"] }],
+        ["newList", { data: ["item1", "item2"] }],
         ["newNumber", { data: 5 }],
         ["newBoolean", { data: true }],
         ["newDate", { data: "01/01/2021" }],
@@ -94,7 +91,7 @@ describe("Frontmatter Utilities", () => {
         file,
         props,
         "append",
-        propertyInfo,
+        propertyInfo
       );
       //Make sure old properties are unaffected.
       expect(file.frontmatter.existingProp).toBe("initial value");
@@ -122,7 +119,7 @@ describe("Frontmatter Utilities", () => {
         file,
         props,
         "append",
-        propertyInfo,
+        propertyInfo
       );
       expect(file.frontmatter.existingProp).toStrictEqual([
         "initial value",
@@ -138,7 +135,7 @@ describe("Frontmatter Utilities", () => {
         file,
         props,
         "overwrite",
-        propertyInfo,
+        propertyInfo
       );
       expect(file.frontmatter.existingProp).toBe("new value");
     });
@@ -152,7 +149,7 @@ describe("Frontmatter Utilities", () => {
         file,
         props,
         "ignore",
-        propertyInfo,
+        propertyInfo
       );
       expect(file.frontmatter.newProp).toBe("new value");
       expect(file.frontmatter.existingProp).toBe("initial value");

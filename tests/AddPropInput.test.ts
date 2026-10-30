@@ -9,6 +9,7 @@ describe("AddPropInput.svelte", () => {
         totalInputs: 1,
         removeInput: () => {},
         id: 1,
+        suggestedProps: [],
       },
     });
 
@@ -27,6 +28,7 @@ describe("AddPropInput.svelte", () => {
         totalInputs: 1,
         removeInput: () => {},
         id: 1,
+        suggestedProps: [],
       },
     });
 
@@ -45,6 +47,7 @@ describe("AddPropInput.svelte", () => {
         totalInputs: 2,
         removeInput: removeInputMock,
         id: 1,
+        suggestedProps: [],
       },
     });
 
@@ -61,6 +64,7 @@ describe("AddPropInput.svelte", () => {
         totalInputs: 1,
         removeInput: removeInputMock,
         id: 1,
+        suggestedProps: [],
       },
     });
 

@@ -19,7 +19,7 @@ const defaultSettings: MultiPropSettings = {
   recursive: true,
   delimiter: ",",
   defaultPropPath: "",
-  autocomplete: false,
+  autocomplete: true,
 };
 
 export interface NewPropData {
@@ -27,6 +27,7 @@ export interface NewPropData {
   data: string | string[] | null;
   alterProp: MultiPropSettings["alterProp"];
   delimiter: string;
+  autocomplete: boolean;
 }
 
 export default class MultiPropPlugin extends Plugin {
@@ -81,6 +82,7 @@ export default class MultiPropPlugin extends Plugin {
   }
 
   async onload() {
+    console.log("Loading settings...");
     await this.loadSettings();
     this.addSettingTab(new SettingTab(this.app, this));
 

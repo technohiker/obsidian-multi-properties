@@ -77,7 +77,7 @@ class MockApp {
     getAbstractFileByPath: vi.fn(),
   };
   commands: any[] = [];
-  addCommand = vi.fn((cmd) => {
+  addCommand = vi.fn(function (cmd) {
     this.commands.push(cmd);
   });
 }

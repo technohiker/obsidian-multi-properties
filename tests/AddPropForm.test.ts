@@ -7,6 +7,23 @@ describe("AddPropForm.svelte", () => {
   it('should submit the form data when "Submit" is clicked', async () => {
     const submissionMock = vi.fn();
     const changeSettingMock = vi.fn();
+    const suggestedProps: Property[] = [
+      {
+        name: "tags",
+        widget: "tags",
+        occurrences: 1,
+      },
+      {
+        name: "testNumber",
+        widget: "number",
+        occurrences: 4,
+      },
+      {
+        name: "testDate",
+        widget: "date",
+        occurrences: 1,
+      },
+    ];
 
     render(AddPropForm, {
       props: {
@@ -15,7 +32,8 @@ describe("AddPropForm.svelte", () => {
         delimiter: ",",
         defaultProps: [],
         changeSetting: changeSettingMock,
-        suggestedProps: [],
+        suggestedProps: suggestedProps,
+        autocomplete: true,
       },
     });
 
@@ -47,6 +65,7 @@ describe("AddPropForm.svelte", () => {
         defaultProps: [],
         changeSetting: changeSettingMock,
         suggestedProps: [],
+        autocomplete: true,
       },
     });
 
@@ -70,6 +89,7 @@ describe("AddPropForm.svelte", () => {
         defaultProps: [],
         changeSetting: changeSettingMock,
         suggestedProps: [],
+        autocomplete: true,
       },
     });
 
@@ -112,6 +132,7 @@ describe("AddPropForm.svelte", () => {
         defaultProps: [],
         changeSetting: changeSettingMock,
         suggestedProps: properties,
+        autocomplete: true,
       },
     });
 
