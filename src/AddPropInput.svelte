@@ -10,6 +10,7 @@
     typeVal?: string;
     nameVal?: string;
     valueVal?: string;
+    autocomplete: boolean;
   }
 
   let {
@@ -20,6 +21,7 @@
     typeVal = $bindable("text"),
     nameVal = $bindable(""),
     valueVal = $bindable(""),
+    autocomplete,
   }: Props = $props();
 
   let inputEl: HTMLInputElement = $state(document.createElement("input"));
@@ -90,11 +92,14 @@
 </script>
 
 <div class="modal-input-container">
-  <datalist id="suggestion-list">
-    {#each suggestedProps as prop}
-      <option value={prop.name}></option>
-    {/each}
-  </datalist>
+  {#if autocomplete}
+    <datalist id="suggestion-list">
+      {#each suggestedProps as prop}
+        <option value={prop.name}></option>
+      {/each}
+    </datalist>
+  {/if}
+
   <a
     id="del-btn"
     onclick={() => {

@@ -82,7 +82,6 @@ export default class MultiPropPlugin extends Plugin {
   }
 
   async onload() {
-    console.log("Loading settings...");
     await this.loadSettings();
     this.addSettingTab(new SettingTab(this.app, this));
 

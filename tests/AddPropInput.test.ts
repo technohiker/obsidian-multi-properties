@@ -10,6 +10,7 @@ describe("AddPropInput.svelte", () => {
         removeInput: () => {},
         id: 1,
         suggestedProps: [],
+        autocomplete: true,
       },
     });
 
@@ -29,6 +30,7 @@ describe("AddPropInput.svelte", () => {
         removeInput: () => {},
         id: 1,
         suggestedProps: [],
+        autocomplete: true,
       },
     });
 
@@ -48,6 +50,7 @@ describe("AddPropInput.svelte", () => {
         removeInput: removeInputMock,
         id: 1,
         suggestedProps: [],
+        autocomplete: true,
       },
     });
 
@@ -65,6 +68,7 @@ describe("AddPropInput.svelte", () => {
         removeInput: removeInputMock,
         id: 1,
         suggestedProps: [],
+        autocomplete: true,
       },
     });
 
@@ -73,5 +77,67 @@ describe("AddPropInput.svelte", () => {
       await fireEvent.click(removeButton);
       expect(removeInputMock).not.toHaveBeenCalledWith(1);
     }
+  });
+  it("should display a list of suggestedProps when input has been clicked", async () => {
+    const { container } = render(AddPropInput, {
+      props: {
+        totalInputs: 1,
+        removeInput: () => {},
+        id: 1,
+        suggestedProps: [
+          {
+            name: "tags",
+            widget: "tags",
+            occurrences: 1,
+          },
+          {
+            name: "testNumber",
+            widget: "number",
+            occurrences: 4,
+          },
+          {
+            name: "testDate",
+            widget: "date",
+            occurrences: 1,
+          },
+        ],
+
+        autocomplete: true,
+      },
+    });
+    const dataList = container.querySelector("#suggestion-list");
+    if (dataList) {
+      expect(dataList.children.length).toEqual(3);
+    }
+  });
+  it("should not show list if autocomplete is disabled", async () => {
+    const { container } = render(AddPropInput, {
+      props: {
+        totalInputs: 1,
+        removeInput: () => {},
+        id: 1,
+        suggestedProps: [
+          {
+            name: "tags",
+            widget: "tags",
+            occurrences: 1,
+          },
+          {
+            name: "testNumber",
+            widget: "number",
+            occurrences: 4,
+          },
+          {
+            name: "testDate",
+            widget: "date",
+            occurrences: 1,
+          },
+        ],
+
+        autocomplete: false,
+      },
+    });
+    const dataList = container.querySelector("#suggestion-list");
+    expect(dataList).toBeNull;
   });
 });

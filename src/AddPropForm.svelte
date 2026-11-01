@@ -170,6 +170,7 @@
         data: value,
         alterProp: alterProp,
         delimiter: delimiter,
+        autocomplete: autocomplete,
       };
 
       obj.set(name, propObj);
@@ -234,6 +235,7 @@
           bind:nameVal={input.nameDef}
           bind:valueVal={input.valueDef}
           {removeInput}
+          {autocomplete}
         />
       {/each}
     </div>
