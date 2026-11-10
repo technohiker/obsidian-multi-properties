@@ -14,7 +14,7 @@
     "types": ["node", "svelte", "vitest/globals"],
     "strictNullChecks": true,
     "verbatimModuleSyntax": true,
-    "lib": ["DOM", "ES6", "ES7", "ES2021"]
+    "lib": ["DOM", "ES6", "ES7", "ES2021", "ES2022"]
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "example_code"]

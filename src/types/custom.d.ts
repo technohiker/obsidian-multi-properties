@@ -31,6 +31,10 @@ interface Property {
   occurrences: number;
 }
 
+interface Frontmatter {
+  [key: string]: string | number | string[] | null;
+}
+
 type PropertyTypes =
   | "aliases"
   | "tags"
