@@ -24,7 +24,7 @@ const defaultSettings: MultiPropSettings = {
 
 export interface NewPropData {
   type: string;
-  data: string | string[] | null;
+  data: string | string[];
   alterProp: MultiPropSettings["alterProp"];
   delimiter: string;
   autocomplete: boolean;
@@ -111,9 +111,11 @@ export default class MultiPropPlugin extends Plugin {
         if (node instanceof TFile) {
           obj = [node];
           title = "Add props to file.";
-        } else {
-          obj = node as TFolder;
+        } else if (node instanceof TFolder) {
+          obj = node;
           title = "Add props to folder.";
+        } else {
+          new Notice("Object selected is not a file, or a folder.", 5000);
         }
 
         menu.addItem((item) => {
@@ -149,10 +151,12 @@ export default class MultiPropPlugin extends Plugin {
 
         if (node instanceof TFile) {
           obj = [node];
-          title = "Remove props from file.";
+          title = "Remove props to file.";
+        } else if (node instanceof TFolder) {
+          obj = node;
+          title = "Remove props to folder.";
         } else {
-          obj = node as TFolder;
-          title = "Remove props from folder.";
+          new Notice("Object selected is not a file, or a folder.", 5000);
         }
 
         menu.addItem((item) => {
@@ -369,6 +373,7 @@ export default class MultiPropPlugin extends Plugin {
     let iterateFunc;
     const allFiles: TFile[] = [];
     this.searchFolders(iterable, async (f) => allFiles.push(f));
+
     iterateFunc = async (props: Map<string, any>) =>
       this.searchFolders(
         iterable,
@@ -460,7 +465,8 @@ export default class MultiPropPlugin extends Plugin {
         const file = this.app.vault.getAbstractFileByPath(
           `${this.settings.defaultPropPath}.md`
         );
-        let tmp = this.readYamlProperties(file as TFile);
+        if (!(file instanceof TFile)) throw Error("Undefined path.");
+        let tmp = this.readYamlProperties(file);
         if (tmp === undefined) throw Error("Undefined path.");
         return tmp;
       } catch (e) {
@@ -492,7 +498,7 @@ export default class MultiPropPlugin extends Plugin {
       );
 
       if (count === totalFiles) {
-        activeWindow.setTimeout(() => {
+        window.setTimeout(() => {
           statusBarItem.remove();
         }, 5000);
       }
@@ -516,7 +522,7 @@ export default class MultiPropPlugin extends Plugin {
       );
 
       if (count === totalFiles) {
-        activeWindow.setTimeout(() => {
+        window.setTimeout(() => {
           statusBarItem.remove();
         }, 5000);
       }

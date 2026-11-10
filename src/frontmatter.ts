@@ -1,11 +1,11 @@
 import { TFile } from "obsidian";
 import type { NewPropData } from "./main";
-import type { PropertyInfos } from "./types/custom";
+import type { Frontmatter, PropertyInfos } from "./types/custom";
 import type { MultiPropSettings } from "./SettingTab";
 
 type FileProcessor = (
   file: TFile,
-  callback: (frontmatter: any) => void
+  callback: (frontmatter: Frontmatter) => void
 ) => Promise<void> | void;
 
 /** Add properties from a Map to a note.
@@ -25,7 +25,7 @@ export async function addProperties(
       //Tags should always be a List, even if there is just one tag.
       if (
         key === "tags" &&
-        !frontmatter.hasOwnProperty("tags") &&
+        !Object.hasOwn(frontmatter, "tags") &&
         !Array.isArray(value.data)
       ) {
         frontmatter[key] = [value.data];
@@ -45,6 +45,7 @@ export async function addProperties(
         if (frontmatter[key] === value.data) continue; //Leave identical values alone.
         if (!value.data) continue; //Do not merge empty values.
 
+        //@ts-ignore, above code stops frontmatter[key] from being a number.
         let arr = mergeIntoArrays(frontmatter[key], value.data);
         frontmatter[key] = arr;
         continue;
@@ -76,8 +77,7 @@ export async function removeProperties(
 ) {
   await fileProcessor(file, (frontmatter) => {
     for (const prop of props) {
-      //delete frontmatter[prop];
-      frontmatter[prop] = undefined; //"Hacky" workaround, commented code will work in later version."
+      delete frontmatter[prop];
     }
   });
 }
