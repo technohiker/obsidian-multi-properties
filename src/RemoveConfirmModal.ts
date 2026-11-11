@@ -16,8 +16,8 @@ export class RemoveConfirmModal extends Modal {
     this.submission = submission;
   }
 
-  onSubmit() {
-    this.submission();
+  async onSubmit() {
+    await this.submission();
     this.close();
   }
 

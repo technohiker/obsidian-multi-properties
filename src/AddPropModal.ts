@@ -40,7 +40,7 @@ export class PropModal extends Modal {
 
   //Run form submission if user clicks confirm.
   onConfirm() {
-    this.submission(this.props);
+    this.submission(this.props).catch((err) => console.error(err));
     this.close();
   }
 

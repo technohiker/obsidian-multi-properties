@@ -27,7 +27,7 @@ export class RemoveModal extends Modal {
   }
 
   onConfirm() {
-    this.submission(this.props);
+    this.submission(this.props).catch((err) => console.error(err));
     this.close();
   }
 

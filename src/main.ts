@@ -272,7 +272,7 @@ export default class MultiPropPlugin extends Plugin {
                 new Notice("No files to add properties to.", 4000);
                 return;
               }
-              this.createPropModal(files);
+              this.createPropModal(files).catch((err) => console.error(err));
             });
         });
       })
@@ -290,7 +290,7 @@ export default class MultiPropPlugin extends Plugin {
                 new Notice("No files to remove properties from.", 4000);
                 return;
               }
-              this.createRemoveModal(files);
+              this.createRemoveModal(files).catch((err) => console.error(err));
             });
         });
       })
@@ -372,7 +372,7 @@ export default class MultiPropPlugin extends Plugin {
   async createPropModal(iterable: TFile[] | TFolder) {
     let iterateFunc;
     const allFiles: TFile[] = [];
-    this.searchFolders(iterable, async (f) => allFiles.push(f));
+    await this.searchFolders(iterable, async (f) => allFiles.push(f));
 
     iterateFunc = async (props: Map<string, any>) =>
       this.searchFolders(
@@ -391,7 +391,7 @@ export default class MultiPropPlugin extends Plugin {
       this.settings.delimiter,
       this.settings.autocomplete,
       defaultProps,
-      this.changeAlterProp.bind(this),
+      await this.changeAlterProp.bind(this),
       allProps
     ).open();
   }
@@ -411,7 +411,7 @@ export default class MultiPropPlugin extends Plugin {
 
     names = await this.getPropsFromFolder(iterable, new Set());
     const allFiles: TFile[] = [];
-    this.searchFolders(iterable, async (f) => allFiles.push(f));
+    await this.searchFolders(iterable, async (f) => allFiles.push(f));
     iterateFunc = (props: string[]) =>
       this.searchFolders(
         iterable,
