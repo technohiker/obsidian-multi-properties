@@ -12,7 +12,7 @@ import { PropModal } from "./AddPropModal";
 import { type MultiPropSettings, SettingTab } from "./SettingTab";
 import { RemoveModal } from "./RemoveModal";
 import { addProperties, addPropToSet, removeProperties } from "./frontmatter";
-import type { Property, PropertyTypes } from "./types/custom";
+import type { FrontmatterType, Property, PropertyTypes } from "./types/custom";
 
 const defaultSettings: MultiPropSettings = {
   alterProp: "ignore",
@@ -380,8 +380,8 @@ export default class MultiPropPlugin extends Plugin {
         await this.addPropsCallback(props, allFiles.length)
       );
 
-    let defaultProps: { name: string; value: any; type: PropertyTypes }[];
-    defaultProps = this.loadDefaultProps();
+    let defaultProps: { name: string; value: FrontmatterType; type: PropertyTypes }[];
+    defaultProps = this.loadDefaultProps(this.settings.defaultPropPath);
     const allProps = this.getAllUsedProperties();
 
     new PropModal(
@@ -444,26 +444,28 @@ export default class MultiPropPlugin extends Plugin {
 
     const allPropsWithType = this.app.metadataCache.getAllPropertyInfos();
 
-    let result: { name: string; value: any; type: PropertyTypes }[] = [];
+    let result: { name: string; value: FrontmatterType; type: PropertyTypes }[] = [];
 
     for (let [key, value] of Object.entries(frontmatter)) {
+      console.log(value,typeof value);
       const keyLower = key.toLowerCase();
       const obj = {
         name: key,
         value: value,
         type: allPropsWithType[keyLower].widget,
       };
+      console.log(obj.value);
 
       result.push(obj);
+      console.log(result);
     }
     return result;
   }
 
-  loadDefaultProps() {
-    if (this.settings.defaultPropPath) {
+  loadDefaultProps(path: string) {
       try {
         const file = this.app.vault.getAbstractFileByPath(
-          `${this.settings.defaultPropPath}.md`
+          `${path}`
         );
         if (!(file instanceof TFile)) throw Error("Undefined path.");
         let tmp = this.readYamlProperties(file);
@@ -474,9 +476,8 @@ export default class MultiPropPlugin extends Plugin {
           `${e}.  Check if you entered a valid path in the Default Props File setting.`,
           10000
         );
+        return [{ name: "", value: "" as FrontmatterType, type: "text" as PropertyTypes }];
       }
-    }
-    return [{ name: "", value: "" as any, type: "text" as PropertyTypes }];
   }
 
   async addPropsCallback(props: Map<string, NewPropData>, totalFiles: number) {

@@ -3,7 +3,7 @@ import { mount } from "svelte";
 import PropForm from "./AddPropForm.svelte";
 import type { NewPropData } from "./main";
 import { AddConfirmModal } from "./AddConfirmModal";
-import type { Property, PropertyTypes } from "./types/custom";
+import type { FrontmatterType, Property, PropertyTypes } from "./types/custom";
 import type { MultiPropSettings } from "./SettingTab";
 
 /** Loads a modal and handles form submissions. */
@@ -13,7 +13,7 @@ export class PropModal extends Modal {
   alterProp: MultiPropSettings["alterProp"];
   delimiter: string;
   autocomplete: MultiPropSettings["autocomplete"];
-  defaultProps: { name: string; value: string; type: PropertyTypes }[];
+  defaultProps: { name: string; value: FrontmatterType; type: PropertyTypes }[];
   changeSetting: (value: MultiPropSettings["alterProp"]) => void;
   component: ReturnType<typeof mount>;
   suggestedProps: Property[];
@@ -24,7 +24,7 @@ export class PropModal extends Modal {
     alterProp: MultiPropSettings["alterProp"],
     delimiter: string,
     autocomplete: MultiPropSettings["autocomplete"],
-    defaultProps: { name: string; value: string; type: PropertyTypes }[],
+    defaultProps: { name: string; value: FrontmatterType; type: PropertyTypes }[],
     changeSetting: (value: MultiPropSettings["alterProp"]) => void,
     suggestedProps: Property[]
   ) {

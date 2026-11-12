@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
-  import type { Property } from "./types/custom";
+  import type { FrontmatterType, Property } from "./types/custom";
 
   interface Props {
     totalInputs: number;
@@ -9,7 +9,7 @@
     suggestedProps: Property[];
     typeVal?: string;
     nameVal?: string;
-    valueVal?: string;
+    valueVal?: FrontmatterType;
     autocomplete: boolean;
   }
 
@@ -140,6 +140,7 @@
     name="value[]"
     placeholder="value"
     bind:value={valueVal}
+    checked={valueVal === true}
     class="value-input flex-obj"
   />
 </div>

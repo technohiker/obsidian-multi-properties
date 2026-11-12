@@ -32,8 +32,10 @@ interface Property {
 }
 
 interface Frontmatter {
-  [key: string]: string | number | string[] | null;
+  [key: string]: FrontmatterType;
 }
+
+type FrontmatterType = string | string[] | number | boolean | null;
 
 type PropertyTypes =
   | "aliases"

@@ -3,7 +3,7 @@
   import AddPropInput from "./AddPropInput.svelte";
   import type { NewPropData } from "./main";
   import { cleanTags, parseValue, removeExtraCommas } from "./helpers";
-  import type { Property, PropertyTypes } from "./types/custom";
+  import type { Property, PropertyTypes, FrontmatterType } from "./types/custom";
   import type { MultiPropSettings } from "./SettingTab";
 
   interface Props {
@@ -11,7 +11,7 @@
     alterProp: MultiPropSettings["alterProp"];
     delimiter: string;
     autocomplete: MultiPropSettings["autocomplete"];
-    defaultProps: { name: string; value: string; type: PropertyTypes }[];
+    defaultProps: { name: string; value: FrontmatterType; type: PropertyTypes }[];
     changeSetting: (setting: MultiPropSettings["alterProp"]) => void;
     suggestedProps: Property[];
   }
@@ -36,7 +36,7 @@
     totalInputs: number;
     typeDef: PropertyTypes;
     nameDef: string;
-    valueDef: string;
+    valueDef: FrontmatterType;
   }[] = $state([]);
 
   function onDropdownChange(newSetting: MultiPropSettings["alterProp"]) {
@@ -51,7 +51,7 @@
 
   /** Add new input to inputEls */
   function addInputs(
-    inputs: { type: PropertyTypes; name: string; value: string }[] = [
+    inputs: { type: PropertyTypes; name: string; value: FrontmatterType }[] = [
       { type: "text", name: "", value: "" },
     ]
   ) {
