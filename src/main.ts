@@ -353,14 +353,6 @@ export default class MultiPropPlugin extends Plugin {
     }
   }
 
-  async searchFiles(files: TAbstractFile[], callback: (file: TFile) => any) {
-    for (let file of files) {
-      if (file instanceof TFile && file.extension === "md") {
-        await callback(file);
-      }
-    }
-  }
-
   getFilesFromSearch(leaf: any) {
     let files: TFile[] = [];
     leaf.dom.vChildren.children.forEach((e: any) => {
@@ -380,8 +372,14 @@ export default class MultiPropPlugin extends Plugin {
         await this.addPropsCallback(props, allFiles.length)
       );
 
-    let defaultProps: { name: string; value: FrontmatterType; type: PropertyTypes }[];
-    defaultProps = this.loadDefaultProps(this.settings.defaultPropPath);
+    let defaultProps: {
+      name: string;
+      value: FrontmatterType;
+      type: PropertyTypes;
+    }[] = [];
+    if (this.settings.defaultPropPath) {
+      defaultProps = this.loadDefaultProps(this.settings.defaultPropPath);
+    }
     const allProps = this.getAllUsedProperties();
 
     new PropModal(
@@ -391,7 +389,7 @@ export default class MultiPropPlugin extends Plugin {
       this.settings.delimiter,
       this.settings.autocomplete,
       defaultProps,
-      await this.changeAlterProp.bind(this),
+      this.changeAlterProp.bind(this),
       allProps
     ).open();
   }
@@ -444,40 +442,45 @@ export default class MultiPropPlugin extends Plugin {
 
     const allPropsWithType = this.app.metadataCache.getAllPropertyInfos();
 
-    let result: { name: string; value: FrontmatterType; type: PropertyTypes }[] = [];
+    let result: {
+      name: string;
+      value: FrontmatterType;
+      type: PropertyTypes;
+    }[] = [];
 
     for (let [key, value] of Object.entries(frontmatter)) {
-      console.log(value,typeof value);
       const keyLower = key.toLowerCase();
       const obj = {
         name: key,
         value: value,
         type: allPropsWithType[keyLower].widget,
       };
-      console.log(obj.value);
 
       result.push(obj);
-      console.log(result);
     }
     return result;
   }
 
   loadDefaultProps(path: string) {
-      try {
-        const file = this.app.vault.getAbstractFileByPath(
-          `${path}`
-        );
-        if (!(file instanceof TFile)) throw Error("Undefined path.");
-        let tmp = this.readYamlProperties(file);
-        if (tmp === undefined) throw Error("Undefined path.");
-        return tmp;
-      } catch (e) {
-        new Notice(
-          `${e}.  Check if you entered a valid path in the Default Props File setting.`,
-          10000
-        );
-        return [{ name: "", value: "" as FrontmatterType, type: "text" as PropertyTypes }];
-      }
+    try {
+      const file = this.app.vault.getAbstractFileByPath(`${path}`);
+      if (!(file instanceof TFile)) throw Error("Undefined path.");
+      let tmp = this.readYamlProperties(file);
+      if (tmp === undefined) throw Error("Undefined path.");
+      return tmp;
+    } catch (e) {
+      new Notice(
+        `${e}.  Check if you entered a valid path in the Default Props File setting.`,
+        10000
+      );
+      return [
+        {
+          name: "",
+          value: "" as FrontmatterType,
+          type: "text" as PropertyTypes,
+        },
+      ];
+    }
   }
 
   async addPropsCallback(props: Map<string, NewPropData>, totalFiles: number) {

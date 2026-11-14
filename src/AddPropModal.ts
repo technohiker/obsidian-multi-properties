@@ -14,7 +14,7 @@ export class PropModal extends Modal {
   delimiter: string;
   autocomplete: MultiPropSettings["autocomplete"];
   defaultProps: { name: string; value: FrontmatterType; type: PropertyTypes }[];
-  changeSetting: (value: MultiPropSettings["alterProp"]) => void;
+  changeSetting: (value: MultiPropSettings["alterProp"]) => Promise<void>;
   component: ReturnType<typeof mount>;
   suggestedProps: Property[];
 
@@ -24,8 +24,12 @@ export class PropModal extends Modal {
     alterProp: MultiPropSettings["alterProp"],
     delimiter: string,
     autocomplete: MultiPropSettings["autocomplete"],
-    defaultProps: { name: string; value: FrontmatterType; type: PropertyTypes }[],
-    changeSetting: (value: MultiPropSettings["alterProp"]) => void,
+    defaultProps: {
+      name: string;
+      value: FrontmatterType;
+      type: PropertyTypes;
+    }[],
+    changeSetting: (value: MultiPropSettings["alterProp"]) => Promise<void>,
     suggestedProps: Property[]
   ) {
     super(app);
