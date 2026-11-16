@@ -48,9 +48,9 @@ export class PropModal extends Modal {
     this.close();
   }
 
-  updateSetting(value: MultiPropSettings["alterProp"]) {
+  async updateSetting(value: MultiPropSettings["alterProp"]) {
     this.alterProp = value;
-    this.changeSetting(value);
+    await this.changeSetting(value);
   }
 
   //Pull up confirmation form when user submits base form.

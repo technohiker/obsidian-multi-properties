@@ -25,7 +25,12 @@ export class AddConfirmModal extends Modal {
     this.submission = submission;
   }
   onSubmit() {
-    this.submission().catch((err) => console.error(err));
+    //this.submission().catch((err) => console.error(err));
+    try {
+      this.submission();
+    } catch (err) {
+      console.error(err);
+    }
     this.close();
   }
 
