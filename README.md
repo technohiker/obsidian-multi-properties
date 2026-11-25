@@ -14,6 +14,9 @@ This plugin allows you to add, edit, or remove frontmatter properties from multi
 
 ![Multi Properties Demo 1 0 0](https://github.com/technohiker/obsidian-multi-properties/assets/75589254/8483e98d-cc4f-4770-a0bf-7a5da2cab93d)
 
+### Edit search results
+<img width="464" height="538" alt="Image" src="https://github.com/user-attachments/assets/84048139-791e-4a34-b217-d1b63ee95472" />
+
 ## Features
 
 You can act on multiple notes at once in several ways:
